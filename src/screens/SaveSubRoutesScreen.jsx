@@ -267,7 +267,7 @@ const SaveSubRoutesScreen = () => {
         showSuccess(`Route ${isEditing ? "updated" : "created"} successfully!`);
         localStorage.removeItem("busRoute");
 
-        navigate("/major-routes");
+        navigate("/routes");
       }
     } catch (error) {
       setSaving(false);

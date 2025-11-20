@@ -1113,3 +1113,35 @@ input:checked + .employee-slider:before {
     width: calc(100% - 70px);
   }
 }
+/* Switch loading indicator */
+.employee-switch-loading-indicator {
+  width: 51px; /* Same width as your switch */
+  height: 31px; /* Same height as your switch */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+}
+
+.employee-switch-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: employee-switch-spin 0.8s linear infinite;
+}
+
+@keyframes employee-switch-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Disabled state for buttons when switching */
+.employee-edit-button:disabled,
+.employee-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

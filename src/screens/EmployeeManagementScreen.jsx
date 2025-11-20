@@ -47,7 +47,7 @@ const EmployeeManagementScreen = () => {
   const [isFilteredByBus, setIsFilteredByBus] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [focusedInput, setFocusedInput] = useState(null);
-  
+  const [switchingEmployeeId, setSwitchingEmployeeId] = useState(null);
   // Sidebar and layout states
   const [activeScreen, setActiveScreen] = useState("employees");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -355,33 +355,42 @@ const EmployeeManagementScreen = () => {
     }
   };
 
-  const handleToggleStatus = async (employeeId, currentStatus) => {
-    const newStatus = currentStatus === "active" ? "deactivated" : "active";
+const handleToggleStatus = async (employeeId, currentStatus) => {
+  const newStatus = currentStatus === "active" ? "deactivated" : "active";
+  
+  // Set loading state for this specific employee
+  setSwitchingEmployeeId(employeeId);
 
-    try {
-      const token = user.token;
-      const apiLink = Apilink.getLink();
-      
-      let response = await fetch(`${apiLink}/employees/${employeeId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
+  try {
+    const token = user.token;
+    const apiLink = Apilink.getLink();
+    
+    let response = await fetch(`${apiLink}/employees/${employeeId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        showAlert(data.message || "Failed to update employee status");
-      } else {
-        setEmployees(data.allemployees || []);
-      }
-    } catch (error) {
-      showAlert("Failed to update employee status");
+    if (!response.ok) {
+      showAlert(data.message || "Failed to update employee status");
+      // Reset loading state on error
+      setSwitchingEmployeeId(null);
+    } else {
+      setEmployees(data.allemployees || []);
+      // Reset loading state on success
+      setSwitchingEmployeeId(null);
     }
-  };
+  } catch (error) {
+    showAlert("Failed to update employee status");
+    // Reset loading state on error
+    setSwitchingEmployeeId(null);
+  }
+};
 
   const handleEditEmployee = (employee) => {
     setEditingEmployee(employee);
@@ -502,71 +511,103 @@ const EmployeeManagementScreen = () => {
     setShowSuccessModal(true);
   };
 
-  const EmployeeListItem = ({ employee }) => {
-    const role = roles.find((r) => r.id === employee.role);
+const EmployeeListItem = ({ employee }) => {
+  const role = roles.find((r) => r.id === employee.role);
+  const isSwitching = switchingEmployeeId === employee.id;
 
-    return (
-      <div className="employee-list-item" onClick={() => handleEditEmployee(employee)}>
-        <div className="employee-list-item-content">
-          <div className="employee-list-item-header">
-            <div 
-              className="employee-list-item-icon"
-              style={{ backgroundColor: role?.color + "20" }}
-            >
-              <span className="employee-icon">{role?.icon || "👤"}</span>
-            </div>
-            <div className="employee-list-item-info">
-              <div className="employee-list-item-name">{employee.staffname}</div>
-              <div className="employee-list-item-role">{role?.name || "No role"}</div>
-            </div>
-            <div className="employee-list-item-meta">
-              <div className="employee-list-item-bus">{employee.busname}</div>
-              <div className="employee-status-container">
-                <div className="employee-status-label">
-                  {employee.status === "active" ? "Active" : "Inactive"}
+  // Handle switch toggle separately
+  const handleSwitchToggle = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling up to parent
+    if (!isSwitching) { // Only allow toggle if not already switching
+      handleToggleStatus(employee.id, employee.status);
+    }
+  };
+
+  // Handle edit button click
+  const handleEditClick = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling up to parent
+    handleEditEmployee(employee);
+  };
+
+  // Handle delete button click
+  const handleDeleteClick = (e) => {
+    e.stopPropagation(); // Prevent event from bubbling up to parent
+    handleDeleteEmployee(employee.id);
+  };
+
+  return (
+    <div className="employee-list-item" onClick={() => !isSwitching && handleEditEmployee(employee)}>
+      <div className="employee-list-item-content">
+        <div className="employee-list-item-header">
+          <div 
+            className="employee-list-item-icon"
+            style={{ backgroundColor: role?.color + "20" }}
+          >
+            <span className="employee-icon">{role?.icon || "👤"}</span>
+          </div>
+          <div className="employee-list-item-info">
+            <div className="employee-list-item-name">{employee.staffname}</div>
+            <div className="employee-list-item-role">{role?.name || "No role"}</div>
+          </div>
+          <div className="employee-list-item-meta">
+            <div className="employee-list-item-bus">{employee.busname}</div>
+            <div className="employee-status-container">
+              <div className="employee-status-label">
+                {employee.status === "active" ? "Active" : "Inactive"}
+              </div>
+              
+              {/* Show loading spinner instead of switch when switching */}
+              {isSwitching ? (
+                <div className="employee-switch-loading-indicator">
+                  <div className="employee-switch-spinner"></div>
                 </div>
-                <label className="employee-switch">
+              ) : (
+                <label className="employee-switch" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={employee.status === "active"}
-                    onChange={() => handleToggleStatus(employee.id, employee.status)}
+                    onChange={handleSwitchToggle}
+                    onClick={(e) => e.stopPropagation()}
                   />
                   <span className="employee-slider"></span>
                 </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="employee-list-item-footer">
-            <div className="employee-list-item-details">
-              <div className="employee-detail-row">
-                <span className="employee-detail-icon">📞</span>
-                <div className="employee-detail-text">{employee.phonenumber}</div>
-              </div>
-              <div className="employee-detail-row">
-                <span className="employee-detail-icon">🔑</span>
-                <div className="employee-detail-text">PIN: {employee.pin}</div>
-              </div>
-            </div>
-            <div className="employee-action-buttons">
-              <button 
-                className="employee-edit-button"
-                onClick={(e) => { e.stopPropagation(); handleEditEmployee(employee); }}
-              >
-                ✏️
-              </button>
-              <button 
-                className="employee-delete-button"
-                onClick={(e) => { e.stopPropagation(); handleDeleteEmployee(employee.id); }}
-              >
-                🗑️
-              </button>
+              )}
             </div>
           </div>
         </div>
+
+        <div className="employee-list-item-footer">
+          <div className="employee-list-item-details">
+            <div className="employee-detail-row">
+              <span className="employee-detail-icon">📞</span>
+              <div className="employee-detail-text">{employee.phonenumber}</div>
+            </div>
+            <div className="employee-detail-row">
+              <span className="employee-detail-icon">🔑</span>
+              <div className="employee-detail-text">PIN: {employee.pin}</div>
+            </div>
+          </div>
+          <div className="employee-action-buttons">
+            <button 
+              className="employee-edit-button"
+              onClick={handleEditClick}
+              disabled={isSwitching}
+            >
+              ✏️
+            </button>
+            <button 
+              className="employee-delete-button"
+              onClick={handleDeleteClick}
+              disabled={isSwitching}
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   const BusListItem = ({ bus }) => {
     return (

@@ -8,6 +8,11 @@ import TopToolbar from "../components/TopToolbar";
 import SideNav from "../components/SideNav";
 import "../css/SubscriptionPaymentScreen.css";
 
+// Import images directly
+import innbucksImage from "../assets/innbucks.png";
+import ecocashImage from "../assets/ecocash.png";
+import omariImage from "../assets/omari.png";
+
 function SubscriptionPaymentScreen() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -544,8 +549,6 @@ function SubscriptionPaymentScreen() {
     </div>
   );
 
-
-
   return (
     <div className={`app-container ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <TopToolbar
@@ -573,19 +576,19 @@ function SubscriptionPaymentScreen() {
                   <span className="subscription-back-icon">←</span>
                   Back
                 </button>
-                  {/* Refresh Button */}
-              <button 
-                className="subscription-refresh-button"
-                onClick={onRefresh}
-                disabled={isRefreshing}
-              >
-                {isRefreshing ? (
-                  <div className="subscription-refresh-spinner"></div>
-                ) : (
-                  <span className="subscription-refresh-icon">🔄</span>
-                )}
-                Refresh
-              </button>
+                {/* Refresh Button */}
+                <button 
+                  className="subscription-refresh-button"
+                  onClick={onRefresh}
+                  disabled={isRefreshing}
+                >
+                  {isRefreshing ? (
+                    <div className="subscription-refresh-spinner"></div>
+                  ) : (
+                    <span className="subscription-refresh-icon">🔄</span>
+                  )}
+                  Refresh
+                </button>
                 <div className="subscription-payment-title-container">
                   <div className="subscription-payment-title">Bus Subscription</div>
                 </div>
@@ -708,7 +711,7 @@ function SubscriptionPaymentScreen() {
                     onClick={() => handlePaymentTypeSelection("innbucks")}
                   >
                     <img 
-                      src="/assets/innbucks.png" 
+                      src={innbucksImage} 
                       alt="Innbucks"
                       className="subscription-payment-icon"
                     />
@@ -722,7 +725,7 @@ function SubscriptionPaymentScreen() {
                     onClick={() => handlePaymentTypeSelection("ecocash")}
                   >
                     <img 
-                      src="/assets/ecocash.png" 
+                      src={ecocashImage} 
                       alt="EcoCash"
                       className="subscription-payment-icon"
                     />
@@ -736,7 +739,7 @@ function SubscriptionPaymentScreen() {
                     onClick={() => handlePaymentTypeSelection("omari")}
                   >
                     <img 
-                      src="/assets/omari.png" 
+                      src={omariImage} 
                       alt="OMARI"
                       className="subscription-payment-icon"
                     />
@@ -863,8 +866,6 @@ function SubscriptionPaymentScreen() {
                   </button>
                 </div>
               </div>
-
-            
             </div>
           </div>
         </div>

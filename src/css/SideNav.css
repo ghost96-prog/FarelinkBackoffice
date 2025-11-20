@@ -281,7 +281,7 @@
 
 /* Ensure sub-menu items have proper spacing with smaller font */
 .sub-item {
-  padding: 6px 16px 6px 44px !important;
+  padding: 4px 4px  !important;
 }
 
 .settings-popup-item {
@@ -299,10 +299,10 @@
 }
 
 .sub-item {
-  margin: 0 !important;
+  margin-top: 10px !important;
   border-radius: 0 !important;
   border-left: 2px solid transparent;
-  padding-left: 44px !important;
+  padding-left: 34px !important;
   background: rgba(255, 255, 255, 0.5);
 }
 

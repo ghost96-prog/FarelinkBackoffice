@@ -1,0 +1,1148 @@
+/* TripTicketsScreen.css - Same styling as AllTripsScreen */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.trip-tickets-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.trip-tickets-main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.trip-tickets-main-content.trip-tickets-sidebar-collapsed {
+  margin-left: 0;
+}
+
+.trip-tickets-container {
+  flex: 1;
+  padding: 8px 16px;
+  background-color: #fff;
+  margin-top: 60px;
+  width: 100%;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important;
+  width: calc(100%) !important;
+}
+
+.trip-tickets-content {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px 12px;
+  min-height: calc(100vh - 120px);
+  margin: 0;
+  width: 100%;
+}
+
+/* Header Styles */
+.trip-tickets-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 15px;
+  padding: 4px 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.trip-tickets-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trip-tickets-back-button {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trip-tickets-back-button:hover {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.trip-tickets-trip-info {
+  flex: 1;
+}
+
+.trip-tickets-trip-title {
+  color: #1a5b7b;
+  font-size: 16px;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.trip-tickets-trip-subtitle {
+  color: #666;
+  font-size: 13px;
+  margin: 0;
+}
+
+.trip-tickets-header-spacer {
+  flex: 1;
+}
+
+/* Date Navigation */
+.trip-tickets-date-navigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trip-tickets-date-nav-button {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.trip-tickets-date-nav-button:hover:not(.trip-tickets-disabled) {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.trip-tickets-date-nav-button.trip-tickets-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trip-tickets-date-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+  color: #333;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+  min-width: 130px;
+  gap: 6px;
+}
+
+.trip-tickets-date-display:hover {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.trip-tickets-calendar-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* NEW: Two Column Layout */
+.trip-tickets-main-content-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+
+.trip-tickets-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trip-tickets-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Metrics Section - Updated for left column */
+.trip-tickets-metrics-section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  height: fit-content;
+}
+
+.trip-tickets-section-title {
+  color: #1a5b7b;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.trip-tickets-circular-metrics-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.trip-tickets-metric-column {
+  text-align: center;
+}
+
+.trip-tickets-metric-title {
+  color: #1a5b7b;
+  margin-bottom: 8px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.trip-tickets-circular-metric-card {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.trip-tickets-circular-metric-content {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s;
+}
+
+.trip-tickets-circular-metric-card:hover .trip-tickets-circular-metric-content {
+  transform: scale(1.05);
+}
+
+.trip-tickets-circular-metric-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  color: white;
+  font-size: 12px;
+}
+
+.trip-tickets-circular-metric-text {
+  text-align: center;
+}
+
+.trip-tickets-circular-metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.trip-tickets-circular-metric-subtitle {
+  font-size: 9px;
+  color: #666;
+}
+
+/* Export Controls - Moved to left column */
+.trip-tickets-export-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 0;
+  justify-content: center;
+}
+
+.trip-tickets-export-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.trip-tickets-export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.trip-tickets-csv-button {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+
+.trip-tickets-csv-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #1e9e8a);
+  transform: translateY(-1px);
+}
+
+.trip-tickets-pdf-button {
+  background: linear-gradient(135deg, #dc3545, #e5533f);
+  color: white;
+}
+
+.trip-tickets-pdf-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #d04232);
+  transform: translateY(-1px);
+}
+
+/* Tickets Section - Updated for right column */
+.trip-tickets-tickets-section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  height: fit-content;
+}
+
+.trip-tickets-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.trip-tickets-show-all-button {
+  background: rgba(26, 91, 123, 0.1);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #1a5b7b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.trip-tickets-show-all-button:hover {
+  background: rgba(26, 91, 123, 0.2);
+}
+
+/* Search Container */
+.trip-tickets-search-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+}
+
+.trip-tickets-search-icon {
+  color: #666;
+  margin-right: 10px;
+}
+
+.trip-tickets-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+}
+
+.trip-tickets-search-input::placeholder {
+  color: #999;
+}
+
+/* Tickets List */
+.trip-tickets-tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.trip-tickets-ticket-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  overflow: auto;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.trip-tickets-ticket-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.trip-tickets-ticket-item-content {
+  padding: 12px;
+  position: relative;
+}
+
+.trip-tickets-ticket-item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.trip-tickets-ticket-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(26, 91, 123, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.trip-tickets-ticket-info {
+  flex: 1;
+}
+
+.trip-tickets-ticket-id {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 1px;
+}
+
+.trip-tickets-ticket-details {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 1px;
+}
+
+.trip-tickets-route-info {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.trip-tickets-passenger-info {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+.trip-tickets-ticket-amount {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.trip-tickets-refunded-amount {
+  background: linear-gradient(135deg, #dc3545, #e5533f);
+  text-decoration: line-through;
+}
+
+.trip-tickets-ticket-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 46px;
+}
+
+.trip-tickets-ticket-stat {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.trip-tickets-currency-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 40%;
+  background: rgba(26, 91, 123, 0.1);
+  color: #1a5b7b;
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.trip-tickets-refunded-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f8d7da;
+  color: #721c24;
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Empty States */
+.trip-tickets-empty-state {
+  text-align: center;
+  padding: 30px 16px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e9ecef;
+}
+
+.trip-tickets-empty-icon {
+  font-size: 36px;
+  color: #ccc;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.trip-tickets-empty-state-text {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.trip-tickets-empty-state-subtext {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.trip-tickets-one-line-message {
+  text-align: center;
+  padding: 16px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 10px;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* Daily Sales Card - Now below both columns */
+.trip-tickets-daily-sales-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.trip-tickets-daily-sales-table-container {
+  overflow-x: auto;
+}
+
+.trip-tickets-daily-sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.trip-tickets-daily-sales-table th {
+  background: #1a5b7b;
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.trip-tickets-daily-sales-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 13px;
+}
+
+.trip-tickets-daily-sales-table tr:last-child td {
+  border-bottom: none;
+}
+
+.trip-tickets-daily-sales-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.trip-tickets-refunded-row {
+  background-color: #f8d7da;
+}
+
+.trip-tickets-refunded-row:hover {
+  background-color: #f5c6cb;
+}
+
+.trip-tickets-no-data {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 30px 16px;
+  font-size: 13px;
+}
+
+.trip-tickets-total-row {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.trip-tickets-total-row td {
+  border-top: 2px solid #e9ecef;
+}
+
+.trip-tickets-status-badge {
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.trip-tickets-status-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.trip-tickets-status-refunded {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Modal Styles */
+.trip-tickets-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
+}
+
+.trip-tickets-modal-container {
+  background: white;
+  border-radius: 16px;
+  overflow: auto;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  width: 100%;
+}
+
+.trip-tickets-modal-header {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trip-tickets-modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.trip-tickets-modal-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.trip-tickets-modal-title-container {
+  flex: 1;
+}
+
+.trip-tickets-modal-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.trip-tickets-modal-subtitle {
+  margin: 3px 0 0 0;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.trip-tickets-close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trip-tickets-modal-content {
+  padding: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Ticket Detail Modal */
+.trip-tickets-ticket-detail-modal .trip-tickets-modal-container {
+  max-width: 500px;
+}
+
+.trip-tickets-ticket-detail-content {
+  padding: 0;
+}
+
+.trip-tickets-detail-section {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.trip-tickets-detail-section:last-child {
+  border-bottom: none;
+}
+
+.trip-tickets-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.trip-tickets-section-label {
+  color: #1a5b7b;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.trip-tickets-refunded-label {
+  color: #721c24;
+}
+
+.trip-tickets-info-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.trip-tickets-refunded-card {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.trip-tickets-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.trip-tickets-info-row:last-child {
+  border-bottom: none;
+}
+
+.trip-tickets-label-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trip-tickets-info-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+}
+
+.trip-tickets-info-value {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.trip-tickets-discount-value {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.trip-tickets-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.trip-tickets-stat-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.trip-tickets-stat-card-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a5b7b;
+  margin: 6px 0;
+}
+
+.trip-tickets-stat-card-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+.trip-tickets-modal-actions {
+  padding: 16px;
+  border-top: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.trip-tickets-close-modal-button {
+  background: #1a5b7b;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.trip-tickets-close-modal-button:hover {
+  background: #276482;
+}
+
+/* Loading States */
+.trip-tickets-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+.trip-tickets-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1a5b7b;
+  border-radius: 50%;
+  animation: trip-tickets-spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes trip-tickets-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pagination Styles */
+.trip-tickets-pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  gap: 6px;
+}
+
+.trip-tickets-pagination-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #1a5b7b;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  font-size: 13px;
+}
+
+.trip-tickets-pagination-button:hover:not(:disabled) {
+  background: #276482;
+}
+
+.trip-tickets-pagination-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.trip-tickets-page-numbers {
+  display: flex;
+  gap: 3px;
+}
+
+.trip-tickets-page-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #f0f0f0;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.trip-tickets-page-number:hover {
+  background: #e0e0e0;
+}
+
+.trip-tickets-current-page-number {
+  background: #1a5b7b;
+  color: white;
+}
+
+.trip-tickets-current-page-number:hover {
+  background: #276482;
+}
+
+/* ==================== */
+/* FIXED MEDIA QUERIES */
+/* ==================== */
+
+/* Tablet and larger */
+@media (min-width: 769px) {
+  .trip-tickets-container {
+    padding: 16px 20px;
+  }
+
+  .trip-tickets-content {
+    padding: 16px;
+  }
+
+  .trip-tickets-circular-metric-card {
+    width: 85px;
+    height: 85px;
+  }
+
+  .trip-tickets-export-controls {
+    flex-direction: row;
+  }
+
+  .trip-tickets-export-button {
+    min-width: 110px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .trip-tickets-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .trip-tickets-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .trip-tickets-container {
+    padding: 16px 40px;
+  }
+
+  .trip-tickets-content {
+    padding: 24px 32px;
+  }
+
+  .trip-tickets-circular-metric-card {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .trip-tickets-container {
+    padding: 12px;
+    margin-top: 60px;
+    width: 100%;
+  }
+
+  .trip-tickets-content {
+    padding: 12px;
+    border-radius: 10px;
+    min-height: calc(100vh - 100px);
+  }
+
+  .trip-tickets-header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .trip-tickets-header-content {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  /* Mobile layout - single column */
+  .trip-tickets-main-content-area {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .trip-tickets-left-column,
+  .trip-tickets-right-column {
+    gap: 12px;
+  }
+
+  .trip-tickets-circular-metrics-container {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 8px;
+  }
+
+  .trip-tickets-metric-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .trip-tickets-circular-metric-card {
+    width: 80px;
+    height: 80px;
+  }
+
+  .trip-tickets-export-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .trip-tickets-export-button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .trip-tickets-ticket-stats {
+    margin-left: 0;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .trip-tickets-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .trip-tickets-modal-container {
+    margin: 8px;
+    max-width: none;
+    width: calc(100% - 16px);
+  }
+
+  .trip-tickets-daily-sales-table {
+    font-size: 12px;
+  }
+
+  .trip-tickets-daily-sales-table th,
+  .trip-tickets-daily-sales-table td {
+    padding: 8px 10px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .trip-tickets-container {
+    padding: 8px;
+  }
+
+  .trip-tickets-content {
+    padding: 10px;
+  }
+
+  .trip-tickets-circular-metric-card {
+    width: 70px;
+    height: 70px;
+  }
+
+  .trip-tickets-circular-metric-value {
+    font-size: 12px;
+  }
+
+  .trip-tickets-circular-metric-subtitle {
+    font-size: 8px;
+  }
+
+  .trip-tickets-export-controls {
+    flex-direction: column;
+  }
+
+  .trip-tickets-export-button {
+    width: 100%;
+  }
+
+  .trip-tickets-pagination-container {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .trip-tickets-pagination-button,
+  .trip-tickets-page-number {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}

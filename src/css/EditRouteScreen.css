@@ -1,0 +1,697 @@
+/* EditRouteScreen.css - Adjusted Font Sizes, Margins, and Padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.edit-route-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  background: #fff;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+.edit-route-container {
+  flex: 1;
+  padding: 12px 20px; /* Reduced top padding */
+  background-color: #fff;
+  margin-top: 70px; /* Reduced margin top */
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important; /* Reduced right margin */
+  width: calc(100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  background-color: #fff;
+  border-radius: 12px; /* Slightly smaller radius */
+}
+
+.edit-route-content {
+  padding: 12px 16px; /* Reduced padding */
+  min-height: calc(100vh - 120px); /* Adjusted height */
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header Styles - Adjusted */
+.edit-route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced margin */
+  gap: 16px; /* Reduced gap */
+  padding: 12px 16px; /* Adjusted padding */
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #e9ecef;
+}
+
+.edit-route-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+  flex: 1;
+}
+
+.edit-route-back-button {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 10px; /* Smaller padding */
+  border-radius: 16px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.edit-route-back-button:hover {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.edit-route-header-title-container {
+  flex: 1;
+}
+
+.edit-route-header-title {
+  color: #1a5b7b;
+  font-size: 20px; /* Smaller font */
+  margin-bottom: 2px; /* Reduced margin */
+}
+
+.edit-route-header-subtitle {
+  color: #666;
+  font-size: 13px; /* Smaller font */
+  margin: 0;
+}
+
+/* Form Container - Adjusted */
+.edit-route-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Reduced gap */
+  margin-bottom: 70px; /* Reduced margin */
+}
+
+.edit-route-section {
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  padding: 16px; /* Reduced padding */
+  border: 1px solid #e9ecef;
+}
+
+.edit-route-section-title {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.edit-route-section-subtitle {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.edit-route-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Reduced gap */
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.edit-route-input-label {
+  font-size: 13px; /* Smaller font */
+  font-weight: 500;
+  color: #333;
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+}
+
+.edit-route-text-input {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px 12px; /* Reduced padding */
+  font-size: 14px; /* Smaller font */
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.edit-route-text-input:focus {
+  border-color: #1a5b7b;
+}
+
+.edit-route-select-button {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px 12px; /* Reduced padding */
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.edit-route-select-button:hover {
+  border-color: #1a5b7b;
+}
+
+.edit-route-select-button-text {
+  flex: 1;
+  font-size: 14px; /* Smaller font */
+  color: #999;
+  text-align: left;
+  margin-left: 6px; /* Reduced margin */
+}
+
+.edit-route-select-button-text-selected {
+  color: #333;
+}
+
+.edit-route-input-icon {
+  margin-right: 6px; /* Reduced margin */
+  font-size: 14px; /* Smaller icon */
+}
+
+.edit-route-chevron-down {
+  color: #666;
+  margin-left: 6px; /* Reduced margin */
+  font-size: 12px; /* Smaller icon */
+}
+
+.edit-route-selected-bus-info {
+  font-size: 11px; /* Smaller font */
+  color: #666;
+  margin-top: 2px; /* Reduced margin */
+  font-style: italic;
+}
+
+/* Add Station Form - Adjusted */
+.edit-route-add-station-form {
+  background: white;
+  border-radius: 10px; /* Smaller radius */
+  padding: 12px; /* Reduced padding */
+  margin-bottom: 12px; /* Reduced margin */
+  border: 1px solid #e9ecef;
+}
+
+.edit-route-station-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px; /* Reduced gap */
+}
+
+.edit-route-add-station-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a5b7b;
+  border: none;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px; /* Reduced padding */
+  margin-top: 6px; /* Reduced margin */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-route-add-station-button:hover {
+  background: #276482;
+}
+
+.edit-route-add-station-button-text {
+  color: white;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  margin-left: 6px; /* Reduced margin */
+}
+
+.edit-route-add-icon {
+  color: white;
+  font-size: 14px; /* Smaller icon */
+}
+
+/* Stations List - Adjusted */
+.edit-route-stations-list-container {
+  margin-top: 6px; /* Reduced margin */
+}
+
+.edit-route-stations-list-title {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px; /* Reduced margin */
+}
+
+.edit-route-stations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Reduced gap */
+}
+
+/* Station Card - Adjusted */
+.edit-route-station-card {
+  margin-bottom: 6px; /* Reduced margin */
+  border-radius: 10px; /* Smaller radius */
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  background: white;
+}
+
+.edit-route-station-content {
+  padding: 12px; /* Reduced padding */
+}
+
+.edit-route-station-header {
+  display: flex;
+  align-items: center;
+}
+
+.edit-route-station-number {
+  width: 28px; /* Smaller number */
+  height: 28px;
+  border-radius: 14px;
+  background: #1a5b7b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Reduced margin */
+}
+
+.edit-route-station-number-text {
+  color: white;
+  font-size: 13px; /* Smaller font */
+  font-weight: 600;
+}
+
+.edit-route-station-name {
+  flex: 1;
+  font-size: 14px; /* Smaller font */
+  color: #333;
+}
+
+.edit-route-delete-station-button {
+  padding: 6px; /* Reduced padding */
+  border-radius: 6px; /* Smaller radius */
+  background: rgba(220, 53, 69, 0.1);
+  border: none;
+  cursor: pointer;
+  font-size: 14px; /* Smaller icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-route-delete-station-button:hover {
+  background: rgba(220, 53, 69, 0.2);
+}
+
+/* Footer Buttons - Adjusted */
+.edit-route-footer {
+  /* position: fixed; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px; /* Reduced padding */
+  background: white;
+  border-top: 1px solid #e9ecef;
+  z-index: 100;
+}
+
+.edit-route-cancel-button {
+  padding: 12px 20px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #6c757d;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+}
+
+.edit-route-cancel-button:hover {
+  background: #f8f9fa;
+}
+
+.edit-route-create-button {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  background: #28a745;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px; /* Smaller font */
+  gap: 6px; /* Reduced gap */
+  transition: background-color 0.2s;
+}
+
+.edit-route-create-button:hover:not(.edit-route-create-button-disabled) {
+  background: #218838;
+}
+
+.edit-route-create-button-disabled {
+  background: #ccc;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-route-create-button-text {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+}
+
+.edit-route-check-icon {
+  font-size: 14px; /* Smaller icon */
+}
+
+.edit-route-loading-spinner {
+  width: 16px; /* Smaller spinner */
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: edit-route-spin 1s linear infinite;
+}
+
+@keyframes edit-route-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modal Styles - Adjusted */
+.edit-route-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px; /* Reduced padding */
+}
+
+.edit-route-modal-card {
+  background: white;
+  border-radius: 16px; /* Smaller radius */
+  overflow: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  max-width: 480px; /* Slightly smaller */
+  width: 100%;
+  max-height: 90vh;
+  transition: all 0.3s ease;
+}
+
+.edit-route-modal-header {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: white;
+  padding: 16px; /* Reduced padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-route-modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced gap */
+  width: 100%;
+}
+
+.edit-route-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced gap */
+  flex: 1;
+}
+
+.edit-route-modal-icon {
+  width: 36px; /* Smaller icon */
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* Smaller icon */
+}
+
+.edit-route-modal-title-container {
+  flex: 1;
+}
+
+.edit-route-modal-title {
+  margin: 0;
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+}
+
+.edit-route-modal-subtitle {
+  margin: 3px 0 0 0; /* Reduced margin */
+  font-size: 11px; /* Smaller font */
+  opacity: 0.8;
+}
+
+.edit-route-close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px; /* Reduced padding */
+  border-radius: 50%;
+  cursor: pointer;
+  width: 30px; /* Smaller button */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* Smaller icon */
+}
+
+.edit-route-modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.edit-route-modal-list-container {
+  padding: 12px; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Reduced gap */
+}
+
+/* Bus List Styles - Adjusted */
+.edit-route-bus-list-item {
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-route-bus-list-item:hover {
+  border-color: #1a5b7b;
+}
+
+.edit-route-bus-list-item-selected {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.05);
+  border-left-width: 3px; /* Thinner border */
+  border-left-color: #28a745;
+}
+
+.edit-route-bus-list-content {
+  display: flex;
+  align-items: center;
+  padding: 12px; /* Reduced padding */
+}
+
+.edit-route-bus-list-icon {
+  width: 36px; /* Smaller icon */
+  height: 36px;
+  border-radius: 18px;
+  background: rgba(26, 91, 123, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px; /* Reduced margin */
+  font-size: 16px; /* Smaller icon */
+}
+
+.edit-route-bus-list-info {
+  flex: 1;
+}
+
+.edit-route-bus-list-name {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 2px; /* Reduced margin */
+}
+
+.edit-route-bus-list-plate {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+}
+
+.edit-route-bus-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.edit-route-bus-list-conductor {
+  font-size: 11px; /* Smaller font */
+  color: #888;
+  margin-right: 6px; /* Reduced margin */
+}
+
+.edit-route-checkmark {
+  color: #28a745;
+  font-size: 16px; /* Smaller icon */
+  font-weight: bold;
+}
+
+.edit-route-chevron {
+  color: #ccc;
+  font-size: 14px; /* Smaller icon */
+  font-weight: bold;
+}
+
+.edit-route-selected-buses-header {
+  padding: 12px; /* Reduced padding */
+  background: #e8f5e8;
+  border-bottom: 1px solid #28a745;
+}
+
+.edit-route-selected-buses-text {
+  font-size: 13px; /* Smaller font */
+  font-weight: 600;
+  color: #28a745;
+}
+
+.edit-route-bus-modal-footer {
+  padding: 12px; /* Reduced padding */
+  border-top: 1px solid #e9ecef;
+}
+
+.edit-route-done-button {
+  background: #1a5b7b;
+  color: white;
+  border: none;
+  padding: 10px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px; /* Smaller font */
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.edit-route-done-button:hover {
+  background: #276482;
+}
+
+/* Responsive Design - Adjusted */
+@media (max-width: 768px) {
+  .edit-route-container {
+    padding: 12px; /* Adjusted padding */
+    margin-top: 60px; /* Reduced margin */
+    width: 100%;
+  }
+
+  .edit-route-content {
+    padding: 12px; /* Reduced padding */
+    border-radius: 10px; /* Smaller radius */
+    min-height: calc(100vh - 100px); /* Adjusted height */
+    max-width: 95%;
+  }
+
+  .edit-route-header {
+    flex-direction: column;
+    gap: 12px; /* Reduced gap */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .edit-route-header-content {
+    flex-direction: row;
+    width: 100%;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .edit-route-footer {
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .edit-route-cancel-button,
+  .edit-route-create-button {
+    width: 100%;
+    padding: 10px 16px; /* Reduced padding */
+  }
+
+  .edit-route-modal-card {
+    margin: 8px; /* Reduced margin */
+    max-width: none;
+    width: calc(100% - 16px);
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-route-container {
+    padding: 8px; /* Reduced padding */
+  }
+
+  .edit-route-content {
+    padding: 10px; /* Reduced padding */
+    max-width: 100%;
+  }
+
+  .edit-route-station-input-row {
+    flex-direction: column;
+    gap: 8px; /* Reduced gap */
+  }
+}
+
+/* Desktop adjustments for sidebar */
+@media (min-width: 1025px) {
+  .edit-route-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .edit-route-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}

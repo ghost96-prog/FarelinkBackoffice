@@ -1,0 +1,1108 @@
+/* BusDashboardScreen.css - Complete Fixed Version */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.bus-dashboard-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.bus-dashboard-main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.bus-dashboard-main-content.bus-dashboard-sidebar-collapsed {
+  margin-left: 0;
+}
+
+.bus-dashboard-container {
+  flex: 1;
+  padding: 8px 16px;
+  background-color: #fff;
+  margin-top: 60px;
+  width: 100%;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important;
+  width: calc(100%) !important;
+}
+
+.bus-dashboard-content {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px 12px;
+  min-height: calc(100vh - 120px);
+  margin: 0;
+  width: 100%;
+}
+
+/* Header Styles */
+.bus-dashboard-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 15px;
+  padding: 4px 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.bus-dashboard-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bus-dashboard-back-button {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bus-dashboard-back-button:hover {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.bus-dashboard-header-title-container {
+  flex: 1;
+}
+
+.bus-dashboard-header-title {
+  color: #1a5b7b;
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+.bus-dashboard-header-subtitle {
+  color: #666;
+  font-size: 13px;
+  margin: 0;
+}
+
+.bus-dashboard-header-spacer {
+  flex: 1;
+}
+
+/* Date Navigation */
+.bus-dashboard-date-navigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bus-dashboard-date-nav-button {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.bus-dashboard-date-nav-button:hover:not(.bus-dashboard-disabled) {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.bus-dashboard-date-nav-button.bus-dashboard-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bus-dashboard-date-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+  color: #333;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+  min-width: 130px;
+  gap: 6px;
+}
+
+.bus-dashboard-date-display:hover {
+  border-color: #1a5b7b;
+  color: #1a5b7b;
+}
+
+.bus-dashboard-calendar-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* NEW: Two Column Layout */
+.bus-dashboard-main-content-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+
+.bus-dashboard-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bus-dashboard-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Metrics Section - Updated for left column */
+.bus-dashboard-metrics-section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  height: fit-content;
+}
+
+.bus-dashboard-section-title {
+  color: #1a5b7b;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.bus-dashboard-circular-metrics-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.bus-dashboard-metric-column {
+  text-align: center;
+}
+
+.bus-dashboard-metric-title {
+  color: #1a5b7b;
+  margin-bottom: 8px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.bus-dashboard-circular-metric-card {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.bus-dashboard-circular-metric-content {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s;
+}
+
+.bus-dashboard-circular-metric-card:hover .bus-dashboard-circular-metric-content {
+  transform: scale(1.05);
+}
+
+.bus-dashboard-circular-metric-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  color: white;
+  font-size: 12px;
+}
+
+.bus-dashboard-circular-metric-text {
+  text-align: center;
+}
+
+.bus-dashboard-circular-metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.bus-dashboard-circular-metric-subtitle {
+  font-size: 9px;
+  color: #666;
+}
+
+/* Export Controls - Moved to left column */
+.bus-dashboard-export-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 0;
+  justify-content: center;
+}
+
+.bus-dashboard-export-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.bus-dashboard-export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bus-dashboard-csv-button {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+
+.bus-dashboard-csv-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #1e9e8a);
+  transform: translateY(-1px);
+}
+
+.bus-dashboard-pdf-button {
+  background: linear-gradient(135deg, #dc3545, #e5533f);
+  color: white;
+}
+
+.bus-dashboard-pdf-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #d04232);
+  transform: translateY(-1px);
+}
+
+/* Employee Sales Section - Updated for right column */
+.bus-dashboard-employee-sales-section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  height: fit-content;
+}
+
+.bus-dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Trips Section - Updated for right column */
+.bus-dashboard-trips-section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  height: fit-content;
+}
+
+.bus-dashboard-show-all-button {
+  background: rgba(26, 91, 123, 0.1);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #1a5b7b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.bus-dashboard-show-all-button:hover {
+  background: rgba(26, 91, 123, 0.2);
+}
+
+/* Search Container */
+.bus-dashboard-search-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+}
+
+.bus-dashboard-search-icon {
+  color: #666;
+  margin-right: 10px;
+}
+
+.bus-dashboard-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+}
+
+.bus-dashboard-search-input::placeholder {
+  color: #999;
+}
+
+/* Trips List */
+.bus-dashboard-trips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.bus-dashboard-trip-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  overflow: auto;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.bus-dashboard-trip-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bus-dashboard-trip-item-content {
+  padding: 12px;
+  position: relative;
+}
+
+.bus-dashboard-trip-item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.bus-dashboard-trip-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(26, 91, 123, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.bus-dashboard-trip-info {
+  flex: 1;
+}
+
+.bus-dashboard-trip-id {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 1px;
+}
+
+.bus-dashboard-trip-details {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 1px;
+}
+
+.bus-dashboard-conductor-name {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+.bus-dashboard-trip-amount {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.bus-dashboard-employee-amount {
+  background: linear-gradient(135deg, #17a2b8, #6f42c1);
+}
+
+.bus-dashboard-trip-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 46px;
+}
+
+.bus-dashboard-trip-stat {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bus-dashboard-currency-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(26, 91, 123, 0.1);
+  color: #1a5b7b;
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bus-dashboard-currency-badge2 {
+  position: absolute;
+  bottom: 12px;
+  left: 55%;
+  background: rgba(26, 91, 123, 0.1);
+  color: #1a5b7b;
+  padding: 3px 6px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Employee Sales Item */
+.bus-dashboard-employee-sales-item {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+/* Empty States */
+.bus-dashboard-empty-state {
+  text-align: center;
+  padding: 30px 16px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e9ecef;
+}
+
+.bus-dashboard-empty-icon {
+  font-size: 36px;
+  color: #ccc;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.bus-dashboard-empty-state-text {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.bus-dashboard-empty-state-subtext {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.bus-dashboard-one-line-message {
+  text-align: center;
+  padding: 16px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 10px;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* Daily Sales Card - Now below both columns */
+.bus-dashboard-daily-sales-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e9ecef;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.bus-dashboard-daily-sales-table-container {
+  overflow-x: auto;
+}
+
+.bus-dashboard-daily-sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.bus-dashboard-daily-sales-table th {
+  background: #1a5b7b;
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.bus-dashboard-daily-sales-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 13px;
+}
+
+.bus-dashboard-daily-sales-table tr:last-child td {
+  border-bottom: none;
+}
+
+.bus-dashboard-daily-sales-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.bus-dashboard-no-data {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 30px 16px;
+  font-size: 13px;
+}
+
+.bus-dashboard-total-row {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.bus-dashboard-total-row td {
+  border-top: 2px solid #e9ecef;
+}
+
+/* Modal Styles */
+.bus-dashboard-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
+}
+
+.bus-dashboard-modal-container {
+  background: white;
+  border-radius: 16px;
+  overflow: auto;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  width: 100%;
+}
+
+.bus-dashboard-modal-header {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bus-dashboard-modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bus-dashboard-modal-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.bus-dashboard-modal-title-container {
+  flex: 1;
+}
+
+.bus-dashboard-modal-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.bus-dashboard-modal-subtitle {
+  margin: 3px 0 0 0;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.bus-dashboard-close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-dashboard-modal-content {
+  padding: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* Trip Detail Modal */
+.bus-dashboard-trip-detail-modal .bus-dashboard-modal-container {
+  max-width: 500px;
+}
+
+.bus-dashboard-trip-detail-content {
+  padding: 0;
+}
+
+.bus-dashboard-detail-section {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.bus-dashboard-detail-section:last-child {
+  border-bottom: none;
+}
+
+.bus-dashboard-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.bus-dashboard-section-label {
+  color: #1a5b7b;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.bus-dashboard-info-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.bus-dashboard-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.bus-dashboard-info-row:last-child {
+  border-bottom: none;
+}
+
+.bus-dashboard-label-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bus-dashboard-info-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+}
+
+.bus-dashboard-info-value {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.bus-dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.bus-dashboard-stat-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.bus-dashboard-stat-card-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a5b7b;
+  margin: 6px 0;
+}
+
+.bus-dashboard-stat-card-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+.bus-dashboard-modal-actions {
+  padding: 16px;
+  border-top: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.bus-dashboard-close-modal-button {
+  background: #1a5b7b;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.bus-dashboard-close-modal-button:hover {
+  background: #276482;
+}
+
+/* Loading States */
+.bus-dashboard-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+.bus-dashboard-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1a5b7b;
+  border-radius: 50%;
+  animation: bus-dashboard-spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes bus-dashboard-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==================== */
+/* FIXED MEDIA QUERIES */
+/* ==================== */
+
+/* Mobile First - Default styles above are for mobile */
+
+/* Tablet and larger */
+@media (min-width: 769px) {
+  .bus-dashboard-container {
+    padding: 16px 20px;
+  }
+
+  .bus-dashboard-content {
+    padding: 16px;
+  }
+
+  .bus-dashboard-circular-metric-card {
+    width: 85px;
+    height: 85px;
+  }
+
+  .bus-dashboard-export-controls {
+    flex-direction: row;
+  }
+
+  .bus-dashboard-export-button {
+    min-width: 110px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .bus-dashboard-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .bus-dashboard-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .bus-dashboard-container {
+    padding: 16px 40px;
+  }
+
+  .bus-dashboard-content {
+    padding: 24px 32px;
+  }
+
+  .bus-dashboard-circular-metric-card {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .bus-dashboard-container {
+    padding: 12px;
+    margin-top: 60px;
+    width: 100%;
+  }
+
+  .bus-dashboard-content {
+    padding: 12px;
+    border-radius: 10px;
+    min-height: calc(100vh - 100px);
+  }
+
+  .bus-dashboard-header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .bus-dashboard-header-content {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  /* Mobile layout - single column */
+  .bus-dashboard-main-content-area {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .bus-dashboard-left-column,
+  .bus-dashboard-right-column {
+    gap: 12px;
+  }
+
+  .bus-dashboard-circular-metrics-container {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 8px;
+  }
+
+  .bus-dashboard-metric-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bus-dashboard-circular-metric-card {
+    width: 80px;
+    height: 80px;
+  }
+
+  .bus-dashboard-export-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .bus-dashboard-export-button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .bus-dashboard-trip-stats {
+    margin-left: 0;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .bus-dashboard-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .bus-dashboard-modal-container {
+    margin: 8px;
+    max-width: none;
+    width: calc(100% - 16px);
+  }
+
+  .bus-dashboard-daily-sales-table {
+    font-size: 12px;
+  }
+
+  .bus-dashboard-daily-sales-table th,
+  .bus-dashboard-daily-sales-table td {
+    padding: 8px 10px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .bus-dashboard-container {
+    padding: 8px;
+  }
+
+  .bus-dashboard-content {
+    padding: 10px;
+  }
+
+  .bus-dashboard-circular-metric-card {
+    width: 70px;
+    height: 70px;
+  }
+
+  .bus-dashboard-circular-metric-value {
+    font-size: 12px;
+  }
+
+  .bus-dashboard-circular-metric-subtitle {
+    font-size: 8px;
+  }
+
+  .bus-dashboard-export-controls {
+    flex-direction: column;
+  }
+
+  .bus-dashboard-export-button {
+    width: 100%;
+  }
+}
+
+/* Add these styles to your BusDashboardScreen.css */
+.bus-dashboard-bus-selector-wrapper {
+  position: relative;
+  margin-left: 15px;
+}
+
+.bus-dashboard-bus-selector {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 180px;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.bus-dashboard-bus-selector:hover {
+  border-color: #1a5b7b;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.bus-dashboard-bus-selector-text {
+  font-weight: 500;
+  color: #333;
+  font-size: 13px;
+}
+
+.bus-dashboard-dropdown-arrow {
+  color: #666;
+  transition: transform 0.2s ease;
+  font-size: 11px;
+}
+
+.bus-dashboard-bus-selector:hover .bus-dashboard-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.bus-dashboard-bus-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 3px;
+}
+
+.bus-dashboard-bus-dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  font-size: 13px;
+}
+
+.bus-dashboard-bus-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.bus-dashboard-bus-dropdown-item:last-child {
+  border-bottom: none;
+}

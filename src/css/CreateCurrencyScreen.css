@@ -1,0 +1,1011 @@
+/* CreateCurrencyScreen.css - Adjusted Font Sizes, Margins, and Padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.currency-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  background: #fff;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+.currency-container {
+  flex: 1;
+  padding: 12px 20px; /* Reduced top padding */
+  background-color: #fff;
+  margin-top: 70px; /* Reduced margin top */
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important; /* Reduced right margin */
+  width: calc(100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  background-color: #fff;
+  border-radius: 12px; /* Slightly smaller radius */
+}
+
+.currency-content {
+  padding: 12px 16px; /* Reduced padding */
+  min-height: calc(100vh - 120px); /* Adjusted height */
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header Styles - Adjusted */
+.currency-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced margin */
+  gap: 16px; /* Reduced gap */
+  padding: 12px 16px; /* Adjusted padding */
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  border-radius: 10px; /* Smaller radius */
+  color: white;
+}
+
+.currency-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+  flex: 1;
+}
+
+.currency-back-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px 10px; /* Smaller padding */
+  border-radius: 16px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.currency-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.currency-header-title-container {
+  flex: 1;
+}
+
+.currency-header-title {
+  font-size: 20px; /* Smaller font */
+  font-weight: 600;
+  margin-bottom: 2px; /* Reduced margin */
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+}
+
+.currency-header-subtitle {
+  font-size: 13px; /* Smaller font */
+  opacity: 0.9;
+}
+
+/* Scroll Content - Adjusted */
+.currency-scroll-content {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-bottom: 16px; /* Reduced padding */
+}
+
+/* Section Styles - Adjusted */
+.currency-section {
+  background: white;
+  border-radius: 12px; /* Smaller radius */
+  padding: 16px; /* Reduced padding */
+  margin-bottom: 12px; /* Reduced margin */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  border: 1px solid #e9ecef;
+}
+
+.currency-section-title {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.currency-section-subtitle {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  margin-bottom: 12px; /* Reduced margin */
+  line-height: 1.4; /* Reduced line height */
+}
+
+/* Currency List - Adjusted */
+.currency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduced gap */
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.currency-item:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* Softer shadow */
+}
+
+.currency-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.currency-info-default {
+  cursor: default;
+}
+
+.currency-symbol-container {
+  width: 44px; /* Smaller icon */
+  height: 44px;
+  border-radius: 22px;
+  background: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px; /* Reduced margin */
+}
+
+.currency-symbol {
+  font-size: 15px; /* Smaller font */
+  font-weight: 600;
+  color: white;
+}
+
+.currency-details {
+  flex: 1;
+}
+
+.currency-name {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px; /* Reduced margin */
+}
+
+.currency-rate {
+  font-size: 13px; /* Smaller font */
+  color: #7f8c8d;
+  margin-bottom: 4px; /* Reduced margin */
+}
+
+.currency-code {
+  font-size: 11px; /* Smaller font */
+  color: #999;
+  font-style: italic;
+}
+
+.currency-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.currency-edit-button,
+.currency-delete-button {
+  padding: 6px; /* Reduced padding */
+  border-radius: 6px; /* Smaller radius */
+  background: #ecf0f1;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* Smaller icons */
+}
+
+.currency-edit-button:hover {
+  background: #d5dbdb;
+}
+
+.currency-delete-button:hover {
+  background: #fadbd8;
+}
+
+.currency-default-badge {
+  padding: 3px 6px; /* Reduced padding */
+  border-radius: 8px; /* Smaller radius */
+  font-size: 9px; /* Smaller font */
+  font-weight: 600;
+  color: white;
+}
+
+.default-badge {
+  background: #e74c3c;
+}
+
+.notedefault-badge {
+  background: transparent;
+}
+
+/* Base Currency Section - Adjusted */
+.currency-base-section {
+  background: white;
+  border-radius: 12px; /* Smaller radius */
+  padding: 16px; /* Reduced padding */
+  margin-bottom: 12px; /* Reduced margin */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  border: 1px solid #e9ecef;
+}
+
+.currency-base-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  border: none;
+}
+
+.currency-base-selector:hover {
+  border-color: #1a5b7b;
+  background: #e9ecef;
+}
+
+.currency-base-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.currency-base-symbol-container {
+  width: 36px; /* Smaller icon */
+  height: 36px;
+  border-radius: 18px;
+  background: rgba(26, 91, 123, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Reduced margin */
+}
+
+.currency-base-symbol {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+}
+
+.currency-base-details {
+  flex: 1;
+}
+
+.currency-base-name {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1px; /* Reduced margin */
+}
+
+.currency-base-code {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+}
+
+.currency-chevron-forward {
+  color: #666;
+  font-size: 16px; /* Smaller icon */
+}
+
+.currency-no-currencies-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffbf0;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #ffeaa7;
+}
+
+.currency-warning-icon {
+  margin-right: 6px; /* Reduced margin */
+  font-size: 16px; /* Smaller icon */
+}
+
+.currency-no-currencies-text {
+  font-size: 13px; /* Smaller font */
+  color: #f39c12;
+}
+
+/* Empty State - Adjusted */
+.currency-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px; /* Reduced padding */
+  color: #666;
+  text-align: center;
+}
+
+.currency-empty-icon {
+  font-size: 48px; /* Smaller icon */
+  color: #ccc;
+  margin-bottom: 16px; /* Reduced margin */
+}
+
+.currency-empty-state-text {
+  font-size: 16px; /* Smaller font */
+  color: #bdc3c7;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.currency-empty-state-subtext {
+  font-size: 13px; /* Smaller font */
+  color: #bdc3c7;
+  line-height: 1.4; /* Reduced line height */
+}
+
+.currency-loading-text {
+  font-size: 14px; /* Smaller font */
+  color: #666;
+}
+
+/* Floating Action Button - Adjusted */
+.currency-fab {
+  /* position: fixed; */
+  right: 30px;
+  bottom: 30px;
+  width: 50px; /* Smaller button */
+  height: 50px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 24px; /* Smaller icon */
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.currency-fab:hover {
+  transform: translateY(-1px); /* Less movement */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35); /* Softer shadow */
+}
+
+/* Modal Styles - Adjusted */
+.currency-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px; /* Reduced padding */
+}
+
+.currency-modal-container,
+.currency-symbol-modal-container,
+.currency-base-modal-container {
+  background: white;
+  border-radius: 16px; /* Smaller radius */
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  max-width: 480px; /* Slightly smaller */
+  width: 100%;
+  max-height: 80vh;
+  transition: all 0.3s ease;
+}
+
+.currency-symbol-modal-container {
+  max-height: 70vh;
+}
+
+.currency-base-modal-container {
+  max-height: 60vh;
+}
+
+.currency-modal-header {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: white;
+  padding: 16px; /* Reduced padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.currency-modal-title {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+}
+
+.currency-close-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px; /* Reduced padding */
+  border-radius: 50%;
+  cursor: pointer;
+  width: 30px; /* Smaller button */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 14px; /* Smaller icon */
+}
+
+.currency-close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.currency-modal-content {
+  padding: 16px; /* Reduced padding */
+}
+
+.currency-modal-description {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  text-align: center;
+  margin-bottom: 12px; /* Reduced margin */
+  line-height: 1.4; /* Reduced line height */
+}
+
+/* Symbol Selector - Adjusted */
+.currency-symbol-selector {
+  margin-bottom: 16px; /* Reduced margin */
+  cursor: pointer;
+}
+
+.currency-symbol-selector-label {
+  font-size: 13px; /* Smaller font */
+  color: #7f8c8d;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.currency-symbol-selector-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px; /* Reduced padding */
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.currency-symbol-selector-value:hover {
+  border-color: #1a5b7b;
+}
+
+.currency-selected-symbol-text {
+  font-size: 14px; /* Smaller font */
+  color: #2c3e50;
+}
+
+.currency-chevron-down {
+  color: #666;
+  font-size: 14px; /* Smaller icon */
+}
+
+/* Input Styles - Adjusted */
+.currency-input-container {
+  margin-bottom: 16px; /* Reduced margin */
+}
+
+.currency-input-label {
+  font-size: 13px; /* Smaller font */
+  color: #7f8c8d;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.currency-text-input {
+  width: 100%;
+  padding: 12px; /* Reduced padding */
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #e9ecef;
+  font-size: 14px; /* Smaller font */
+  color: #2c3e50;
+  transition: all 0.2s;
+}
+
+.currency-text-input:focus {
+  outline: none;
+  border-color: #1a5b7b;
+}
+
+.currency-text-input::placeholder {
+  color: #999;
+  font-size: 13px; /* Smaller placeholder */
+}
+
+/* Modal Actions - Adjusted */
+.currency-modal-actions {
+  display: flex;
+  gap: 10px; /* Reduced gap */
+}
+
+.currency-cancel-button {
+  flex: 1;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  background: #ecf0f1;
+  border: none;
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all 0.2s;
+}
+
+.currency-cancel-button:hover {
+  background: #d5dbdb;
+}
+
+.currency-create-button {
+  flex: 1;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  border: none;
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s;
+}
+
+.currency-create-button:hover:not(.currency-create-button-disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(46, 204, 113, 0.25); /* Reduced shadow */
+}
+
+.currency-create-button-disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Symbol Modal Content - Adjusted */
+.currency-symbol-modal-content {
+  padding: 16px; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 60vh;
+}
+
+.currency-search-container {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px 12px; /* Reduced padding */
+  margin-bottom: 12px; /* Reduced margin */
+  border: 1px solid #e9ecef;
+}
+
+.currency-search-icon {
+  margin-right: 8px; /* Reduced margin */
+  color: #666;
+  font-size: 14px; /* Smaller icon */
+}
+
+.currency-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px; /* Smaller font */
+  color: #2c3e50;
+  outline: none;
+}
+
+.currency-search-input::placeholder {
+  color: #999;
+  font-size: 13px; /* Smaller placeholder */
+}
+
+.currency-clear-search-button {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* Smaller icon */
+}
+
+.currency-symbols-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.currency-symbol-item {
+  display: flex;
+  align-items: center;
+  padding: 12px; /* Reduced padding */
+  border-bottom: 1px solid #ecf0f1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.currency-symbol-item:hover {
+  background: #f8f9fa;
+}
+
+.currency-selected-symbol-item {
+  background: #f8f9fa;
+}
+
+.currency-symbol-text {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #2c3e50;
+  width: 44px; /* Smaller width */
+}
+
+.currency-symbol-name {
+  flex: 1;
+  font-size: 13px; /* Smaller font */
+  color: #2c3e50;
+  margin-left: 10px; /* Reduced margin */
+}
+
+.currency-checkmark {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 14px; /* Smaller icon */
+}
+
+.currency-no-symbols-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px; /* Reduced padding */
+  color: #666;
+  text-align: center;
+}
+
+.currency-search-icon-large {
+  font-size: 36px; /* Smaller icon */
+  color: #ccc;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.currency-no-symbols-text {
+  font-size: 16px; /* Smaller font */
+  color: #bdc3c7;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.currency-no-symbols-subtext {
+  font-size: 13px; /* Smaller font */
+  color: #bdc3c7;
+}
+
+/* Base Currency Items - Adjusted */
+.currency-base-list {
+  max-height: 280px; /* Reduced height */
+  overflow-y: auto;
+  padding: 0 16px 16px; /* Reduced padding */
+}
+
+.currency-base-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 12px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  margin-bottom: 10px; /* Reduced margin */
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e9ecef;
+}
+
+.currency-base-item:hover {
+  border-color: #1a5b7b;
+}
+
+.currency-selected-base-item {
+  background: rgba(242, 242, 242, 0.76);
+  border-left: 3px solid #1a5b7b; /* Thinner border */
+}
+
+.currency-base-badge {
+  display: flex;
+  align-items: center;
+  background: #2ecc71;
+  padding: 4px 10px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  color: white;
+  font-size: 11px; /* Smaller font */
+  font-weight: 600;
+}
+
+.currency-base-checkmark {
+  margin-right: 3px; /* Reduced margin */
+  font-size: 12px; /* Smaller icon */
+}
+
+.currency-base-badge-text {
+  color: white;
+}
+
+/* Processing Modal - Adjusted */
+.currency-processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.currency-processing-container {
+  background: white;
+  padding: 24px; /* Reduced padding */
+  border-radius: 12px; /* Smaller radius */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* Softer shadow */
+}
+
+.currency-processing-spinner {
+  width: 32px; /* Smaller spinner */
+  height: 32px;
+  border: 3px solid #f3f3f3; /* Thinner border */
+  border-top: 3px solid #2ecc71;
+  border-radius: 50%;
+  animation: currency-spin 1s linear infinite;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+@keyframes currency-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.currency-processing-text {
+  font-size: 14px; /* Smaller font */
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Responsive Design - Adjusted */
+@media (max-width: 768px) {
+  .currency-container {
+    padding: 12px; /* Adjusted padding */
+    margin-top: 60px; /* Reduced margin */
+    width: 100%;
+  }
+
+  .currency-content {
+    padding: 12px; /* Reduced padding */
+    border-radius: 10px; /* Smaller radius */
+    min-height: calc(100vh - 100px); /* Adjusted height */
+    max-width: 95%;
+  }
+
+  .currency-header {
+    flex-direction: column;
+    gap: 12px; /* Reduced gap */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .currency-header-content {
+    flex-direction: row;
+    width: 100%;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .currency-modal-actions {
+    flex-direction: column;
+  }
+
+  /* .currency-fab {
+    right: 15px;
+    bottom: 15px;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  } */
+}
+
+@media (max-width: 480px) {
+  .currency-container {
+    padding: 8px; /* Reduced padding */
+  }
+
+  .currency-content {
+    padding: 10px; /* Reduced padding */
+    max-width: 100%;
+  }
+
+  .currency-item {
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+    align-items: flex-start;
+  }
+
+  .currency-actions {
+    align-self: flex-end;
+  }
+}
+
+/* Desktop adjustments for sidebar */
+@media (min-width: 1025px) {
+  .currency-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .currency-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}
+
+/* Add these styles to your CreateCurrencyScreen.css */
+
+/* Symbol Modal Content - Fixed scrolling */
+.currency-symbol-modal-content {
+  padding: 16px; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 60vh;
+}
+
+.currency-symbols-list-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important for flex child scrolling */
+}
+
+.currency-symbols-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 350px; /* Reduced height */
+  border: 1px solid #e9ecef;
+  border-radius: 6px; /* Smaller radius */
+}
+
+/* Ensure symbols list scrolls properly */
+.currency-symbols-scrollable::-webkit-scrollbar {
+  width: 5px; /* Thinner scrollbar */
+}
+
+.currency-symbols-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px; /* Smaller radius */
+}
+
+.currency-symbols-scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px; /* Smaller radius */
+}
+
+.currency-symbols-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Fix for search input focus */
+.currency-search-input:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Ensure modal container has proper height */
+.currency-symbol-modal-container {
+  background: white;
+  border-radius: 16px; /* Smaller radius */
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  max-width: 480px; /* Slightly smaller */
+  width: 100%;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+/* Symbol item styles */
+.currency-symbol-item {
+  display: flex;
+  align-items: center;
+  padding: 12px; /* Reduced padding */
+  border-bottom: 1px solid #ecf0f1;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.currency-symbol-item:hover {
+  background: #f8f9fa;
+}
+
+.currency-symbol-item:last-child {
+  border-bottom: none;
+}
+
+.currency-selected-symbol-item {
+  background: #f8f9fa;
+  border-left: 3px solid #1a5b7b; /* Thinner border */
+}
+
+/* No symbols found state */
+.currency-no-symbols-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px; /* Reduced padding */
+  color: #666;
+  text-align: center;
+  flex: 1;
+}
+
+/* Search container improvements */
+.currency-search-container {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px 12px; /* Reduced padding */
+  margin-bottom: 12px; /* Reduced margin */
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.currency-search-container:focus-within {
+  border-color: #1a5b7b;
+  box-shadow: 0 0 0 2px rgba(26, 91, 123, 0.1);
+}

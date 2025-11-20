@@ -1,0 +1,590 @@
+/* RegisterScreen.css */
+/* Use the same final screen container as LoginScreen */
+.finalScreenContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 15px;
+  position: relative;
+}
+
+.finalScreenContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 91, 123, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.finalCardlogin {
+  width: 100%;
+  max-width: 450px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  height: auto;
+  margin: 30px 15px;
+  max-height: 95vh;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2;
+}
+
+.finalContentLogin {
+  position: relative;
+  width: 100%;
+  min-height: 450px;
+  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Logo Section */
+.logoSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.welcomeTitle {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.welcomeSubtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.taglineContainer {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.sparkle {
+  font-size: 14px;
+}
+
+.taglineText {
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 6px;
+}
+
+/* Register Form Section */
+.loginFormSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.registerTitle {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.loginInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.loginInputWrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 4px 12px;
+  height: 38px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.loginInputWrapper.loginInputFocused {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.loginInputWrapper.loginInputError {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.loginInputWrapper.loginInputValid {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.loginInputIcon {
+  font-size: 16px;
+  margin-right: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.loginInputField {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: white;
+  background: transparent;
+  padding: 0;
+}
+
+.loginInputField::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.loginInputStatus {
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.loginPasswordToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease;
+  margin-left: 8px;
+}
+
+.loginPasswordToggle:hover {
+  color: white;
+}
+
+.loginErrorText {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-left: 12px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Password Strength Indicator */
+.passwordStrengthContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+}
+
+.passwordStrengthLabel {
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.passwordStrengthBar {
+  display: flex;
+  gap: 3px;
+  height: 5px;
+}
+
+.strengthSegment {
+  flex: 1;
+  height: 100%;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.strengthSegment.active {
+  transform: scaleY(1.2);
+}
+
+.passwordStrengthText {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Password Requirements */
+.requirementContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+}
+
+.requirementTitle {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.requirementItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.requirementIcon {
+  font-size: 11px;
+  width: 14px;
+  text-align: center;
+}
+
+.requirementText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  transition: color 0.3s ease;
+}
+
+.requirementText.requirementMet {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+/* Register Button */
+.loginButtonWrapper {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  margin-top: 8px;
+}
+
+.loginButtonWrapper:hover {
+  transform: translateY(-2px);
+}
+
+.loginActionButton {
+  width: 100%;
+  height: 38px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #138f93ff, #1f7098ff);
+}
+
+.loginActionButton:hover:not(.loginButtonDisabled) {
+  transform: scale(1.02);
+}
+
+.loginButtonDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  background: linear-gradient(135deg, #cccccc, #bbbbbb) !important;
+}
+
+.loginButtonText {
+  font-size: 14px;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.loginChevron {
+  position: absolute;
+  right: 20px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.loginActionButton:hover .loginChevron {
+  transform: translateX(3px);
+}
+
+/* Links Container */
+.loginLinksContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.loginForgotPassword {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  padding: 8px;
+  transition: color 0.3s ease;
+  text-decoration: underline;
+}
+
+.loginForgotPassword:hover {
+  color: white;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
+}
+
+.alertModal,
+.loadingModal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-width: 350px;
+  width: 100%;
+}
+
+.alertModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.alertModalTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a5b7b;
+  margin: 0;
+}
+
+.alertModalMessage {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.alertModalButton {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.alertModalButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 91, 123, 0.3);
+}
+
+.loadingModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.loadingSpinner {
+  width: 35px;
+  height: 35px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1a5b7b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingModalTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a5b7b;
+  margin: 0;
+}
+
+.loadingModalMessage {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  text-align: center;
+}
+
+/* Scrollbar Styling for the card */
+.finalCardlogin::-webkit-scrollbar {
+  width: 5px;
+}
+
+.finalCardlogin::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.finalCardlogin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.finalCardlogin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .finalCardlogin {
+    max-width: 400px;
+  }
+
+  .welcomeTitle {
+    font-size: 17px;
+  }
+
+  .registerTitle {
+    font-size: 17px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .finalContentLogin {
+    padding: 12px 15px;
+  }
+
+  .finalCardlogin {
+    max-width: 340px;
+    margin: 20px 10px;
+  }
+
+  .welcomeTitle {
+    font-size: 16px;
+  }
+
+  .registerTitle {
+    font-size: 16px;
+  }
+
+  .loginActionButton {
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .loginInputWrapper {
+    padding: 4px 10px;
+    height: 36px;
+  }
+
+  .loginInputField {
+    font-size: 13px;
+  }
+
+  .passwordStrengthContainer,
+  .requirementContainer {
+    padding: 6px;
+  }
+
+  .requirementText {
+    font-size: 10px;
+  }
+}
+
+@media (max-height: 700px) {
+  .finalCardlogin {
+    max-height: 90vh;
+  }
+  
+  .finalContentLogin {
+    padding: 12px 15px;
+  }
+  
+  .logoSection {
+    padding-top: 3px;
+  }
+  
+  .welcomeTitle {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  
+  .welcomeSubtitle {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  
+  .taglineContainer {
+    margin-bottom: 12px;
+  }
+  
+  .loginFormSection {
+    gap: 10px;
+  }
+}

@@ -1,0 +1,529 @@
+/* EnterVerificationScreen.css - Adjusted Font Sizes, Margins, and Padding */
+/* Use the same final screen container as other screens */
+.finalScreenContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 15px; /* Reduced padding */
+  position: relative;
+}
+
+.finalScreenContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 91, 123, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.finalCardVerification {
+  width: 100%;
+  max-width: 420px; /* Slightly smaller */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px; /* Smaller radius */
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  position: relative;
+  height: auto;
+  margin: 30px 15px; /* Reduced margin */
+  max-height: 95vh;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2;
+}
+
+.finalContentVerification {
+  position: relative;
+  width: 100%;
+  min-height: 450px; /* Reduced height */
+  padding: 16px; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Logo Section - Adjusted */
+.logoSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 8px; /* Reduced padding */
+}
+
+.logo {
+  width: 45px; /* Smaller logo */
+  height: 45px;
+  object-fit: contain;
+  margin-bottom: 12px; /* Reduced margin */
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25)); /* Softer shadow */
+}
+
+.welcomeTitle {
+  color: white;
+  font-size: 24px; /* Smaller font */
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px; /* Reduced margin */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25); /* Softer shadow */
+}
+
+.welcomeSubtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 13px; /* Smaller font */
+  text-align: center;
+  margin-bottom: 12px; /* Reduced margin */
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Verification Form Section - Adjusted */
+.verificationFormSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Reduced gap */
+}
+
+.verificationTitle {
+  color: white;
+  font-size: 20px; /* Smaller font */
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px; /* Reduced margin */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25); /* Softer shadow */
+}
+
+.verificationSubtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px; /* Smaller font */
+  text-align: center;
+  margin-bottom: 16px; /* Reduced margin */
+  line-height: 1.4; /* Reduced line height */
+}
+
+.verificationInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Reduced gap */
+}
+
+/* Code Input Styles - Adjusted */
+.codeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px; /* Reduced margin */
+}
+
+.codeLabel {
+  color: white;
+  font-size: 13px; /* Smaller font */
+  font-weight: 500;
+}
+
+.pasteButton {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 5px; /* Smaller radius */
+  padding: 5px 10px; /* Reduced padding */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.pasteButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.pasteIcon {
+  font-size: 13px; /* Smaller icon */
+  margin-right: 4px; /* Reduced margin */
+}
+
+.pasteText {
+  color: white;
+  font-size: 11px; /* Smaller font */
+  font-weight: 500;
+}
+
+.codeContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px; /* Reduced gap */
+  margin-bottom: 4px; /* Reduced margin */
+}
+
+.codeInput {
+  width: 54px; /* Slightly smaller */
+  height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px; /* Smaller radius */
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 18px; /* Smaller font */
+  font-weight: 600;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.codeInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.codeInputFilled {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.codeInputError {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.pasteHint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px; /* Smaller font */
+  text-align: center;
+  margin-top: 6px; /* Reduced margin */
+  font-style: italic;
+}
+
+/* Password Input Styles - Adjusted */
+.verificationInputWrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px; /* Smaller radius */
+  padding: 4px 12px; /* Reduced padding */
+  height: 42px; /* Slightly smaller */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.verificationInputWrapper.verificationInputFocused {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.verificationInputWrapper.verificationInputError {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.verificationInputIcon {
+  font-size: 16px; /* Smaller icon */
+  margin-right: 10px; /* Reduced margin */
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.verificationInputField {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px; /* Smaller font */
+  color: white;
+  background: transparent;
+  padding: 0;
+}
+
+.verificationInputField::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px; /* Smaller placeholder */
+}
+
+.passwordToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px; /* Reduced padding */
+  font-size: 14px; /* Smaller icon */
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease;
+  margin-left: 8px; /* Reduced margin */
+}
+
+.passwordToggle:hover {
+  color: white;
+}
+
+.errorText {
+  color: #ff6b6b;
+  font-size: 11px; /* Smaller font */
+  margin-left: 12px; /* Reduced margin */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25); /* Softer shadow */
+}
+
+/* Button Styles - Adjusted */
+.verificationButtonWrapper {
+  width: 100%;
+  border-radius: 12px; /* Smaller radius */
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Softer shadow */
+  transition: transform 0.3s ease;
+  margin-top: 8px; /* Reduced margin */
+}
+
+.verificationButtonWrapper:hover {
+  transform: translateY(-1px); /* Less movement */
+}
+
+.verificationActionButton {
+  width: 100%;
+  height: 42px; /* Slightly smaller */
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+  background: linear-gradient(135deg, #138f93ff, #1f7098ff);
+}
+
+.verificationActionButton:hover:not(.verificationButtonDisabled) {
+  transform: scale(1.01); /* Less scaling */
+}
+
+.verificationButtonDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.verificationButtonText {
+  font-size: 14px; /* Smaller font */
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+}
+
+.verificationButtonIcon {
+  position: absolute;
+  right: 20px; /* Reduced distance */
+  font-size: 16px; /* Smaller icon */
+}
+
+/* Links Container - Adjusted */
+.verificationLinksContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px; /* Reduced margin */
+}
+
+.backToLoginLink {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px; /* Smaller font */
+  cursor: pointer;
+  text-align: center;
+  padding: 8px; /* Reduced padding */
+  transition: color 0.3s ease;
+  text-decoration: underline;
+}
+
+.backToLoginLink:hover {
+  color: white;
+}
+
+/* Modal Styles - Adjusted */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px; /* Reduced padding */
+}
+
+.alertModal {
+  background: #ffffff;
+  border-radius: 16px; /* Smaller radius */
+  padding: 24px; /* Reduced padding */
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  max-width: 380px; /* Slightly smaller */
+  width: 100%;
+}
+
+.alertModal.alertModalError {
+  border-left: 3px solid #ff6b6b; /* Thinner border */
+}
+
+.alertModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Reduced gap */
+}
+
+.alertModalTitle {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin: 0;
+}
+
+.alertModalMessage {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  margin: 0;
+  line-height: 1.4; /* Reduced line height */
+}
+
+.alertModalButton {
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px; /* Smaller radius */
+  padding: 10px 20px; /* Reduced padding */
+  font-size: 13px; /* Smaller font */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.alertModalButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(26, 91, 123, 0.25); /* Reduced shadow */
+}
+
+.loadingModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+  background: #ffffff;
+  border-radius: 16px; /* Smaller radius */
+  padding: 24px; /* Reduced padding */
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  max-width: 380px; /* Slightly smaller */
+  width: 100%;
+}
+
+.loadingSpinner {
+  width: 32px; /* Smaller spinner */
+  height: 32px;
+  border: 3px solid #f3f3f3; /* Thinner border */
+  border-top: 3px solid #1a5b7b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingModalTitle {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin: 0;
+}
+
+.loadingModalMessage {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  margin: 0;
+  text-align: center;
+}
+
+/* Responsive Design - Adjusted */
+@media (max-width: 768px) {
+  .finalCardVerification {
+    max-width: 380px; /* Slightly smaller */
+  }
+
+  .codeInput {
+    width: 50px; /* Smaller on tablet */
+    height: 50px;
+    font-size: 16px; /* Smaller on tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .finalContentVerification {
+    padding: 12px; /* Reduced padding */
+  }
+
+  .finalCardVerification {
+    max-width: 320px; /* Smaller on mobile */
+    margin: 15px 8px; /* Reduced margin */
+  }
+
+  .codeInput {
+    width: 46px; /* Smaller on mobile */
+    height: 46px;
+    font-size: 15px; /* Smaller on mobile */
+  }
+
+  .verificationActionButton {
+    height: 44px; /* Slightly smaller on mobile */
+    font-size: 14px; /* Smaller on mobile */
+  }
+
+  .codeContainer {
+    gap: 6px; /* Smaller gap on mobile */
+  }
+
+  .logo {
+    width: 40px; /* Smaller on mobile */
+    height: 40px;
+  }
+
+  .welcomeTitle {
+    font-size: 20px; /* Smaller on mobile */
+  }
+}
+
+/* Scrollbar Styling - Adjusted */
+.finalCardVerification::-webkit-scrollbar {
+  width: 5px; /* Thinner scrollbar */
+}
+
+.finalCardVerification::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px; /* Smaller radius */
+}
+
+.finalCardVerification::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px; /* Smaller radius */
+}
+
+.finalCardVerification::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}

@@ -1,0 +1,659 @@
+/* BusSubscriptionListScreen.css - Adjusted Font Sizes, Margins, and Padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.subscription-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  background: #fff;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+.subscription-container {
+  flex: 1;
+  padding: 12px 20px; /* Reduced top padding */
+  background-color: #fff;
+  margin-top: 70px; /* Reduced margin top */
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important; /* Reduced right margin */
+  width: calc(100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  background-color: #fff;
+  border-radius: 12px; /* Slightly smaller radius */
+}
+
+.subscription-content {
+  padding: 12px 16px; /* Reduced padding */
+  min-height: calc(100vh - 120px); /* Adjusted height */
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header Styles - Adjusted */
+.subscription-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px; /* Reduced margin */
+  gap: 12px; /* Reduced gap */
+  padding: 12px 16px; /* Adjusted padding */
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  border-radius: 10px; /* Smaller radius */
+  color: white;
+}
+
+.subscription-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+}
+
+.subscription-back-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px 10px; /* Smaller padding */
+  border-radius: 16px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.subscription-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.subscription-header-title-container {
+  flex: 1;
+  text-align: center;
+}
+
+.subscription-header-title {
+  font-size: 20px; /* Smaller font */
+  font-weight: 600;
+  margin-bottom: 2px; /* Reduced margin */
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+}
+
+.subscription-header-subtitle {
+  font-size: 13px; /* Smaller font */
+  opacity: 0.9;
+}
+
+.subscription-search-toggle-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px; /* Reduced padding */
+  border-radius: 16px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; /* Smaller button */
+  height: 36px;
+}
+
+.subscription-search-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Search Container - Adjusted */
+.subscription-search-container {
+  margin-top: 6px; /* Reduced margin */
+}
+
+.subscription-search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px; /* Smaller radius */
+  padding: 10px 12px; /* Reduced padding */
+}
+
+.subscription-search-icon {
+  margin-right: 10px; /* Reduced margin */
+  color: #666;
+  font-size: 14px; /* Smaller icon */
+}
+
+.subscription-search-input {
+  flex: 1;
+  font-size: 14px; /* Smaller font */
+  color: #333;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.subscription-search-input::placeholder {
+  color: #999;
+  font-size: 13px; /* Smaller placeholder */
+}
+
+.subscription-clear-search {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* Smaller icon */
+}
+
+/* Filter Container - Adjusted */
+.subscription-filter-container {
+  height: 60px; /* Reduced height */
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px; /* Reduced margin */
+  border-radius: 10px; /* Smaller radius */
+  padding: 0 12px; /* Reduced padding */
+}
+
+.subscription-filter-scroll {
+  display: flex;
+  gap: 6px; /* Reduced gap */
+  overflow-x: auto;
+  padding: 6px 0; /* Reduced padding */
+}
+
+.subscription-filter-option {
+  padding: 8px 16px; /* Reduced padding */
+  border-radius: 16px; /* Smaller radius */
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  font-size: 13px; /* Smaller font */
+  font-weight: 500;
+  color: #666;
+  white-space: nowrap;
+  transition: all 0.2s;
+  min-height: 36px; /* Smaller height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscription-filter-option:hover {
+  background: #e9ecef;
+}
+
+.subscription-selected-filter-option {
+  background: #1a5b7b;
+  border-color: #1a5b7b;
+  color: white;
+}
+
+/* Loading State - Adjusted */
+.subscription-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px; /* Reduced padding */
+  color: #666;
+}
+
+.subscription-loading-spinner {
+  width: 32px; /* Smaller spinner */
+  height: 32px;
+  border: 3px solid #f3f3f3; /* Thinner border */
+  border-top: 3px solid #1a5b7b;
+  border-radius: 50%;
+  animation: subscription-spin 1s linear infinite;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+@keyframes subscription-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.subscription-loading-text {
+  font-size: 14px; /* Smaller font */
+  color: #666;
+}
+
+/* Bus List - Adjusted */
+.subscription-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Reduced gap */
+  margin-bottom: 70px; /* Reduced margin */
+}
+
+/* Bus Item - Adjusted */
+.subscription-bus-item {
+  background: white;
+  margin-bottom: 10px; /* Reduced margin */
+  border-radius: 12px; /* Smaller radius */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+
+.subscription-bus-item:hover {
+  transform: translateY(-1px); /* Less movement */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); /* Softer shadow */
+}
+
+.subscription-bus-content {
+  padding: 16px; /* Reduced padding */
+  cursor: pointer;
+}
+
+.subscription-bus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.subscription-bus-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.subscription-bus-icon {
+  width: 40px; /* Smaller icon */
+  height: 40px;
+  border-radius: 20px;
+  background: rgba(26, 91, 123, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Reduced margin */
+}
+
+.subscription-bus-emoji {
+  font-size: 18px; /* Smaller icon */
+}
+
+.subscription-bus-text {
+  flex: 1;
+}
+
+.subscription-bus-name {
+  font-size: 16px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 2px; /* Reduced margin */
+}
+
+.subscription-bus-plate {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+}
+
+.subscription-status-badge {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 4px 10px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+}
+
+.subscription-status-dot {
+  width: 6px; /* Smaller dot */
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px; /* Reduced margin */
+}
+
+.subscription-status-text {
+  font-size: 11px; /* Smaller font */
+  font-weight: 600;
+}
+
+.subscription-bus-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px; /* Reduced margin */
+}
+
+.subscription-detail-column {
+  flex: 1;
+}
+
+.subscription-detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.subscription-detail-icon {
+  margin-right: 6px; /* Reduced margin */
+  font-size: 13px; /* Smaller icon */
+}
+
+.subscription-detail-label {
+  font-size: 11px; /* Smaller font */
+  font-weight: 600;
+  color: #666;
+  margin-right: 3px; /* Reduced margin */
+  width: 60px; /* Smaller width */
+}
+
+.subscription-detail-value {
+  font-size: 11px; /* Smaller font */
+  color: #333;
+  flex: 1;
+}
+
+/* Warning and Info Containers - Adjusted */
+.subscription-warning-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* Reduced margin */
+  padding: 10px; /* Reduced padding */
+  background: rgba(220, 53, 69, 0.1);
+  border-radius: 6px; /* Smaller radius */
+  border-left: 3px solid #dc3545; /* Thinner border */
+}
+
+.subscription-warning-icon {
+  margin-right: 6px; /* Reduced margin */
+  font-size: 14px; /* Smaller icon */
+}
+
+.subscription-warning-text {
+  font-size: 13px; /* Smaller font */
+  font-weight: 600;
+  color: #dc3545;
+}
+
+.subscription-info-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* Reduced margin */
+  padding: 10px; /* Reduced padding */
+  background: rgba(23, 162, 184, 0.1);
+  border-radius: 6px; /* Smaller radius */
+  border-left: 3px solid #17a2b8; /* Thinner border */
+}
+
+.subscription-info-icon {
+  margin-right: 6px; /* Reduced margin */
+  font-size: 14px; /* Smaller icon */
+}
+
+.subscription-info-text {
+  font-size: 13px; /* Smaller font */
+  font-weight: 600;
+  color: #17a2b8;
+}
+
+/* Empty State - Adjusted */
+.subscription-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px; /* Reduced padding */
+  color: #666;
+  text-align: center;
+}
+
+.subscription-empty-icon {
+  font-size: 60px; /* Smaller icon */
+  color: #e0e0e0;
+  margin-bottom: 16px; /* Reduced margin */
+}
+
+.subscription-empty-text {
+  font-size: 14px; /* Smaller font */
+  color: #999;
+  line-height: 20px; /* Reduced line height */
+  max-width: 350px; /* Slightly smaller */
+}
+
+/* Refresh Button - Adjusted */
+.subscription-refresh-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Reduced gap */
+  background: #1a5b7b;
+  color: white;
+  border: none;
+  padding: 10px 20px; /* Reduced padding */
+  border-radius: 6px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  margin: 16px auto; /* Reduced margin */
+  transition: all 0.2s;
+}
+
+.subscription-refresh-button:hover:not(:disabled) {
+  background: #276482;
+  transform: translateY(-1px);
+}
+
+.subscription-refresh-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.subscription-refresh-spinner {
+  width: 16px; /* Smaller spinner */
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: subscription-spin 1s linear infinite;
+}
+
+/* Modal Styles - Adjusted */
+.subscription-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px; /* Reduced padding */
+}
+
+.subscription-modal-content {
+  background: white;
+  border-radius: 12px; /* Smaller radius */
+  padding: 20px; /* Reduced padding */
+  width: 100%;
+  max-width: 380px; /* Slightly smaller */
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.subscription-modal-title {
+  font-size: 18px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.subscription-modal-subtitle {
+  font-size: 13px; /* Smaller font */
+  color: #666;
+  margin-bottom: 16px; /* Reduced margin */
+  line-height: 18px; /* Reduced line height */
+}
+
+.subscription-trial-features {
+  align-self: stretch;
+  margin-bottom: 20px; /* Reduced margin */
+}
+
+.subscription-feature-text {
+  font-size: 13px; /* Smaller font */
+  color: #28a745;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.subscription-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Reduced gap */
+}
+
+.subscription-modal-button {
+  flex: 1;
+  padding: 10px; /* Reduced padding */
+  border-radius: 6px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  transition: all 0.2s;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px; /* Smaller height */
+}
+
+.subscription-cancel-button {
+  background: #6c757d;
+  color: white;
+}
+
+.subscription-cancel-button:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.subscription-trial-button {
+  background: #17a2b8;
+  color: white;
+}
+
+.subscription-trial-button:hover:not(:disabled) {
+  background: #138496;
+}
+
+.subscription-modal-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design - Adjusted */
+@media (max-width: 768px) {
+  .subscription-container {
+    padding: 12px; /* Adjusted padding */
+    margin-top: 60px; /* Reduced margin */
+    width: 100%;
+  }
+
+  .subscription-content {
+    padding: 12px; /* Reduced padding */
+    border-radius: 10px; /* Smaller radius */
+    min-height: calc(100vh - 100px); /* Adjusted height */
+    max-width: 95%;
+  }
+
+  .subscription-header {
+    padding: 10px; /* Reduced padding */
+  }
+
+  .subscription-header-content {
+    flex-direction: row;
+    width: 100%;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .subscription-bus-details {
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .subscription-modal-buttons {
+    flex-direction: column;
+  }
+
+  .subscription-filter-scroll {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscription-container {
+    padding: 8px; /* Reduced padding */
+  }
+
+  .subscription-content {
+    padding: 10px; /* Reduced padding */
+    max-width: 100%;
+  }
+
+  .subscription-bus-header {
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .subscription-status-badge {
+    align-self: flex-start;
+  }
+
+  .subscription-detail-item {
+    flex-wrap: wrap;
+  }
+
+  .subscription-detail-label {
+    width: auto;
+    margin-right: 6px; /* Reduced margin */
+  }
+
+  .subscription-filter-option {
+    padding: 6px 12px; /* Smaller on mobile */
+    font-size: 12px; /* Smaller on mobile */
+  }
+}
+
+/* Desktop adjustments for sidebar */
+@media (min-width: 1025px) {
+  .subscription-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .subscription-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}

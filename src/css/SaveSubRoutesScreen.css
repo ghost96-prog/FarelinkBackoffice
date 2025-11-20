@@ -1,0 +1,483 @@
+/* SaveSubRoutesScreen.css - Adjusted Font Sizes, Margins, and Padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #fff;
+}
+
+.save-subroutes-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  background: #fff;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+}
+
+.save-subroutes-container {
+  flex: 1;
+  padding: 12px 20px; /* Reduced top padding */
+  background-color: #fff;
+  margin-top: 70px; /* Reduced margin top */
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  margin-left: 20px !important;
+  margin-right: 100px !important; /* Reduced right margin */
+  width: calc(100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  background-color: #fff;
+  border-radius: 12px; /* Slightly smaller radius */
+}
+
+.save-subroutes-content {
+  padding: 12px 16px; /* Reduced padding */
+  min-height: calc(100vh - 120px); /* Adjusted height */
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header Styles - Adjusted */
+.save-subroutes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced margin */
+  gap: 16px; /* Reduced gap */
+  padding: 12px 16px; /* Adjusted padding */
+  background: linear-gradient(135deg, #1a5b7b, #276482);
+  border-radius: 10px; /* Smaller radius */
+  color: white;
+}
+
+.save-subroutes-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+  flex: 1;
+}
+
+.save-subroutes-back-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 6px 10px; /* Smaller padding */
+  border-radius: 16px; /* Smaller radius */
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Reduced gap */
+}
+
+.save-subroutes-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.save-subroutes-header-title-container {
+  flex: 1;
+}
+
+.save-subroutes-header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.save-subroutes-header-title-section {
+  flex: 1;
+}
+
+.save-subroutes-header-title {
+  font-size: 20px; /* Smaller font */
+  font-weight: 600;
+  margin-bottom: 2px; /* Reduced margin */
+  letter-spacing: 0.3px; /* Reduced letter spacing */
+}
+
+.save-subroutes-header-subtitle {
+  font-size: 13px; /* Smaller font */
+  opacity: 0.9;
+}
+
+.save-subroutes-edit-badge {
+  background: #ffc107;
+  padding: 3px 6px; /* Reduced padding */
+  border-radius: 3px; /* Smaller radius */
+  align-self: flex-start;
+}
+
+.save-subroutes-edit-badge-text {
+  color: #856404;
+  font-size: 9px; /* Smaller font */
+  font-weight: bold;
+}
+
+.save-subroutes-header-info-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px; /* Reduced gap */
+}
+
+.save-subroutes-header-info-item {
+  font-size: 11px; /* Smaller font */
+  font-weight: 400;
+  width: 48%;
+}
+
+.save-subroutes-info-label {
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+/* Sub Routes List - Adjusted */
+.save-subroutes-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduced gap */
+  margin-bottom: 80px; /* Reduced margin */
+}
+
+.save-subroutes-subroute-card {
+  background: white;
+  border-radius: 10px; /* Smaller radius */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.save-subroutes-subroute-card:hover {
+  transform: translateY(-1px); /* Less movement */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* Softer shadow */
+}
+
+.save-subroutes-new-subroute-card {
+  border-left: 3px solid #28a745; /* Thinner border */
+}
+
+.save-subroutes-subroute-content {
+  padding: 12px; /* Reduced padding */
+}
+
+.save-subroutes-subroute-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* Reduced margin */
+}
+
+.save-subroutes-subroute-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 6px; /* Reduced gap */
+}
+
+.save-subroutes-subroute-name {
+  font-size: 14px; /* Smaller font */
+  font-weight: 600;
+  color: #1a5b7b;
+  flex: 1;
+}
+
+.save-subroutes-new-badge,
+.save-subroutes-editable-badge,
+.save-subroutes-existing-badge {
+  padding: 2px 5px; /* Reduced padding */
+  border-radius: 3px; /* Smaller radius */
+  font-size: 9px; /* Smaller font */
+  font-weight: bold;
+}
+
+.save-subroutes-new-badge {
+  background: #28a745;
+  color: white;
+}
+
+.save-subroutes-editable-badge {
+  background: #ffc107;
+  color: #856404;
+}
+
+.save-subroutes-existing-badge {
+  background: #6c757d;
+  color: white;
+}
+
+.save-subroutes-subroute-number {
+  font-size: 11px; /* Smaller font */
+  color: #666;
+  font-weight: 500;
+}
+
+.save-subroutes-fare-inputs {
+  display: flex;
+  gap: 10px; /* Reduced gap */
+  margin-bottom: 6px; /* Reduced margin */
+}
+
+.save-subroutes-fare-input-group {
+  flex: 1;
+}
+
+.save-subroutes-fare-label {
+  font-size: 11px; /* Smaller font */
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 2px; /* Reduced margin */
+}
+
+.save-subroutes-fare-input {
+  border: 1px solid #ddd;
+  border-radius: 6px; /* Smaller radius */
+  padding: 10px; /* Reduced padding */
+  font-size: 14px; /* Smaller font */
+  background: white;
+  text-align: center;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.save-subroutes-fare-input:focus {
+  border-color: #1a5b7b;
+}
+
+.save-subroutes-disabled-input {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.save-subroutes-read-only-text,
+.save-subroutes-new-route-text,
+.save-subroutes-editable-route-text {
+  font-size: 11px; /* Smaller font */
+  font-style: italic;
+  margin-top: 6px; /* Reduced margin */
+  text-align: center;
+}
+
+.save-subroutes-read-only-text {
+  color: #666;
+}
+
+.save-subroutes-new-route-text {
+  color: #28a745;
+}
+
+.save-subroutes-editable-route-text {
+  color: #856404;
+}
+
+/* Footer Buttons - Adjusted */
+.save-subroutes-footer {
+  /* position: fixed; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px; /* Reduced padding */
+  background: white;
+  border-top: 1px solid #e9ecef;
+  z-index: 100;
+}
+
+.save-subroutes-cancel-button {
+  padding: 12px 20px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  border: 1px solid #6c757d;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px; /* Smaller font */
+  transition: all 0.2s;
+}
+
+.save-subroutes-cancel-button:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.save-subroutes-cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-subroutes-save-button {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px; /* Reduced padding */
+  border-radius: 10px; /* Smaller radius */
+  background: #28a745;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px; /* Smaller font */
+  gap: 6px; /* Reduced gap */
+  transition: background-color 0.2s;
+}
+
+.save-subroutes-save-button:hover:not(.save-subroutes-save-button-disabled) {
+  background: #218838;
+}
+
+.save-subroutes-save-button-disabled {
+  background: #ccc;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-subroutes-save-button-text {
+  font-size: 14px; /* Smaller font */
+  font-weight: 500;
+}
+
+.save-subroutes-save-icon {
+  font-size: 14px; /* Smaller icon */
+}
+
+.save-subroutes-loading-spinner {
+  width: 16px; /* Smaller spinner */
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: save-subroutes-spin 1s linear infinite;
+}
+
+@keyframes save-subroutes-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.save-subroutes-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 16px; /* Smaller font */
+  color: #666;
+}
+
+/* Responsive Design - Adjusted */
+@media (max-width: 768px) {
+  .save-subroutes-container {
+    padding: 12px; /* Adjusted padding */
+    margin-top: 60px; /* Reduced margin */
+    width: 100%;
+  }
+
+  .save-subroutes-content {
+    padding: 12px; /* Reduced padding */
+    border-radius: 10px; /* Smaller radius */
+    min-height: calc(100vh - 100px); /* Adjusted height */
+    max-width: 95%;
+  }
+
+  .save-subroutes-header {
+    flex-direction: column;
+    gap: 12px; /* Reduced gap */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .save-subroutes-header-content {
+    flex-direction: row;
+    width: 100%;
+    gap: 10px; /* Reduced gap */
+  }
+
+  .save-subroutes-header-top-row {
+    flex-direction: column;
+    gap: 6px; /* Reduced gap */
+  }
+
+  .save-subroutes-edit-badge {
+    align-self: flex-start;
+  }
+
+  .save-subroutes-header-info-grid {
+    flex-direction: column;
+    gap: 3px; /* Reduced gap */
+  }
+
+  .save-subroutes-header-info-item {
+    width: 100%;
+  }
+
+  .save-subroutes-fare-inputs {
+    flex-direction: column;
+    gap: 6px; /* Reduced gap */
+  }
+
+  .save-subroutes-footer {
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .save-subroutes-cancel-button,
+  .save-subroutes-save-button {
+    width: 100%;
+    padding: 10px 16px; /* Reduced padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .save-subroutes-container {
+    padding: 8px; /* Reduced padding */
+  }
+
+  .save-subroutes-content {
+    padding: 10px; /* Reduced padding */
+    max-width: 100%;
+  }
+
+  .save-subroutes-subroute-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px; /* Reduced gap */
+  }
+
+  .save-subroutes-subroute-info {
+    width: 100%;
+  }
+
+  .save-subroutes-fare-input {
+    padding: 8px; /* Reduced padding */
+    font-size: 13px; /* Smaller font */
+  }
+}
+
+/* Desktop adjustments for sidebar */
+@media (min-width: 1025px) {
+  .save-subroutes-container {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+
+  .save-subroutes-container.sidebar-collapsed {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}

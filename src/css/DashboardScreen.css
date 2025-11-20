@@ -704,7 +704,7 @@ body {
   }
 
   .circular-metrics-container {
-    flex-direction: column !important;
+    flex-direction: row !important;
     gap: 15px !important;
   }
 

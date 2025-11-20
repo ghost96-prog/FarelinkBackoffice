@@ -51,14 +51,14 @@ const AppNavigator = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/welcome" element={<WelcomeScreen />} />
+      <Route path="/" element={<WelcomeScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
 <Route path="/enter-verification" element={<EnterVerificationScreen />} />      
       {/* Root path redirects to welcome or dashboard */}
       <Route path="/" element={
-        isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/welcome" replace />
+        isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/" replace />
       } />
       
       {/* Protected routes - all other routes go through AuthenticatedApp */}

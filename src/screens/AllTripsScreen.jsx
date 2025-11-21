@@ -733,122 +733,131 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
   };
 
   // Export functions
-  const exportToCSV = () => {
-    setExportLoading(true);
-    try {
-      const headers = "Date,Bus Name,Conductor,Passengers,Trips,Total Sales,Route,Duration\n";
-      
-      const csvData = dashboardData.completedTrips
-        .map(trip => {
-          const date = formatDate(trip.endTime);
-          return `"${date}","${trip.busName}","${trip.conductorName}",${trip.ticketCount},1,${trip.totalSales},"${trip.majorRoute}","${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}"`;
-        })
-        .join('\n');
-      
-      const csvContent = headers + csvData;
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `all-trips-data-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error exporting to CSV:', error);
-    } finally {
-      setExportLoading(false);
-    }
-  };
+// Export functions
+const exportToCSV = () => {
+  setExportLoading(true);
+  try {
+    const headers = "Start Date,End Date,Bus Name,Conductor,Passengers,Trips,Total Sales,Route,Duration\n";
+    
+    const csvData = filteredTrips
+      .map(trip => {
+        const startDate = formatDate(trip.startTime);
+        const endDate = formatDate(trip.endTime);
+        return `"${startDate}","${endDate}","${trip.busName}","${trip.conductorName}",${trip.ticketCount},1,${trip.totalSales},"${trip.majorRoute}","${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}"`;
+      })
+      .join('\n');
+    
+    // Add totals row
+    const totalPassengers = filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0);
+    const totalSales = filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0);
+    const totalsRow = `"TOTAL","","","",${totalPassengers},${filteredTrips.length},${totalSales},"",""`;
+    
+    const csvContent = headers + csvData + '\n' + totalsRow;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `all-trips-data-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
 
-  const exportToPDF = () => {
-    setExportLoading(true);
-    try {
-      const printWindow = window.open('', '_blank');
-      
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>All Trips Report</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            h1 { color: #1a5b7b; text-align: center; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #1a5b7b; color: white; }
-            tr:nth-child(even) { background-color: #f2f2f2; }
-            .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
-            .total-row { font-weight: bold; background-color: #e9ecef; }
-          </style>
-        </head>
-        <body>
-          <h1>All Trips Report - ${user?.company_name || 'Company'}</h1>
-          <div class="summary">
-            <p><strong>Period:</strong> ${formatDateDisplay()}</p>
-            <p><strong>Total Sales:</strong> ${formatCurrency(dashboardData.totalSales)}</p>
-            <p><strong>Total Passengers:</strong> ${dashboardData.totalPassengers}</p>
-            <p><strong>Total Trips:</strong> ${dashboardData.totalTrips}</p>
-            <p><strong>Bus:</strong> ${selectedBus ? `${selectedBus.name} (${selectedBus.plate})` : 'All Buses'}</p>
-          </div>
-          <table>
-            <thead>
+const exportToPDF = () => {
+  setExportLoading(true);
+  try {
+    const printWindow = window.open('', '_blank');
+    
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>All Trips Report</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          h1 { color: #1a5b7b; text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #1a5b7b; color: white; }
+          tr:nth-child(even) { background-color: #f2f2f2; }
+          .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+          .total-row { font-weight: bold; background-color: #e9ecef; }
+        </style>
+      </head>
+      <body>
+        <h1>All Trips Report - ${user?.company_name || 'Company'}</h1>
+        <div class="summary">
+          <p><strong>Period:</strong> ${formatDateDisplay()}</p>
+          <p><strong>Total Sales:</strong> ${formatCurrency(dashboardData.totalSales)}</p>
+          <p><strong>Total Passengers:</strong> ${dashboardData.totalPassengers}</p>
+          <p><strong>Total Trips:</strong> ${dashboardData.totalTrips}</p>
+          <p><strong>Bus:</strong> ${selectedBus ? `${selectedBus.name} (${selectedBus.plate})` : 'All Buses'}</p>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Trip #</th>
+              <th>Bus</th>
+              <th>Conductor</th>
+              <th>Passengers</th>
+              <th>Route</th>
+              <th>Duration</th>
+              <th>Total Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredTrips.map(trip => `
               <tr>
-                <th>Date</th>
-                <th>Trip #</th>
-                <th>Bus</th>
-                <th>Conductor</th>
-                <th>Passengers</th>
-                <th>Route</th>
-                <th>Duration</th>
-                <th>Total Sales</th>
+                <td>${formatDate(trip.startTime)}</td>
+                <td>${formatDate(trip.endTime)}</td>
+                <td>${trip.tripNumber}</td>
+                <td>${trip.busName}</td>
+                <td>${trip.conductorName}</td>
+                <td>${trip.ticketCount}</td>
+                <td>${trip.majorRoute}</td>
+                <td>${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
+                <td>${formatCurrency(trip.totalSales)}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${dashboardData.completedTrips.map(trip => `
-                <tr>
-                  <td>${formatDate(trip.endTime)}</td>
-                  <td>${trip.tripNumber}</td>
-                  <td>${trip.busName}</td>
-                  <td>${trip.conductorName}</td>
-                  <td>${trip.ticketCount}</td>
-                  <td>${trip.majorRoute}</td>
-                  <td>${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
-                  <td>${formatCurrency(trip.totalSales)}</td>
-                </tr>
-              `).join('')}
-              ${dashboardData.completedTrips.length > 0 ? `
-                <tr class="total-row">
-                  <td colspan="5"><strong>TOTAL</strong></td>
-                  <td><strong>${dashboardData.totalPassengers}</strong></td>
-                  <td colspan="2"></td>
-                  <td><strong>${formatCurrency(dashboardData.totalSales)}</strong></td>
-                </tr>
-              ` : ''}
-            </tbody>
-          </table>
-          <p style="margin-top: 20px; text-align: center; color: #666;">
-            Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
+            `).join('')}
+            ${filteredTrips.length > 0 ? `
+              <tr class="total-row">
+                <td colspan="5"><strong>TOTAL</strong></td>
+                <td><strong>${filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0)}</strong></td>
+                <td colspan="2"></td>
+                <td><strong>${formatCurrency(filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0))}</strong></td>
+              </tr>
+            ` : ''}
+          </tbody>
+        </table>
+        <p style="margin-top: 20px; text-align: center; color: #666;">
+          Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
+        </p>
+        ${filteredTrips.length === 0 ? `
+          <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
+            No trip data available for the selected period
           </p>
-          ${dashboardData.completedTrips.length === 0 ? `
-            <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
-              No trip data available for the selected period
-            </p>
-          ` : ''}
-        </body>
-        </html>
-      `;
-      
-      printWindow.document.write(printContent);
-      printWindow.document.close();
-      printWindow.print();
-    } catch (error) {
-      console.error('Error exporting to PDF:', error);
-    } finally {
-      setExportLoading(false);
-    }
-  };
+        ` : ''}
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+  } catch (error) {
+    console.error('Error exporting to PDF:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
 
   // Show trip details
   const showTripDetails = (trip) => {
@@ -1322,57 +1331,60 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
             </div>
 
             {/* Table - Below both columns */}
-            <div className="all-trips-daily-sales-card">
-              <div className="all-trips-section-header">
-                <div className="all-trips-section-title">All Trips Data</div>
-              </div>
-              <div className="all-trips-daily-sales-table-container">
-                <table className="all-trips-daily-sales-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Trip #</th>
-                      <th>Bus</th>
-                      <th>Conductor</th>
-                      <th>Passengers</th>
-                      <th>Route</th>
-                      <th>Duration</th>
-                      <th>Total Sales</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTrips.length > 0 ? (
-                      filteredTrips.map((trip) => (
-                        <tr key={trip.tripId}>
-                          <td>{formatDate(trip.endTime)}</td>
-                          <td>{trip.tripNumber}</td>
-                          <td>{trip.busName}</td>
-                          <td>{trip.conductorName}</td>
-                          <td>{trip.ticketCount}</td>
-                          <td>{trip.majorRoute}</td>
-                          <td>{trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
-                          <td>{formatCurrency(trip.totalSales)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="8" className="all-trips-no-data">
-                          No trip data available for the selected period
-                        </td>
-                      </tr>
-                    )}
-                    {filteredTrips.length > 0 && (
-                      <tr className="all-trips-total-row">
-                        <td colSpan="4"><strong>TOTAL</strong></td>
-                        <td><strong>{dashboardData.totalPassengers}</strong></td>
-                        <td colSpan="2"></td>
-                        <td><strong>{formatCurrency(dashboardData.totalSales)}</strong></td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          {/* Table - Below both columns */}
+<div className="all-trips-daily-sales-card">
+  <div className="all-trips-section-header">
+    <div className="all-trips-section-title">All Trips Data</div>
+  </div>
+  <div className="all-trips-daily-sales-table-container">
+    <table className="all-trips-daily-sales-table">
+      <thead>
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Trip #</th>
+          <th>Bus</th>
+          <th>Conductor</th>
+          <th>Passengers</th>
+          <th>Route</th>
+          <th>Duration</th>
+          <th>Total Sales</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredTrips.length > 0 ? (
+          filteredTrips.map((trip) => (
+            <tr key={trip.tripId}>
+              <td>{formatDate(trip.startTime)}</td>
+              <td>{formatDate(trip.endTime)}</td>
+              <td>{trip.tripNumber}</td>
+              <td>{trip.busName}</td>
+              <td>{trip.conductorName}</td>
+              <td>{trip.ticketCount}</td>
+              <td>{trip.majorRoute}</td>
+              <td>{trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
+              <td>{formatCurrency(trip.totalSales)}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="9" className="all-trips-no-data">
+              No trip data available for the selected period
+            </td>
+          </tr>
+        )}
+        {filteredTrips.length > 0 && (
+          <tr className="all-trips-total-row">
+            <td colSpan="5"><strong>TOTAL</strong></td>
+            <td><strong>{filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0)}</strong></td>
+            <td colSpan="2"></td>
+            <td><strong>{formatCurrency(filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0))}</strong></td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
           </div>
         </div>
 

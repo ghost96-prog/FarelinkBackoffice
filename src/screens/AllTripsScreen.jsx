@@ -757,7 +757,28 @@ const exportToCSV = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `all-trips-data-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    
+    // Generate filename based on actual date range
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let fileName;
+
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      // For single day ranges: all-trips-YYYY-MM-DD.csv
+      fileName = `all-trips-${format(startDate, 'yyyy-MM-dd')}.csv`;
+    } else if (selectedDateRange === "Custom") {
+      // For custom ranges: all-trips-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `all-trips-${startFormatted}-to-${endFormatted}.csv`;
+    } else {
+      // For other ranges: all-trips-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `all-trips-${startFormatted}-to-${endFormatted}.csv`;
+    }
+
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -774,11 +795,22 @@ const exportToPDF = () => {
   try {
     const printWindow = window.open('', '_blank');
     
+    // Generate date range for title
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let dateRangeTitle;
+    
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      dateRangeTitle = format(startDate, 'yyyy-MM-dd');
+    } else {
+      dateRangeTitle = `${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`;
+    }
+    
     const printContent = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>All Trips Report</title>
+        <title>All Trips Report - ${dateRangeTitle}</title>
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           h1 { color: #1a5b7b; text-align: center; }
@@ -1101,7 +1133,7 @@ const exportToPDF = () => {
   return (
     <div className={`app-container ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
   <TopToolbar
-  title={selectedBus ? `${selectedBus.name} - All Trips` : "All Trips"}
+  title={selectedBus ? `${selectedBus.name} - SALES BY TRIP` : "All Trips"}
   subtitle={selectedBus ? `Complete trip history for ${selectedBus.name}` : "Complete trip history for all buses"}
   companyName={user?.company_name || "Company"}
   onMenuToggle={() => setSidebarCollapsed(false)}

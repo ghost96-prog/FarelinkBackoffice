@@ -1146,3 +1146,76 @@ body {
     font-size: 12px;
   }
 }
+/* Currency Breakdown Section Styles */
+.trip-tickets-currency-breakdown-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trip-tickets-currency-breakdown-table-container {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+.trip-tickets-currency-breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.trip-tickets-currency-breakdown-table th {
+  background: #1a5b7b;
+  color: white;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+}
+
+.trip-tickets-currency-breakdown-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.trip-tickets-currency-breakdown-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.trip-tickets-currency-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.trip-tickets-currency-name .fas {
+  color: #28a745;
+  font-size: 16px;
+}
+
+.trip-tickets-currency-code-badge {
+  background: #e9ecef;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .trip-tickets-currency-breakdown-table {
+    font-size: 13px;
+  }
+  
+  .trip-tickets-currency-breakdown-table th,
+  .trip-tickets-currency-breakdown-table td {
+    padding: 10px 8px;
+  }
+}

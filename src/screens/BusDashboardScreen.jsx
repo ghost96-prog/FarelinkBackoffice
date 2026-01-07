@@ -84,6 +84,10 @@ const BusDashboardScreen = () => {
     totalTickets: 0,
   });
 
+  // New state for sales breakdown by currency
+  const [salesByCurrency, setSalesByCurrency] = useState([]);
+  const [currencyBreakdownLoading, setCurrencyBreakdownLoading] = useState(false);
+
   // Date range picker state
   const [dateRangeState, setDateRangeState] = useState([
     {
@@ -123,85 +127,159 @@ const BusDashboardScreen = () => {
       isSelected: () => selectedDateRange === "This Year",
     },
   ];
-const fetchAllBuses = async () => {
-  try {
-    const token = user?.token;
-    const apiLink = Apilink.getLink();
 
-    if (!token) {
-      console.error("No authentication token available");
-      return;
+  const fetchAllBuses = async () => {
+    try {
+      const token = user?.token;
+      const apiLink = Apilink.getLink();
+
+      if (!token) {
+        console.error("No authentication token available");
+        return;
+      }
+
+      let response = await fetch(`${apiLink}/buses`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Transform the bus data to match the expected format
+        const transformedBuses = data.buses.map(bus => ({
+          id: bus.id,
+          name: bus.busname,
+          plate: bus.numberplate,
+          route: bus.route || "No route assigned",
+          totalSales: 0,
+          totalPassengers: 0,
+          trips: 0,
+          conductor: bus.conductorname || "Not assigned"
+        }));
+        setAllBuses(transformedBuses);
+      } else {
+        console.error("Failed to fetch all buses:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching all buses:", error);
     }
+  };
 
-    let response = await fetch(`${apiLink}/buses`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Transform the bus data to match the expected format
-      const transformedBuses = data.buses.map(bus => ({
-        id: bus.id,
-        name: bus.busname,
-        plate: bus.numberplate,
-        route: bus.route || "No route assigned",
-        totalSales: 0,
-        totalPassengers: 0,
-        trips: 0,
-        conductor: bus.conductorname || "Not assigned"
-      }));
-      setAllBuses(transformedBuses);
-    } else {
-      console.error("Failed to fetch all buses:", data);
-    }
-  } catch (error) {
-    console.error("Error fetching all buses:", error);
-  }
-};
-
-// Call fetchAllBuses when component mounts
-useEffect(() => {
-  fetchAllBuses();
-}, []);
+  // Call fetchAllBuses when component mounts
+  useEffect(() => {
+    fetchAllBuses();
+  }, []);
 
   // Fetch bus dashboard data
-const fetchBusDashboardData = async (startDate, endDate, busToFetch = selectedBus) => {
-  try {
-    setLoading(true);
-    const token = user?.token;
-    const apiLink = Apilink.getLink();
+  const fetchBusDashboardData = async (startDate, endDate, busToFetch = selectedBus) => {
+    try {
+      setLoading(true);
+      setCurrencyBreakdownLoading(true);
+      const token = user?.token;
+      const apiLink = Apilink.getLink();
 
-    if (!token) {
-      console.error("No authentication token available");
-      return;
-    }
+      if (!token) {
+        console.error("No authentication token available");
+        return;
+      }
 
-    const requestBody = {
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      busId: busToFetch?.id || busToFetch?.busId,
-    };
+      const requestBody = {
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        busId: busToFetch?.id || busToFetch?.busId,
+      };
 
-    console.log("Fetching bus dashboard data for:", busToFetch?.name, "with:", requestBody);
+      console.log("Fetching bus dashboard data for:", busToFetch?.name, "with:", requestBody);
 
-    let response = await fetch(`${apiLink}/bussummary`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
+      // Fetch bus summary data
+      let response = await fetch(`${apiLink}/bussummary`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Failed to fetch bus dashboard data:", data);
+      if (!response.ok) {
+        console.error("Failed to fetch bus dashboard data:", data);
+        setDashboardData({
+          totalSales: 0,
+          totalPassengers: 0,
+          totalTrips: 0,
+          busPerformance: [],
+          dailySales: [],
+          salesByEmployee: [],
+          completedTrips: [],
+        });
+        setSalesByCurrency([]);
+      } else {
+        console.log("Bus dashboard data received:", data);
+
+        // Set base currency
+        if (data.baseCurrency) {
+          setBaseCurrency(data.baseCurrency);
+        }
+
+        // STORE API TOTALS
+        setApiTotals({
+          totalRevenue: data.totalBusRevenue || 0,
+          totalTickets: data.totalBusTickets || 0,
+        });
+
+        // Transform API data
+        const transformedTrips = (data.trips || []).map((trip) => ({
+          tripId: trip.tripId || `TRIP_${trip.id}`,
+          tripNumber: trip.tripNumber || 1,
+          startTime: trip.startTime,
+          endTime: trip.endTime,
+          busId: trip.busId?.toString(),
+          busName: trip.busName || "Unknown Bus",
+          conductorId: trip.conductorId?.toString(),
+          conductorName: trip.conductorName || "Unknown Conductor",
+          totalSales: trip.totalIncome || trip.totalSales || 0,
+          ticketCount: trip.totalTickets || trip.ticketCount || 0,
+          status: "completed",
+          majorRoute: trip.majorRoute || "Unknown Route",
+          timeElapsed: trip.timeElapsed || "0h 0m",
+          currencySymbol: trip.currencySymbol || data.baseCurrency?.symbol || "$",
+          currencyCode: trip.currencyCode || data.baseCurrency?.code || "USD",
+          currencyName: trip.currencyName || data.baseCurrency?.name || "United States Dollar",
+        }));
+
+        const transformedData = {
+          totalSales: data.totalBusRevenue || 0,
+          totalPassengers: data.totalBusTickets || 0,
+          totalTrips: transformedTrips.length,
+          busPerformance: [{
+            id: busToFetch?.id || busToFetch?.busId,
+            name: busToFetch?.name || "Unknown Bus",
+            plate: busToFetch?.plate || "Unknown Plate",
+            route: busToFetch?.route || "Multiple Routes",
+            totalSales: data.totalBusRevenue || 0,
+            totalPassengers: data.totalBusTickets || 0,
+            conductor: "Not Assigned",
+            trips: transformedTrips.length,
+          }],
+          dailySales: [],
+          salesByEmployee: data.salesByEmployee || [],
+          completedTrips: transformedTrips,
+        };
+
+        setDashboardData(transformedData);
+        setFilteredTrips(transformedTrips);
+
+        // Now fetch ticket data for currency breakdown
+        await fetchTicketDataForCurrencyBreakdown(startDate, endDate, busToFetch);
+      }
+    } catch (error) {
+      console.error("Error fetching bus dashboard data:", error);
       setDashboardData({
         totalSales: 0,
         totalPassengers: 0,
@@ -211,78 +289,88 @@ const fetchBusDashboardData = async (startDate, endDate, busToFetch = selectedBu
         salesByEmployee: [],
         completedTrips: [],
       });
-    } else {
-      console.log("Bus dashboard data received:", data);
+      setSalesByCurrency([]);
+    } finally {
+      setLoading(false);
+      setCurrencyBreakdownLoading(false);
+      setIsRefreshing(false);
+    }
+  };
 
-      // Set base currency
-      if (data.baseCurrency) {
-        setBaseCurrency(data.baseCurrency);
-      }
+  // Fetch ticket data for currency breakdown
+  const fetchTicketDataForCurrencyBreakdown = async (startDate, endDate, busToFetch) => {
+    try {
+      const token = user?.token;
+      const apiLink = Apilink.getLink();
 
-      // STORE API TOTALS
-      setApiTotals({
-        totalRevenue: data.totalBusRevenue || 0,
-        totalTickets: data.totalBusTickets || 0,
-      });
-
-      // Transform API data
-      const transformedTrips = (data.trips || []).map((trip) => ({
-        tripId: trip.tripId || `TRIP_${trip.id}`,
-        tripNumber: trip.tripNumber || 1,
-        startTime: trip.startTime,
-        endTime: trip.endTime,
-        busId: trip.busId?.toString(),
-        busName: trip.busName || "Unknown Bus",
-        conductorId: trip.conductorId?.toString(),
-        conductorName: trip.conductorName || "Unknown Conductor",
-        totalSales: trip.totalIncome || trip.totalSales || 0,
-        ticketCount: trip.totalTickets || trip.ticketCount || 0,
-        status: "completed",
-        majorRoute: trip.majorRoute || "Unknown Route",
-        timeElapsed: trip.timeElapsed || "0h 0m",
-        currencySymbol: trip.currencySymbol || data.baseCurrency?.symbol || "$",
-        currencyCode: trip.currencyCode || data.baseCurrency?.code || "USD",
-        currencyName: trip.currencyName || data.baseCurrency?.name || "United States Dollar",
-      }));
-
-      const transformedData = {
-        totalSales: data.totalBusRevenue || 0,
-        totalPassengers: data.totalBusTickets || 0,
-        totalTrips: transformedTrips.length,
-        busPerformance: [{
-          id: busToFetch?.id || busToFetch?.busId,
-          name: busToFetch?.name || "Unknown Bus",
-          plate: busToFetch?.plate || "Unknown Plate",
-          route: busToFetch?.route || "Multiple Routes",
-          totalSales: data.totalBusRevenue || 0,
-          totalPassengers: data.totalBusTickets || 0,
-          conductor: "Not Assigned",
-          trips: transformedTrips.length,
-        }],
-        dailySales: [],
-        salesByEmployee: data.salesByEmployee || [],
-        completedTrips: transformedTrips,
+      const requestBody = {
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        busId: busToFetch?.id || busToFetch?.busId,
       };
 
-      setDashboardData(transformedData);
-      setFilteredTrips(transformedTrips);
+      console.log("Fetching ticket data for currency breakdown with:", requestBody);
+
+      let response = await fetch(`${apiLink}/ticketssummary`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.tickets) {
+        console.log("Ticket data received for currency breakdown:", data.tickets.length, "tickets");
+        
+        // Calculate sales breakdown by currency
+        const currencyMap = {};
+        
+        data.tickets.forEach(ticket => {
+          const currencyCode = ticket.currencyCode || "USD";
+          const currencyName = ticket.currencyName || "United States Dollar";
+          const currencySymbol = ticket.currencySymbol || "$";
+          const amount = Number(ticket.amountPaid) || 0;
+          
+          if (!currencyMap[currencyCode]) {
+            currencyMap[currencyCode] = {
+              currencyCode,
+              currencyName,
+              currencySymbol,
+              totalSales: 0,
+              ticketCount: 0,
+              percentage: 0
+            };
+          }
+          
+          currencyMap[currencyCode].totalSales += amount;
+          currencyMap[currencyCode].ticketCount += 1;
+        });
+        
+        // Convert to array and calculate percentages
+        const currencyBreakdown = Object.values(currencyMap);
+        const totalSales = currencyBreakdown.reduce((sum, curr) => sum + curr.totalSales, 0);
+        
+        currencyBreakdown.forEach(curr => {
+          curr.percentage = totalSales > 0 ? (curr.totalSales / totalSales) * 100 : 0;
+        });
+        
+        // Sort by total sales (descending)
+        currencyBreakdown.sort((a, b) => b.totalSales - a.totalSales);
+        
+        console.log("Currency breakdown calculated:", currencyBreakdown);
+        setSalesByCurrency(currencyBreakdown);
+      } else {
+        console.log("No ticket data available for currency breakdown");
+        setSalesByCurrency([]);
+      }
+    } catch (error) {
+      console.error("Error fetching ticket data for currency breakdown:", error);
+      setSalesByCurrency([]);
     }
-  } catch (error) {
-    console.error("Error fetching bus dashboard data:", error);
-    setDashboardData({
-      totalSales: 0,
-      totalPassengers: 0,
-      totalTrips: 0,
-      busPerformance: [],
-      dailySales: [],
-      salesByEmployee: [],
-      completedTrips: [],
-    });
-  } finally {
-    setLoading(false);
-    setIsRefreshing(false);
-  }
-};
+  };
 
   // Load employees
   const loadEmployees = async () => {
@@ -436,7 +524,6 @@ const fetchBusDashboardData = async (startDate, endDate, busToFetch = selectedBu
     }
   };
 
-
   // Calculate date range function
   const calculateDateRange = (range, baseDate = new Date()) => {
     let startDate, endDate;
@@ -481,97 +568,100 @@ const fetchBusDashboardData = async (startDate, endDate, busToFetch = selectedBu
   };
 
   // Handle date range selection from modal
- const handleDateRangeSelect = (range) => {
-  setSelectedDateRange(range);
-  setShowDateModal(false);
+  const handleDateRangeSelect = (range) => {
+    setSelectedDateRange(range);
+    setShowDateModal(false);
 
-  if (range !== "Custom") {
-    let startDate, endDate;
-    let newSelectedDate = new Date();
+    if (range !== "Custom") {
+      let startDate, endDate;
+      let newSelectedDate = new Date();
 
-    switch (range) {
-      case "Today":
-        startDate = startOfToday();
-        endDate = endOfToday();
-        newSelectedDate = new Date();
-        break;
-      case "Yesterday":
-        startDate = startOfYesterday();
-        endDate = endOfYesterday();
-        newSelectedDate = subDays(new Date(), 1);
-        break;
-      case "This Week":
-        startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
-        endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
-        break;
-      case "Last Week":
-        const lastWeekDate = subWeeks(new Date(), 1);
-        startDate = startOfWeek(lastWeekDate, { weekStartsOn: 1 });
-        endDate = endOfWeek(lastWeekDate, { weekStartsOn: 1 });
-        newSelectedDate = lastWeekDate;
-        break;
-      case "This Month":
-        startDate = startOfMonth(new Date());
-        endDate = endOfMonth(new Date());
-        break;
-      case "Last Month":
-        const lastMonthDate = subMonths(new Date(), 1);
-        startDate = startOfMonth(lastMonthDate);
-        endDate = endOfMonth(lastMonthDate);
-        newSelectedDate = lastMonthDate;
-        break;
-      case "This Year":
-        startDate = startOfYear(new Date());
-        endDate = endOfYear(new Date());
-        break;
-      default:
-        startDate = startOfToday();
-        endDate = endOfToday();
+      switch (range) {
+        case "Today":
+          startDate = startOfToday();
+          endDate = endOfToday();
+          newSelectedDate = new Date();
+          break;
+        case "Yesterday":
+          startDate = startOfYesterday();
+          endDate = endOfYesterday();
+          newSelectedDate = subDays(new Date(), 1);
+          break;
+        case "This Week":
+          startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+          endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
+          break;
+        case "Last Week":
+          const lastWeekDate = subWeeks(new Date(), 1);
+          startDate = startOfWeek(lastWeekDate, { weekStartsOn: 1 });
+          endDate = endOfWeek(lastWeekDate, { weekStartsOn: 1 });
+          newSelectedDate = lastWeekDate;
+          break;
+        case "This Month":
+          startDate = startOfMonth(new Date());
+          endDate = endOfMonth(new Date());
+          break;
+        case "Last Month":
+          const lastMonthDate = subMonths(new Date(), 1);
+          startDate = startOfMonth(lastMonthDate);
+          endDate = endOfMonth(lastMonthDate);
+          newSelectedDate = lastMonthDate;
+          break;
+        case "This Year":
+          startDate = startOfYear(new Date());
+          endDate = endOfYear(new Date());
+          break;
+        default:
+          startDate = startOfToday();
+          endDate = endOfToday();
+      }
+
+      setDateRangeState([{ startDate, endDate, key: "selection" }]);
+      setSelectedDate(newSelectedDate);
+      fetchBusDashboardData(startDate, endDate, selectedBus);
+    } else {
+      setShowCustomRangeModal(true);
     }
+  };
 
-    setDateRangeState([{ startDate, endDate, key: "selection" }]);
-    setSelectedDate(newSelectedDate);
+  // Update the bus selection function to clear previous data
+  const handleBusSelect = (selectedBus) => {
+    // Clear all existing data immediately
+    setDashboardData({
+      totalSales: 0,
+      totalPassengers: 0,
+      totalTrips: 0,
+      busPerformance: [],
+      dailySales: [],
+      salesByEmployee: [],
+      completedTrips: [],
+    });
+    setFilteredTrips([]);
+    setApiTotals({
+      totalRevenue: 0,
+      totalTickets: 0,
+    });
+    setSalesByCurrency([]);
+    
+    // Set loading state to show loading indicator
+    setLoading(true);
+    setCurrencyBreakdownLoading(true);
+    
+    // Update the selected bus
+    setSelectedBus(selectedBus);
+    setShowBusDropdown(false);
+    
+    // Reset search query
+    setSearchQuery("");
+    
+    // Reset pagination
+    setCurrentPage(1);
+    
+    // Fetch data for the newly selected bus
+    const { startDate, endDate } = calculateDateRange(selectedDateRange, selectedDate);
     fetchBusDashboardData(startDate, endDate, selectedBus);
-  } else {
-    setShowCustomRangeModal(true);
-  }
-};
+  };
 
-// Update the bus selection function to clear previous data
-const handleBusSelect = (selectedBus) => {
-  // Clear all existing data immediately
-  setDashboardData({
-    totalSales: 0,
-    totalPassengers: 0,
-    totalTrips: 0,
-    busPerformance: [],
-    dailySales: [],
-    salesByEmployee: [],
-    completedTrips: [],
-  });
-  setFilteredTrips([]);
-  setApiTotals({
-    totalRevenue: 0,
-    totalTickets: 0,
-  });
-  
-  // Set loading state to show loading indicator
-  setLoading(true);
-  
-  // Update the selected bus
-  setSelectedBus(selectedBus);
-  setShowBusDropdown(false);
-  
-  // Reset search query
-  setSearchQuery("");
-  
-  // Reset pagination
-  setCurrentPage(1);
-  
-  // Fetch data for the newly selected bus
-  const { startDate, endDate } = calculateDateRange(selectedDateRange, selectedDate);
-  fetchBusDashboardData(startDate, endDate, selectedBus);
-};
   // Date navigation functions
   const handleBackClick = () => {
     let newStartDate, newEndDate;
@@ -640,7 +730,7 @@ const handleBusSelect = (selectedBus) => {
     setDateRangeState([
       { startDate: newStartDate, endDate: newEndDate, key: "selection" },
     ]);
-  fetchBusDashboardData(newStartDate, newEndDate, selectedBus);
+    fetchBusDashboardData(newStartDate, newEndDate, selectedBus);
   };
 
   const handleForwardClick = () => {
@@ -734,7 +824,7 @@ const handleBusSelect = (selectedBus) => {
     setDateRangeState([
       { startDate: newStartDate, endDate: newEndDate, key: "selection" },
     ]);
-  fetchBusDashboardData(newStartDate, newEndDate, selectedBus);
+    fetchBusDashboardData(newStartDate, newEndDate, selectedBus);
   };
 
   const canNavigateForward = () => {
@@ -794,8 +884,8 @@ const handleBusSelect = (selectedBus) => {
   };
 
   // Format currency
-  const formatCurrency = (amount) => {
-    const symbol = baseCurrency?.symbol || "$";
+  const formatCurrency = (amount, currencySymbol = null) => {
+    const symbol = currencySymbol || baseCurrency?.symbol || "$";
     return `${symbol}${Number(amount).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -822,66 +912,45 @@ const handleBusSelect = (selectedBus) => {
     }
   };
 
-  // Export functions
-// Export functions
-const exportToCSV = () => {
-  setExportLoading(true);
-  try {
-    const headers = "Start Date,End Date,Bus Name,Conductor,Passengers,Trips,Total Sales,Route,Duration\n";
-    
-    const csvData = filteredTrips
-      .map(trip => {
-        const startDate = formatDate(trip.startTime);
-        const endDate = formatDate(trip.endTime);
-        return `"${startDate}","${endDate}","${trip.busName}","${trip.conductorName}",${trip.ticketCount},1,${trip.totalSales},"${trip.majorRoute}","${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}"`;
-      })
-      .join('\n');
-    
-    // Add totals row
-    const totalPassengers = filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0);
-    const totalSales = filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0);
-    const totalsRow = `"TOTAL TRIP SALES","","","",${totalPassengers},${filteredTrips.length},${totalSales},"",""`;
-    
-    const csvContent = headers + csvData + '\n' + totalsRow;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `bus-trips-data-${selectedBus?.name || 'bus'}-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Error exporting to CSV:', error);
-  } finally {
-    setExportLoading(false);
-  }
-};
-
+  // Export functions - Updated to include currency breakdown
 const exportToPDF = () => {
   setExportLoading(true);
   try {
     const printWindow = window.open('', '_blank');
     
+    // Generate date range for title
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let dateRangeTitle;
+    
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      dateRangeTitle = format(startDate, 'yyyy-MM-dd');
+    } else {
+      dateRangeTitle = `${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`;
+    }
+    
+    const busName = selectedBus?.name || 'Bus';
+    
     const printContent = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Bus Trips Report - ${selectedBus?.name || 'Bus'}</title>
+        <title>Bus Trips Report - ${busName} - ${dateRangeTitle}</title>
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           h1 { color: #1a5b7b; text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          h2 { color: #1a5b7b; margin-top: 30px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
           th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
           th { background-color: #1a5b7b; color: white; }
           tr:nth-child(even) { background-color: #f2f2f2; }
           .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
           .total-row { font-weight: bold; background-color: #e9ecef; }
+          .section-break { margin-top: 30px; }
         </style>
       </head>
       <body>
-        <h1>Bus Trips Report - ${selectedBus?.name || 'Bus'}</h1>
+        <h1>Bus Trips Report - ${busName}</h1>
         <div class="summary">
           <p><strong>Period:</strong> ${formatDateDisplay()}</p>
           <p><strong>Total Sales:</strong> ${formatCurrency(dashboardData.totalSales)}</p>
@@ -889,6 +958,8 @@ const exportToPDF = () => {
           <p><strong>Total Trips:</strong> ${dashboardData.totalTrips}</p>
           <p><strong>Bus:</strong> ${selectedBus?.name || 'N/A'} (${selectedBus?.plate || 'N/A'})</p>
         </div>
+        
+        <h2>Trip Data</h2>
         <table>
           <thead>
             <tr>
@@ -925,12 +996,70 @@ const exportToPDF = () => {
             ` : ''}
           </tbody>
         </table>
+        
+        ${dashboardData.salesByEmployee.length > 0 ? `
+          <div class="section-break">
+            <h2>Sales by Employee</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee Name</th>
+                  <th>Role</th>
+                  <th>Tickets</th>
+                  <th>Total Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${dashboardData.salesByEmployee.map(employee => {
+                  const conductorDetails = getConductorDetails(employee.conducterId || employee.conductorId);
+                  const employeeName = employee.conductorName?.toUpperCase() || conductorDetails.name?.toUpperCase() || "Unknown Employee";
+                  const role = conductorDetails.role || employee.role || "Employee";
+                  return `
+                    <tr>
+                      <td>${employeeName}</td>
+                      <td>${role}</td>
+                      <td>${employee.ticketsCount || 0}</td>
+                      <td>${formatCurrency(employee.amountPaidSum || 0)}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
+        
+        ${salesByCurrency.length > 0 ? `
+          <div class="section-break">
+            <h2>Sales Breakdown by Currency</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Currency Code</th>
+                  <th>Currency Name</th>
+                  <th>Tickets</th>
+                  <th>Total Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${salesByCurrency.map(currency => `
+                  <tr>
+                    <td>${currency.currencyCode}</td>
+                    <td>${currency.currencyName}</td>
+                    <td>${currency.ticketCount}</td>
+                    <td>${formatCurrency(currency.totalSales, currency.currencySymbol)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
+        
         <p style="margin-top: 20px; text-align: center; color: #666;">
           Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
         </p>
-        ${filteredTrips.length === 0 ? `
+        ${filteredTrips.length === 0 && salesByCurrency.length === 0 && dashboardData.salesByEmployee.length === 0 ? `
           <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
-            No trip data available for the selected period
+            No data available for the selected period
           </p>
         ` : ''}
       </body>
@@ -945,8 +1074,88 @@ const exportToPDF = () => {
   } finally {
     setExportLoading(false);
   }
-};
+};const exportToCSV = () => {
+  setExportLoading(true);
+  try {
+    // Trip data headers
+    const tripHeaders = "Start Date,End Date,Bus Name,Conductor,Passengers,Trips,Total Sales,Route,Duration\n";
+    
+    const tripData = filteredTrips
+      .map(trip => {
+        const startDate = formatDate(trip.startTime);
+        const endDate = formatDate(trip.endTime);
+        return `"${startDate}","${endDate}","${trip.busName}","${trip.conductorName}",${trip.ticketCount},1,${trip.totalSales},"${trip.majorRoute}","${trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}"`;
+      })
+      .join('\n');
+    
+    // Add totals row for trips
+    const totalPassengers = filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0);
+    const totalTripSales = filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0);
+    const tripTotalsRow = `"TOTAL TRIP SALES","","","",${totalPassengers},${filteredTrips.length},${totalTripSales},"",""`;
+    
+    // Employee sales headers
+    const employeeHeaders = "\n\nSALES BY EMPLOYEE\nEmployee Name,Role,Tickets,Total Sales\n";
+    
+    const employeeData = dashboardData.salesByEmployee
+      .map(employee => {
+        const conductorDetails = getConductorDetails(employee.conducterId || employee.conductorId);
+        const employeeName = employee.conductorName?.toUpperCase() || conductorDetails.name?.toUpperCase() || "Unknown Employee";
+        const role = conductorDetails.role || employee.role || "Employee";
+        return `"${employeeName}","${role}",${employee.ticketsCount || 0},${employee.amountPaidSum || 0}`;
+      })
+      .join('\n');
+    
+    // Currency breakdown headers
+    const currencyHeaders = "\n\nCURRENCY BREAKDOWN\nCurrency Code,Currency Name,Tickets,Total Sales\n";
+    
+    const currencyData = salesByCurrency
+      .map(currency => {
+        return `"${currency.currencyCode}","${currency.currencyName}",${currency.ticketCount},${currency.totalSales}`;
+      })
+      .join('\n');
+    
+    const csvContent = tripHeaders + tripData + '\n' + tripTotalsRow + 
+                      (dashboardData.salesByEmployee.length > 0 ? employeeHeaders + employeeData : '') + 
+                      (salesByCurrency.length > 0 ? currencyHeaders + currencyData : '');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Generate filename based on actual date range
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    const busName = selectedBus?.name || 'bus';
+    const sanitizedBusName = busName.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-');
+    let fileName;
 
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      // For single day ranges: bus-trips-{bus-name}-YYYY-MM-DD.csv
+      fileName = `bus-trips-${sanitizedBusName}-${format(startDate, 'yyyy-MM-dd')}.csv`;
+    } else if (selectedDateRange === "Custom") {
+      // For custom ranges: bus-trips-{bus-name}-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `bus-trips-${sanitizedBusName}-${startFormatted}-to-${endFormatted}.csv`;
+    } else {
+      // For other ranges: bus-trips-{bus-name}-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `bus-trips-${sanitizedBusName}-${startFormatted}-to-${endFormatted}.csv`;
+    }
+
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
   // Show trip details
   const showTripDetails = (trip) => {
     setSelectedTrip(trip);
@@ -998,82 +1207,145 @@ const exportToPDF = () => {
   );
 
   // Trip List Item Component
-const TripListItem = ({ trip, index }) => {
-  return (
-    <div className="bus-dashboard-trip-item" onClick={() => showTripDetails(trip)}>
-      <div className="bus-dashboard-trip-item-content">
-        <div className="bus-dashboard-trip-item-header">
-          <div className="bus-dashboard-trip-icon">
-            <span className="fas fa-clock"></span> {/* Changed */}
-          </div>
-          <div className="bus-dashboard-trip-info">
-            <div className="bus-dashboard-trip-id">Trip #{trip.tripNumber || "N/A"}</div>
-            <div className="bus-dashboard-trip-details">
-              Ended on: {formatDate(trip.endTime)}
+  const TripListItem = ({ trip, index }) => {
+    return (
+      <div className="bus-dashboard-trip-item" onClick={() => showTripDetails(trip)}>
+        <div className="bus-dashboard-trip-item-content">
+          <div className="bus-dashboard-trip-item-header">
+            <div className="bus-dashboard-trip-icon">
+              <span className="fas fa-clock"></span> {/* Changed */}
             </div>
-            <div className="bus-dashboard-conductor-name">
-              Conductor: {trip.conductorName.toUpperCase() || "Unknown Conductor"}
+            <div className="bus-dashboard-trip-info">
+              <div className="bus-dashboard-trip-id">Trip #{trip.tripNumber || "N/A"}</div>
+              <div className="bus-dashboard-trip-details">
+                Ended on: {formatDate(trip.endTime)}
+              </div>
+              <div className="bus-dashboard-conductor-name">
+                Conductor: {trip.conductorName.toUpperCase() || "Unknown Conductor"}
+              </div>
+            </div>
+            <div className="bus-dashboard-trip-amount">
+              {formatCurrency(Number(trip.totalSales))}
             </div>
           </div>
-          <div className="bus-dashboard-trip-amount">
-            {formatCurrency(Number(trip.totalSales))}
+          <div className="bus-dashboard-trip-stats">
+            <div className="bus-dashboard-trip-stat">
+              <span className="fas fa-receipt"></span> {/* Changed */}
+              {trip.ticketCount} tickets
+            </div>
+            <div className="bus-dashboard-trip-stat">
+              <span className="fas fa-hourglass-half"></span> {/* Changed - using hourglass for duration */}
+              {trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}
+            </div>
           </div>
-        </div>
-        <div className="bus-dashboard-trip-stats">
-          <div className="bus-dashboard-trip-stat">
-            <span className="fas fa-receipt"></span> {/* Changed */}
-            {trip.ticketCount} tickets
+          <div className="bus-dashboard-currency-badge2">
+            <span className="fas fa-money-bill-wave"></span> {/* Changed */}
+            {trip.currencyCode || baseCurrency?.code || "USD"}
           </div>
-          <div className="bus-dashboard-trip-stat">
-            <span className="fas fa-hourglass-half"></span> {/* Changed - using hourglass for duration */}
-            {trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}
-          </div>
-        </div>
-        <div className="bus-dashboard-currency-badge2">
-          <span className="fas fa-money-bill-wave"></span> {/* Changed */}
-          {trip.currencyCode || baseCurrency?.code || "USD"}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   // Employee Sales List Item Component
- // Employee Sales List Item Component - UPDATED VERSION
-const EmployeeSalesListItem = ({ employee, index }) => {
-  // Use the getConductorDetails function to get role information
-  const conductorDetails = getConductorDetails(employee.conducterId || employee.conductorId);
-  
-  return (
-    <div className="bus-dashboard-trip-item bus-dashboard-employee-sales-item">
-      <div className="bus-dashboard-trip-item-content">
-        <div className="bus-dashboard-trip-item-header">
-          <div className="bus-dashboard-trip-icon">
-<span className="fas fa-user"></span>
-          </div>
-          <div className="bus-dashboard-trip-info">
-            <div className="bus-dashboard-trip-id">
-              {employee.conductorName?.toUpperCase() || conductorDetails.name?.toUpperCase() || "Unknown Employee"}
+  const EmployeeSalesListItem = ({ employee, index }) => {
+    // Use the getConductorDetails function to get role information
+    const conductorDetails = getConductorDetails(employee.conducterId || employee.conductorId);
+    
+    return (
+      <div className="bus-dashboard-trip-item bus-dashboard-employee-sales-item">
+        <div className="bus-dashboard-trip-item-content">
+          <div className="bus-dashboard-trip-item-header">
+            <div className="bus-dashboard-trip-icon">
+              <span className="fas fa-user"></span>
+            </div>
+            <div className="bus-dashboard-trip-info">
+              <div className="bus-dashboard-trip-id">
+                {employee.conductorName?.toUpperCase() || conductorDetails.name?.toUpperCase() || "Unknown Employee"}
+              </div>
+            </div>
+            <div className="bus-dashboard-trip-amount bus-dashboard-employee-amount">
+              {formatCurrency(Number(employee.amountPaidSum || 0))}
             </div>
           </div>
-          <div className="bus-dashboard-trip-amount bus-dashboard-employee-amount">
-            {formatCurrency(Number(employee.amountPaidSum || 0))}
+          <div className="bus-dashboard-trip-stats">
+            <div className="bus-dashboard-trip-stat">
+              <span className="professional-icon icon-receipt"></span>
+              {employee.ticketsCount || 0} tickets
+            </div>
           </div>
-        </div>
-        <div className="bus-dashboard-trip-stats">
-          <div className="bus-dashboard-trip-stat">
-            <span className="professional-icon icon-receipt"></span>
-            {employee.ticketsCount || 0} tickets
+          <div className="bus-dashboard-currency-badge">
+            <span className="professional-icon icon-person"></span>
+            {conductorDetails.role || employee.role || "Employee"}
           </div>
-        </div>
-        <div className="bus-dashboard-currency-badge">
-          <span className="professional-icon icon-person"></span>
-          {conductorDetails.role || employee.role || "Employee"}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+
+  // Currency Breakdown Card Component
+  const CurrencyBreakdownCard = () => {
+    if (salesByCurrency.length === 0) {
+      return (
+        <div className="bus-dashboard-currency-breakdown-section">
+          <div className="bus-dashboard-section-header">
+            <div className="bus-dashboard-section-title">Sales by Currency</div>
+          </div>
+          <div className="bus-dashboard-empty-state">
+            <span className="fas fa-money-bill-wave bus-dashboard-empty-icon"></span>
+            <div className="bus-dashboard-empty-state-text">No currency data available</div>
+            <div className="bus-dashboard-empty-state-subtext">
+              {currencyBreakdownLoading ? "Loading..." : "Currency breakdown will appear here"}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="bus-dashboard-currency-breakdown-section">
+        <div className="bus-dashboard-section-header">
+          <div className="bus-dashboard-section-title">Sales by Currency</div>
+        </div>
+        <div className="bus-dashboard-currency-breakdown-table-container">
+          <table className="bus-dashboard-currency-breakdown-table">
+            <thead>
+              <tr>
+                <th>Currency</th>
+                <th>Code</th>
+                <th>Tickets</th>
+                <th>Total Sales</th>
+              </tr>
+            </thead>
+            <tbody>
+              {salesByCurrency.map((currency, index) => (
+                <tr key={currency.currencyCode}>
+                  <td>
+                    <div className="bus-dashboard-currency-name">
+                      <span className="fas fa-money-bill-wave"></span>
+                      {currency.currencyName}
+                    </div>
+                  </td>
+                  <td>
+                    <span className="bus-dashboard-currency-code-badge">
+                      {currency.currencyCode}
+                    </span>
+                  </td>
+                  <td>{currency.ticketCount}</td>
+                  <td>{formatCurrency(currency.totalSales, currency.currencySymbol)}</td>
+                  <td>
+                   
+                  </td>
+                </tr>
+              ))}
+            
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   // Trip Detail Modal Component
   const TripDetailModal = () => {
     if (!selectedTrip) return null;
@@ -1094,38 +1366,35 @@ const EmployeeSalesListItem = ({ employee, index }) => {
               </div>
             </div>
             <button className="bus-dashboard-close-button" onClick={() => setTripDetailModal(false)}>
-
               <span className="fas fa-close"></span>
             </button>
           </div>
 
           <div className="bus-dashboard-modal-content">
-<div className="bus-dashboard-detail-section">
-  <div className="bus-dashboard-section-header">
-    <span className="professional-icon icon-people"></span>
-    <div className="bus-dashboard-section-label">VEHICLE</div>
-  </div>
-  <div className="bus-dashboard-info-card">
-    <div className="bus-dashboard-info-row">
-      <div className="bus-dashboard-label-container">
-        <span className="professional-icon icon-bus"></span>
-        <div className="bus-dashboard-info-label">Bus:</div>
-      </div>
-      <div className="bus-dashboard-info-value">{selectedTrip.busName}</div>
-    </div>
-    <div className="bus-dashboard-info-row">
-      <div className="bus-dashboard-label-container">
-        <span className="professional-icon icon-car"></span>
-        <div className="bus-dashboard-info-label">Plate:</div>
-      </div>
-      <div className="bus-dashboard-info-value">
-        {bus.plate || getBusDetails(selectedTrip.busId).numberplate || "N/A"}
-      </div>
-    </div>
-
-  
-  </div>
-</div>
+            <div className="bus-dashboard-detail-section">
+              <div className="bus-dashboard-section-header">
+                <span className="professional-icon icon-people"></span>
+                <div className="bus-dashboard-section-label">VEHICLE</div>
+              </div>
+              <div className="bus-dashboard-info-card">
+                <div className="bus-dashboard-info-row">
+                  <div className="bus-dashboard-label-container">
+                    <span className="professional-icon icon-bus"></span>
+                    <div className="bus-dashboard-info-label">Bus:</div>
+                  </div>
+                  <div className="bus-dashboard-info-value">{selectedTrip.busName}</div>
+                </div>
+                <div className="bus-dashboard-info-row">
+                  <div className="bus-dashboard-label-container">
+                    <span className="professional-icon icon-car"></span>
+                    <div className="bus-dashboard-info-label">Plate:</div>
+                  </div>
+                  <div className="bus-dashboard-info-value">
+                    {bus.plate || getBusDetails(selectedTrip.busId).numberplate || "N/A"}
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="bus-dashboard-detail-section">
               <div className="bus-dashboard-section-header">
@@ -1205,13 +1474,13 @@ const EmployeeSalesListItem = ({ employee, index }) => {
 
   return (
     <div className={`app-container ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
-   <TopToolbar
-  title={`${selectedBus?.name || 'Bus'} ${selectedBus?.plate ? `(${selectedBus.plate})` : ''}`}
-  subtitle="Bus Performance Overview"
-  companyName={user?.company_name || "Company"}
-  onMenuToggle={() => setSidebarCollapsed(false)}
-  isLoading={loading || exportLoading}
-/>
+      <TopToolbar
+        title={`SALES BY BUS (${selectedBus?.name}- ${selectedBus?.plate ? `${selectedBus.plate})` : ''}`}
+        subtitle="Bus Performance Overview"
+        companyName={user?.company_name || "Company"}
+        onMenuToggle={() => setSidebarCollapsed(false)}
+        isLoading={loading || exportLoading}
+      />
       <SideNav
         activeScreen={activeScreen}
         onScreenChange={setActiveScreen}
@@ -1220,273 +1489,274 @@ const EmployeeSalesListItem = ({ employee, index }) => {
       />
       <div className={`main-content ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
         <div className="bus-dashboard-container">
+          <div className="bus-dashboard-content">
+            {/* Header */}
+            <div className="bus-dashboard-header">
+              <div className="bus-dashboard-header-content">
+                <button className="bus-dashboard-back-button" onClick={() => navigate(-1)}>
+                  <span className="professional-icon icon-arrow-back"></span>
+                  Back
+                </button>
+                
+                {/* Add Bus Selector */}
+                <div className="bus-dashboard-bus-selector-wrapper">
+                  <div
+                    className="bus-dashboard-bus-selector"
+                    onClick={() => setShowBusDropdown(!showBusDropdown)}
+                  >
+                    <span className="bus-dashboard-bus-selector-text">
+                      {selectedBus?.name || "Select Bus"} {selectedBus?.plate ? `(${selectedBus.plate})` : ''}
+                    </span>
+                    <span className="bus-dashboard-dropdown-arrow">
+                      <span className="professional-icon icon-arrow-down"></span>
+                    </span>
+                  </div>
 
-        <div className="bus-dashboard-content">
-        {/* Header */}
-        <div className="bus-dashboard-header">
-        <div className="bus-dashboard-header-content">
-            <button className="bus-dashboard-back-button" onClick={() => navigate(-1)}>
-            <span className="professional-icon icon-arrow-back"></span>
-            Back
-            </button>
-            
-            {/* Add Bus Selector */}
-            <div className="bus-dashboard-bus-selector-wrapper">
-            <div
-                className="bus-dashboard-bus-selector"
-                onClick={() => setShowBusDropdown(!showBusDropdown)}
-            >
-                <span className="bus-dashboard-bus-selector-text">
-                {selectedBus?.name || "Select Bus"} {selectedBus?.plate ? `(${selectedBus.plate})` : ''}
-                </span>
-                <span className="bus-dashboard-dropdown-arrow">
-                <span className="professional-icon icon-arrow-down"></span>
-                </span>
-            </div>
-
-            {showBusDropdown && (
-                <div className="bus-dashboard-bus-dropdown">
-                {allBuses.map((bus) => (
-                    <div
-                    key={bus.id}
-                    className="bus-dashboard-bus-dropdown-item"
-                    onClick={() => handleBusSelect(bus)}
-                    >
-                    {bus.name} ({bus.plate})
+                  {showBusDropdown && (
+                    <div className="bus-dashboard-bus-dropdown">
+                      {allBuses.map((bus) => (
+                        <div
+                          key={bus.id}
+                          className="bus-dashboard-bus-dropdown-item"
+                          onClick={() => handleBusSelect(bus)}
+                        >
+                          {bus.name} ({bus.plate})
+                        </div>
+                      ))}
                     </div>
-                ))}
+                  )}
                 </div>
-            )}
-            </div>
-        </div>
+              </div>
 
-        {/* Date Navigation */}
-        <div className="bus-dashboard-date-navigation">
-            <button
-            className="bus-dashboard-date-nav-button"
-            onClick={handleBackClick}
-            >
-            ‹
-            </button>
-            <button
-            className="bus-dashboard-date-display"
-            onClick={() => setShowDateModal(true)}
-            >
-            {formatDateDisplay()}
-            <span className="bus-dashboard-calendar-icon">
-                <span className="professional-icon icon-calendar"></span>
-            </span>
-            </button>
-            <button
-            className="bus-dashboard-date-nav-button"
-            onClick={handleForwardClick}
-            disabled={!canNavigateForward()}
-            >
-            ›
-            </button>
-        </div>
-        </div>
-
-        {/* NEW: Two Column Layout */}
-        <div className="bus-dashboard-main-content-area">
-            {/* Left Column - Metrics and Export */}
-            <div className="bus-dashboard-left-column">
-            {/* Metrics Section */}
-            <div className="bus-dashboard-metrics-section">
-                <div className="bus-dashboard-section-title">Performance Summary</div>
-                <div className="bus-dashboard-circular-metrics-container">
-                <div className="bus-dashboard-metric-column">
-                    <div className="bus-dashboard-metric-title">Passengers</div>
-                    <CircularMetricCard
-                    value={dashboardData.totalPassengers.toLocaleString()}
-                    subtitle="Total carried"
-                    iconClass="icon-users"
-                    colors={["#17a2b8", "#6f42c1"]}
-                    delay={200}
-                    />
-                </div>
-                <div className="bus-dashboard-metric-column">
-                    <div className="bus-dashboard-metric-title">Total Sales</div>
-                    <CircularMetricCard
-                    value={formatCurrency(dashboardData.totalSales)}
-                    subtitle="Total Bus Sales"
-                    iconClass="icon-dollar"
-                    colors={["#28a745", "#20c997"]}
-                    delay={100}
-                    />
-                </div>
-                <div className="bus-dashboard-metric-column">
-                    <div className="bus-dashboard-metric-title">Trips</div>
-                    <CircularMetricCard
-                    value={dashboardData.totalTrips.toString()}
-                    subtitle="Completed"
-                    iconClass="icon-route"
-                    colors={["#0798ff", "#1427fd"]}
-                    delay={300}
-                    />
-                </div>
-                </div>
-            </div>
-
-            {/* Export Controls */}
-            <div className="bus-dashboard-export-controls">
+              {/* Date Navigation */}
+              <div className="bus-dashboard-date-navigation">
                 <button
-                className="bus-dashboard-export-button bus-dashboard-csv-button"
-                onClick={exportToCSV}
-                disabled={exportLoading}
+                  className="bus-dashboard-date-nav-button"
+                  onClick={handleBackClick}
                 >
-                <span className="professional-icon icon-download"></span>
-                {exportLoading ? "Exporting..." : "Export CSV"}
+                  ‹
                 </button>
                 <button
-                className="bus-dashboard-export-button bus-dashboard-pdf-button"
-                onClick={exportToPDF}
-                disabled={exportLoading}
+                  className="bus-dashboard-date-display"
+                  onClick={() => setShowDateModal(true)}
                 >
-                <span className="professional-icon icon-file-pdf"></span>
-                {exportLoading ? "Exporting..." : "Export PDF"}
+                  {formatDateDisplay()}
+                  <span className="bus-dashboard-calendar-icon">
+                    <span className="professional-icon icon-calendar"></span>
+                  </span>
                 </button>
+                <button
+                  className="bus-dashboard-date-nav-button"
+                  onClick={handleForwardClick}
+                  disabled={!canNavigateForward()}
+                >
+                  ›
+                </button>
+              </div>
             </div>
-            </div>
 
-            {/* Right Column - Lists */}
-            <div className="bus-dashboard-right-column">
-            {/* Employee Sales Section */}
-            {dashboardData.salesByEmployee.length > 0 && (
-                <div className="bus-dashboard-employee-sales-section">
-                <div className="bus-dashboard-section-header">
-                    <div className="bus-dashboard-section-title">Sales by Employee</div>
-                </div>
-                <div className="bus-dashboard-trips-list">
-                    {dashboardData.salesByEmployee.map((employee, index) => (
-                    <EmployeeSalesListItem
-                        key={employee.conducterId || index}
-                        employee={employee}
-                        index={index}
-                    />
-                    ))}
-                </div>
-                </div>
-            )}
-
-            {/* Trips Section */}
-            <div className="bus-dashboard-trips-section">
-                <div className="bus-dashboard-section-header">
-                <div className="bus-dashboard-section-title">Recent Trips</div>
-            <button 
-        className="bus-dashboard-show-all-button"
-        onClick={() => navigate('/all-trips', { state: { bus: selectedBus } })}
-        >
-        All Trips
-        <span className="professional-icon icon-arrow-forward"></span>
-        </button>
-                </div>
-
-                {/* Search Bar */}
-                <div className="bus-dashboard-search-container">
-                <span className="professional-icon icon-search bus-dashboard-search-icon"></span>
-                <input
-                    type="text"
-                    className="bus-dashboard-search-input"
-                    placeholder="Search trips, conductors..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                {searchQuery && (
-                    <button onClick={() => setSearchQuery("")}>
-                    <span className="professional-icon icon-close-circle"></span>
-                    </button>
-                )}
-                </div>
-
-                {filteredTrips.length === 0 && dashboardData.salesByEmployee.length === 0 ? (
-                <div className="bus-dashboard-empty-state">
-                    <span className="professional-icon icon-time bus-dashboard-empty-icon"></span>
-                    <div className="bus-dashboard-empty-state-text">No completed trips found</div>
-                    <div className="bus-dashboard-empty-state-subtext">
-                    {searchQuery ? "Try adjusting your search" : "Trips will appear here once completed"}
+            {/* NEW: Two Column Layout */}
+            <div className="bus-dashboard-main-content-area">
+              {/* Left Column - Metrics and Export */}
+              <div className="bus-dashboard-left-column">
+                {/* Metrics Section */}
+                <div className="bus-dashboard-metrics-section">
+                  <div className="bus-dashboard-section-title">Performance Summary</div>
+                  <div className="bus-dashboard-circular-metrics-container">
+                    <div className="bus-dashboard-metric-column">
+                      <div className="bus-dashboard-metric-title">Passengers</div>
+                      <CircularMetricCard
+                        value={dashboardData.totalPassengers.toLocaleString()}
+                        subtitle="Total carried"
+                        iconClass="icon-users"
+                        colors={["#17a2b8", "#6f42c1"]}
+                        delay={200}
+                      />
                     </div>
-                </div>
-                ) : (
-                <>
-                    {filteredTrips.length === 0 && dashboardData.salesByEmployee.length > 0 && (
-                    <div className="bus-dashboard-one-line-message">
-                        No completed trips yet
+                    <div className="bus-dashboard-metric-column">
+                      <div className="bus-dashboard-metric-title">Total Sales</div>
+                      <CircularMetricCard
+                        value={formatCurrency(dashboardData.totalSales)}
+                        subtitle="Total Bus Sales"
+                        iconClass="icon-dollar"
+                        colors={["#28a745", "#20c997"]}
+                        delay={100}
+                      />
                     </div>
-                    )}
+                    <div className="bus-dashboard-metric-column">
+                      <div className="bus-dashboard-metric-title">Trips</div>
+                      <CircularMetricCard
+                        value={dashboardData.totalTrips.toString()}
+                        subtitle="Completed"
+                        iconClass="icon-route"
+                        colors={["#0798ff", "#1427fd"]}
+                        delay={300}
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                    {filteredTrips.length > 0 && (
+                {/* Export Controls */}
+                <div className="bus-dashboard-export-controls">
+                  <button
+                    className="bus-dashboard-export-button bus-dashboard-csv-button"
+                    onClick={exportToCSV}
+                    disabled={exportLoading}
+                  >
+                    <span className="professional-icon icon-download"></span>
+                    {exportLoading ? "Exporting..." : "Export CSV"}
+                  </button>
+                  <button
+                    className="bus-dashboard-export-button bus-dashboard-pdf-button"
+                    onClick={exportToPDF}
+                    disabled={exportLoading}
+                  >
+                    <span className="professional-icon icon-file-pdf"></span>
+                    {exportLoading ? "Exporting..." : "Export PDF"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column - Lists */}
+              <div className="bus-dashboard-right-column">
+                {/* Employee Sales Section */}
+                {dashboardData.salesByEmployee.length > 0 && (
+                  <div className="bus-dashboard-employee-sales-section">
+                    <div className="bus-dashboard-section-header">
+                      <div className="bus-dashboard-section-title">Sales by Employee</div>
+                    </div>
                     <div className="bus-dashboard-trips-list">
-                        {filteredTrips.slice(0, 5).map((trip, index) => (
-                        <TripListItem
-                            key={trip.tripId}
-                            trip={trip}
-                            index={index}
+                      {dashboardData.salesByEmployee.map((employee, index) => (
+                        <EmployeeSalesListItem
+                          key={employee.conducterId || index}
+                          employee={employee}
+                          index={index}
                         />
-                        ))}
+                      ))}
                     </div>
-                    )}
-                </>
+                  </div>
                 )}
-            </div>
-            </div>
-        </div>
 
-        {/* Table - Below both columns */}
-       {/* Table - Below both columns */}
-<div className="bus-dashboard-daily-sales-card">
-  <div className="bus-dashboard-section-header">
-    <div className="bus-dashboard-section-title">Trip Data</div>
-  </div>
-  <div className="bus-dashboard-daily-sales-table-container">
-    <table className="bus-dashboard-daily-sales-table">
-      <thead>
-        <tr>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Trip #</th>
-          <th>Conductor</th>
-          <th>Passengers</th>
-          <th>Route</th>
-          <th>Duration</th>
-          <th>Total Sales</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredTrips.length > 0 ? (
-          filteredTrips.map((trip) => (
-            <tr key={trip.tripId}>
-              <td>{formatDate(trip.startTime)}</td>
-              <td>{formatDate(trip.endTime)}</td>
-              <td>{trip.tripNumber}</td>
-              <td>{trip.conductorName}</td>
-              <td>{trip.ticketCount}</td>
-              <td>{trip.majorRoute}</td>
-              <td>{trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
-              <td>{formatCurrency(trip.totalSales)}</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="8" className="bus-dashboard-no-data">
-              No trip data available for the selected period
-            </td>
-          </tr>
-        )}
-        {filteredTrips.length > 0 && (
-          <tr className="bus-dashboard-total-row">
-            <td colSpan="4"><strong>TOTAL TRIP SALES</strong></td>
-            <td><strong>{filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0)}</strong></td>
-            <td colSpan="2"></td>
-            <td><strong>{formatCurrency(filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0))}</strong></td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
+                {/* Trips Section */}
+                <div className="bus-dashboard-trips-section">
+                  <div className="bus-dashboard-section-header">
+                    <div className="bus-dashboard-section-title">Recent Trips</div>
+                    <button 
+                      className="bus-dashboard-show-all-button"
+                      onClick={() => navigate('/all-trips', { state: { bus: selectedBus } })}
+                    >
+                      All Trips
+                      <span className="professional-icon icon-arrow-forward"></span>
+                    </button>
+                  </div>
+
+                  {/* Search Bar */}
+                  <div className="bus-dashboard-search-container">
+                    <span className="professional-icon icon-search bus-dashboard-search-icon"></span>
+                    <input
+                      type="text"
+                      className="bus-dashboard-search-input"
+                      placeholder="Search trips, conductors..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {searchQuery && (
+                      <button onClick={() => setSearchQuery("")}>
+                        <span className="professional-icon icon-close-circle"></span>
+                      </button>
+                    )}
+                  </div>
+
+                  {filteredTrips.length === 0 && dashboardData.salesByEmployee.length === 0 ? (
+                    <div className="bus-dashboard-empty-state">
+                      <span className="professional-icon icon-time bus-dashboard-empty-icon"></span>
+                      <div className="bus-dashboard-empty-state-text">No completed trips found</div>
+                      <div className="bus-dashboard-empty-state-subtext">
+                        {searchQuery ? "Try adjusting your search" : "Trips will appear here once completed"}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {filteredTrips.length === 0 && dashboardData.salesByEmployee.length > 0 && (
+                        <div className="bus-dashboard-one-line-message">
+                          No completed trips yet
+                        </div>
+                      )}
+
+                      {filteredTrips.length > 0 && (
+                        <div className="bus-dashboard-trips-list">
+                          {filteredTrips.slice(0, 5).map((trip, index) => (
+                            <TripListItem
+                              key={trip.tripId}
+                              trip={trip}
+                              index={index}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* NEW: Sales Breakdown by Currency Section */}
+            <CurrencyBreakdownCard />
+
+            {/* Table - Below both columns */}
+            <div className="bus-dashboard-daily-sales-card">
+              <div className="bus-dashboard-section-header">
+                <div className="bus-dashboard-section-title">Trip Data</div>
+              </div>
+              <div className="bus-dashboard-daily-sales-table-container">
+                <table className="bus-dashboard-daily-sales-table">
+                  <thead>
+                    <tr>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th>Trip #</th>
+                      <th>Conductor</th>
+                      <th>Passengers</th>
+                      <th>Route</th>
+                      <th>Duration</th>
+                      <th>Total Sales</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTrips.length > 0 ? (
+                      filteredTrips.map((trip) => (
+                        <tr key={trip.tripId}>
+                          <td>{formatDate(trip.startTime)}</td>
+                          <td>{formatDate(trip.endTime)}</td>
+                          <td>{trip.tripNumber}</td>
+                          <td>{trip.conductorName}</td>
+                          <td>{trip.ticketCount}</td>
+                          <td>{trip.majorRoute}</td>
+                          <td>{trip.timeElapsed || getTripDuration(trip.startTime, trip.endTime)}</td>
+                          <td>{formatCurrency(trip.totalSales)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="bus-dashboard-no-data">
+                          No trip data available for the selected period
+                        </td>
+                      </tr>
+                    )}
+                    {filteredTrips.length > 0 && (
+                      <tr className="bus-dashboard-total-row">
+                        <td colSpan="4"><strong>TOTAL TRIP SALES</strong></td>
+                        <td><strong>{filteredTrips.reduce((sum, trip) => sum + (trip.ticketCount || 0), 0)}</strong></td>
+                        <td colSpan="2"></td>
+                        <td><strong>{formatCurrency(filteredTrips.reduce((sum, trip) => sum + (Number(trip.totalSales) || 0), 0))}</strong></td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-     </div>
 
         {/* Date Range Modal */}
         <DateRangeModal

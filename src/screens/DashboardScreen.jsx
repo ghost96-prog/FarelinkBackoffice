@@ -717,95 +717,130 @@ const DashboardScreen = () => {
   };
 
   // Export functions to use bus performance data
-  const exportToCSV = () => {
-    setExportLoading(true);
-    try {
-      const headers = "Date,Bus Name,Passengers,Trips,Total Sales\n";
-      
-      // Use bus performance data instead of dailySales
-      const csvData = dashboardData?.busPerformance
-        .filter(bus => bus.totalSales > 0) // Only buses with sales
-        .map(bus => {
-          const date = formatDateDisplay(); // Use the current selected date range
-          return `"${date}","${bus.name}",${bus.totalPassengers},${bus.trips},${bus.totalSales}`;
-        })
-        .join('\n');
-      
-      const csvContent = headers + csvData;
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `bus-sales-data-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error exporting to CSV:', error);
-    } finally {
-      setExportLoading(false);
-    }
-  };
+const exportToCSV = () => {
+  setExportLoading(true);
+  try {
+    const headers = "Date,Bus Name,Passengers,Trips,Total Sales\n";
+    
+    // Generate date range for filename
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let fileName;
+    let dateRangeDisplay;
 
-  const exportToPDF = () => {
-    setExportLoading(true);
-    try {
-      const printWindow = window.open('', '_blank');
-      const busesWithSales = dashboardData?.busPerformance?.filter(bus => bus.totalSales > 0) || [];
-      
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Bus Sales Report</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            h1 { color: #1a5b7b; text-align: center; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #1a5b7b; color: white; }
-            tr:nth-child(even) { background-color: #f2f2f2; }
-            .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
-            .total-row { font-weight: bold; background-color: #e9ecef; }
-          </style>
-        </head>
-        <body>
-          <h1>Bus Sales Report - ${user?.company_name || 'Company'}</h1>
-          <div class="summary">
-            <p><strong>Period:</strong> ${formatDateDisplay()}</p>
-            <p><strong>Total Sales:</strong> ${formatCurrency(dashboardData?.totalSales)}</p>
-            <p><strong>Total Passengers:</strong> ${dashboardData?.totalPassengers}</p>
-            <p><strong>Total Trips:</strong> ${dashboardData?.totalTrips}</p>
-          </div>
-          <table>
-            <thead>
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      // For single day ranges: bus-sales-YYYY-MM-DD.csv
+      dateRangeDisplay = format(startDate, 'yyyy-MM-dd');
+      fileName = `bus-sales-${dateRangeDisplay}.csv`;
+    } else if (selectedDateRange === "Custom") {
+      // For custom ranges: bus-sales-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      dateRangeDisplay = `${startFormatted}-to-${endFormatted}`;
+      fileName = `bus-sales-${dateRangeDisplay}.csv`;
+    } else {
+      // For other ranges: bus-sales-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      dateRangeDisplay = `${startFormatted}-to-${endFormatted}`;
+      fileName = `bus-sales-${dateRangeDisplay}.csv`;
+    }
+    
+    // Use bus performance data instead of dailySales
+    const csvData = dashboardData?.busPerformance
+      .filter(bus => bus.totalSales > 0) // Only buses with sales
+      .map(bus => {
+        const date = formatDateDisplay(); // Use the current selected date range
+        return `"${date}","${bus.name}",${bus.totalPassengers},${bus.trips},${bus.totalSales}`;
+      })
+      .join('\n');
+    
+    const csvContent = headers + csvData;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
+
+const exportToPDF = () => {
+  setExportLoading(true);
+  try {
+    const printWindow = window.open('', '_blank');
+    const busesWithSales = dashboardData?.busPerformance?.filter(bus => bus.totalSales > 0) || [];
+    
+    // Generate date range for title
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let dateRangeTitle;
+    
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      dateRangeTitle = format(startDate, 'yyyy-MM-dd');
+    } else {
+      dateRangeTitle = `${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`;
+    }
+    
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Bus Sales Report - ${dateRangeTitle}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          h1 { color: #1a5b7b; text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #1a5b7b; color: white; }
+          tr:nth-child(even) { background-color: #f2f2f2; }
+          .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+          .total-row { font-weight: bold; background-color: #e9ecef; }
+        </style>
+      </head>
+      <body>
+        <h1>Bus Sales Report - ${user?.company_name || 'Company'}</h1>
+        <div class="summary">
+          <p><strong>Period:</strong> ${formatDateDisplay()}</p>
+          <p><strong>Total Sales:</strong> ${formatCurrency(dashboardData?.totalSales)}</p>
+          <p><strong>Total Passengers:</strong> ${dashboardData?.totalPassengers}</p>
+          <p><strong>Total Trips:</strong> ${dashboardData?.totalTrips}</p>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Bus Name</th>
+              <th>Passengers</th>
+              <th>Trips</th>
+              <th>Total Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${busesWithSales.map(bus => `
               <tr>
-                <th>Date</th>
-                <th>Bus Name</th>
-                <th>Passengers</th>
-                <th>Trips</th>
-                <th>Total Sales</th>
+                <td>${formatDateDisplay()}</td>
+                <td>${bus.name}</td>
+                <td>${bus.totalPassengers}</td>
+                <td>${bus.trips}</td>
+                <td>${formatCurrency(bus.totalSales)}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${busesWithSales.map(bus => `
-                <tr>
-                  <td>${formatDateDisplay().split(' - ')[0]}</td>
-                  <td>${bus.name}</td>
-                  <td>${bus.totalPassengers}</td>
-                  <td>${bus.trips}</td>
-                  <td>${formatCurrency(bus.totalSales)}</td>
-                </tr>
-              `).join('')}
-              ${busesWithSales.length > 0 ? `
-                <tr class="total-row">
-                  <td colspan="2"><strong>TOTAL</strong></td>
-                  <td><strong>${dashboardData?.totalPassengers}</strong></td>
-                  <td><strong>${dashboardData?.totalTrips}</strong></td>
-                  <td><strong>${formatCurrency(dashboardData?.totalSales)}</strong></td>
-                </tr>
-              ` : ''}
+            `).join('')}
+            ${busesWithSales.length > 0 ? `
+              <tr class="total-row">
+                <td colspan="2"><strong>TOTAL</strong></td>
+                <td><strong>${dashboardData?.totalPassengers}</strong></td>
+                <td><strong>${dashboardData?.totalTrips}</strong></td>
+                <td><strong>${formatCurrency(dashboardData?.totalSales)}</strong></td>
+              </tr>
+            ` : ''}
             </tbody>
           </table>
           <p style="margin-top: 20px; text-align: center; color: #666;">

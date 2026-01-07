@@ -40,7 +40,8 @@ const TripTicketsScreen = () => {
   const { user } = authContext;
   const navigate = useNavigate();
   const location = useLocation();
-  
+  // New state for sales breakdown by currency
+const [salesByCurrency, setSalesByCurrency] = useState([]);
   // Get trip data from navigation state
   const { trip } = location.state || {};
   
@@ -111,110 +112,143 @@ const TripTicketsScreen = () => {
   ];
 
   // Fetch tickets data
-  const fetchTicketsData = async (startDate, endDate) => {
-    try {
-      setLoading(true);
-      const token = user?.token;
-      const apiLink = Apilink.getLink();
+// Fetch tickets data
+const fetchTicketsData = async (startDate, endDate) => {
+  try {
+    setLoading(true);
+    const token = user?.token;
+    const apiLink = Apilink.getLink();
 
-      if (!token) {
-        console.error("No authentication token available");
-        return;
-      }
+    if (!token) {
+      console.error("No authentication token available");
+      return;
+    }
 
-      const requestBody = {
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
-        busId: trip?.busId,
-        tripId: trip?.tripId,
-      };
+    const requestBody = {
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+      busId: trip?.busId,
+      tripId: trip?.tripId,
+    };
 
-      console.log("Fetching tickets data with:", requestBody);
+    console.log("Fetching tickets data with:", requestBody);
 
-      let response = await fetch(`${apiLink}/ticketssummary`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
+    let response = await fetch(`${apiLink}/ticketssummary`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        console.error("Failed to fetch tickets data:", data);
-        setTickets([]);
-        setApiTotals({
-          totalTicketsRevenue: 0,
-          totalTicketsCount: 0,
-        });
-      } else {
-        console.log("Tickets data received:", data);
-
-        // Set base currency
-        if (data.baseCurrency) {
-          setBaseCurrency(data.baseCurrency);
-        }
-
-        // STORE API TOTALS
-        setApiTotals({
-          totalTicketsRevenue: data.totalTicketsRevenue || 0,
-          totalTicketsCount: data.totalTicketsCount || 0,
-        });
-
-        // Transform API data
-        const transformedTickets = (data.tickets || []).map((ticket) => ({
-          id: ticket.id,
-          ticketId: ticket.ticketId,
-          ticketNumber: ticket.ticketNumber,
-          amountPaid: ticket.amountPaid,
-          busId: ticket.busId,
-          busName: ticket.busName,
-          conductorId: ticket.conductorId,
-          conductorName: ticket.conductorName,
-          currencyCode: ticket.currencyCode,
-          currencyName: ticket.currencyName,
-          currencySymbol: ticket.currencySymbol,
-          customerId: ticket.customerId,
-          customerName: ticket.customerName,
-          customerPhone: ticket.customerPhone,
-          date: ticket.date,
-          discount: ticket.discount,
-          farePerPerson: ticket.farePerPerson,
-          from: ticket.from,
-          passengerCount: ticket.passengerCount,
-          passengerType: ticket.passengerType,
-          refundedAt: ticket.refundedAt,
-          refundedStatus: ticket.refundedStatus,
-          routeName: ticket.routeName,
-          routeNumber: ticket.routeNumber,
-          timestamp: ticket.timestamp,
-          to: ticket.to,
-          totalAmount: ticket.totalAmount,
-          tripId: ticket.tripId,
-          tripNumber: ticket.tripNumber,
-          majorRoute: ticket.majorRoute,
-          majorRouteId: ticket.majorRouteId,
-          created_at: ticket.created_at,
-          updated_at: ticket.updated_at,
-        }));
-
-        setTickets(transformedTickets);
-        setFilteredTickets(transformedTickets);
-      }
-    } catch (error) {
-      console.error("Error fetching tickets data:", error);
+    if (!response.ok) {
+      console.error("Failed to fetch tickets data:", data);
       setTickets([]);
       setApiTotals({
         totalTicketsRevenue: 0,
         totalTicketsCount: 0,
       });
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
+      setSalesByCurrency([]);
+    } else {
+      console.log("Tickets data received:", data);
+
+      // Set base currency
+      if (data.baseCurrency) {
+        setBaseCurrency(data.baseCurrency);
+      }
+
+      // STORE API TOTALS
+      setApiTotals({
+        totalTicketsRevenue: data.totalTicketsRevenue || 0,
+        totalTicketsCount: data.totalTicketsCount || 0,
+      });
+
+      // Transform API data
+      const transformedTickets = (data.tickets || []).map((ticket) => ({
+        id: ticket.id,
+        ticketId: ticket.ticketId,
+        ticketNumber: ticket.ticketNumber,
+        amountPaid: ticket.amountPaid,
+        busId: ticket.busId,
+        busName: ticket.busName,
+        conductorId: ticket.conductorId,
+        conductorName: ticket.conductorName,
+        currencyCode: ticket.currencyCode,
+        currencyName: ticket.currencyName,
+        currencySymbol: ticket.currencySymbol,
+        customerId: ticket.customerId,
+        customerName: ticket.customerName,
+        customerPhone: ticket.customerPhone,
+        date: ticket.date,
+        discount: ticket.discount,
+        farePerPerson: ticket.farePerPerson,
+        from: ticket.from,
+        passengerCount: ticket.passengerCount,
+        passengerType: ticket.passengerType,
+        refundedAt: ticket.refundedAt,
+        refundedStatus: ticket.refundedStatus,
+        routeName: ticket.routeName,
+        routeNumber: ticket.routeNumber,
+        timestamp: ticket.timestamp,
+        to: ticket.to,
+        totalAmount: ticket.totalAmount,
+        tripId: ticket.tripId,
+        tripNumber: ticket.tripNumber,
+        majorRoute: ticket.majorRoute,
+        majorRouteId: ticket.majorRouteId,
+        created_at: ticket.created_at,
+        updated_at: ticket.updated_at,
+      }));
+
+      setTickets(transformedTickets);
+      setFilteredTickets(transformedTickets);
+
+      // Calculate sales breakdown by currency
+      const currencyMap = {};
+      
+      transformedTickets.forEach(ticket => {
+        const currencyCode = ticket.currencyCode || "USD";
+        const currencyName = ticket.currencyName || "United States Dollar";
+        const currencySymbol = ticket.currencySymbol || "$";
+        const amount = Number(ticket.amountPaid) || 0;
+        
+        if (!currencyMap[currencyCode]) {
+          currencyMap[currencyCode] = {
+            currencyCode,
+            currencyName,
+            currencySymbol,
+            totalSales: 0,
+            ticketCount: 0,
+          };
+        }
+        
+        currencyMap[currencyCode].totalSales += amount;
+        currencyMap[currencyCode].ticketCount += 1;
+      });
+      
+      // Convert to array and sort by total sales (descending)
+      const currencyBreakdown = Object.values(currencyMap);
+      currencyBreakdown.sort((a, b) => b.totalSales - a.totalSales);
+      
+      console.log("Currency breakdown calculated:", currencyBreakdown);
+      setSalesByCurrency(currencyBreakdown);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching tickets data:", error);
+    setTickets([]);
+    setApiTotals({
+      totalTicketsRevenue: 0,
+      totalTicketsCount: 0,
+    });
+    setSalesByCurrency([]);
+  } finally {
+    setLoading(false);
+    setIsRefreshing(false);
+  }
+};
 
   // Calculate date range function
   const calculateDateRange = (range, baseDate = new Date()) => {
@@ -562,7 +596,7 @@ const TripTicketsScreen = () => {
 const exportToCSV = () => {
   setExportLoading(true);
   try {
-    // Updated headers - added Trip # column
+    // Ticket data headers
     const headers = "Date,Trip #,Ticket #,Customer,Phone,From,To,Passengers,Currency,Fare,Total Amount,Status\n";
     
     const csvData = tickets
@@ -586,7 +620,29 @@ const exportToCSV = () => {
       })
       .join('\n');
     
-    const csvContent = headers + csvData;
+    // Add totals row for tickets
+    const totalTickets = tickets.length;
+    const totalRevenue = tickets.reduce((sum, ticket) => sum + (Number(ticket.amountPaid) || 0), 0);
+    const totalsRow = `"TOTAL","","","","","","",${apiTotals.totalTicketsCount},"",,"${totalRevenue.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}",""`;
+    
+    // Currency breakdown headers
+    const currencyHeaders = "\n\nSALES BY CURRENCY BREAKDOWN\nCurrency Code,Currency Name,Tickets,Total Sales\n";
+    
+    const currencyData = salesByCurrency
+      .map(currency => {
+        return `"${currency.currencyCode}","${currency.currencyName}",${currency.ticketCount},${currency.totalSales.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+      })
+      .join('\n');
+    
+    const csvContent = headers + csvData + '\n' + totalsRow + 
+                      (salesByCurrency.length > 0 ? currencyHeaders + currencyData : '');
+    
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -625,7 +681,7 @@ const exportToCSV = () => {
   }
 };
 
- const exportToPDF = () => {
+const exportToPDF = () => {
   setExportLoading(true);
   try {
     const printWindow = window.open('', '_blank');
@@ -649,13 +705,15 @@ const exportToCSV = () => {
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           h1 { color: #1a5b7b; text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          h2 { color: #1a5b7b; margin-top: 30px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
           th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
           th { background-color: #1a5b7b; color: white; }
           tr:nth-child(even) { background-color: #f2f2f2; }
           .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
           .total-row { font-weight: bold; background-color: #e9ecef; }
           .refunded { background-color: #f8d7da; color: #721c24; }
+          .section-break { margin-top: 30px; }
         </style>
       </head>
       <body>
@@ -667,6 +725,8 @@ const exportToCSV = () => {
           <p><strong>Total Revenue:</strong> ${formatCurrency(apiTotals.totalTicketsRevenue)}</p>
           <p><strong>Total Tickets:</strong> ${apiTotals.totalTicketsCount}</p>
         </div>
+        
+        <h2>Ticket Data</h2>
         <table>
           <thead>
             <tr>
@@ -724,10 +784,37 @@ const exportToCSV = () => {
             ` : ''}
           </tbody>
         </table>
+        
+        ${salesByCurrency.length > 0 ? `
+          <div class="section-break">
+            <h2>Sales Breakdown by Currency</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Currency Code</th>
+                  <th>Currency Name</th>
+                  <th>Tickets</th>
+                  <th>Total Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${salesByCurrency.map(currency => `
+                  <tr>
+                    <td>${currency.currencyCode}</td>
+                    <td>${currency.currencyName}</td>
+                    <td>${currency.ticketCount}</td>
+                    <td>${formatCurrency(currency.totalSales, currency.currencySymbol)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
+        
         <p style="margin-top: 20px; text-align: center; color: #666;">
           Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
         </p>
-        ${tickets.length === 0 ? `
+        ${tickets.length === 0 && salesByCurrency.length === 0 ? `
           <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
             No ticket data available for the selected period
           </p>
@@ -807,7 +894,51 @@ const exportToCSV = () => {
 
     return pages;
   };
+// Currency Breakdown Card Component
+const CurrencyBreakdownCard = () => {
+  if (salesByCurrency.length === 0) {
+    return null;
+  }
 
+  return (
+    <div className="trip-tickets-currency-breakdown-section">
+      <div className="trip-tickets-section-header">
+        <div className="trip-tickets-section-title">Sales by Currency</div>
+      </div>
+      <div className="trip-tickets-currency-breakdown-table-container">
+        <table className="trip-tickets-currency-breakdown-table">
+          <thead>
+            <tr>
+              <th>Currency</th>
+              <th>Code</th>
+              <th>Tickets</th>
+              <th>Total Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            {salesByCurrency.map((currency, index) => (
+              <tr key={currency.currencyCode}>
+                <td>
+                  <div className="trip-tickets-currency-name">
+                    <span className="fas fa-money-bill-wave"></span>
+                    {currency.currencyName}
+                  </div>
+                </td>
+                <td>
+                  <span className="trip-tickets-currency-code-badge">
+                    {currency.currencyCode}
+                  </span>
+                </td>
+                <td>{currency.ticketCount}</td>
+                <td>{formatCurrency(currency.totalSales, currency.currencySymbol)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
   // Circular Metric Card Component
   const CircularMetricCard = ({
     value,
@@ -1319,6 +1450,8 @@ const exportToCSV = () => {
                 </table>
               </div>
             </div>
+                                <CurrencyBreakdownCard />
+
           </div>
         </div>
 
@@ -1360,6 +1493,7 @@ const exportToCSV = () => {
 
         {/* Ticket Detail Modal */}
         {ticketDetailModal && <TicketDetailModal />}
+
       </div>
     </div>
   );

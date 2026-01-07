@@ -620,27 +620,19 @@ const exportToCSV = () => {
       })
       .join('\n');
     
-    // Add totals row for tickets
-    const totalTickets = tickets.length;
-    const totalRevenue = tickets.reduce((sum, ticket) => sum + (Number(ticket.amountPaid) || 0), 0);
-    const totalsRow = `"TOTAL","","","","","","",${apiTotals.totalTicketsCount},"",,"${totalRevenue.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}",""`;
+    // Removed totals row for tickets
     
     // Currency breakdown headers
     const currencyHeaders = "\n\nSALES BY CURRENCY BREAKDOWN\nCurrency Code,Currency Name,Tickets,Total Sales\n";
     
     const currencyData = salesByCurrency
       .map(currency => {
-        return `"${currency.currencyCode}","${currency.currencyName}",${currency.ticketCount},${currency.totalSales.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`;
+        return `"${currency.currencyCode}","${currency.currencyName}",${currency.ticketCount},${currency.totalSales}`;
       })
       .join('\n');
     
-    const csvContent = headers + csvData + '\n' + totalsRow + 
+    // Create CSV content without totals row
+    const csvContent = headers + csvData + 
                       (salesByCurrency.length > 0 ? currencyHeaders + currencyData : '');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -771,17 +763,7 @@ const exportToPDF = () => {
                 </tr>
               `;
             }).join('')}
-            ${tickets.length > 0 ? `
-              <tr class="total-row">
-                <td colspan="8"><strong>TOTAL</strong></td>
-                <td><strong>${Number(apiTotals.totalTicketsRevenue).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}</strong></td>
-                <td></td>
-                <td><strong>${apiTotals.totalTicketsCount} tickets</strong></td>
-              </tr>
-            ` : ''}
+            <!-- Total row has been removed -->
           </tbody>
         </table>
         

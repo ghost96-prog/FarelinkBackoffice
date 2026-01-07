@@ -559,126 +559,192 @@ const TripTicketsScreen = () => {
   };
 
   // Export functions
-  const exportToCSV = () => {
-    setExportLoading(true);
-    try {
-      const headers = "Date,Ticket Number,Customer,Phone,From,To,Passengers,Fare,Total Amount,Status\n";
-      
-      const csvData = tickets
-        .map(ticket => {
-          const date = formatDate(ticket.timestamp);
-          const status = ticket.refundedStatus === "refunded" ? "REFUNDED" : "ACTIVE";
-          return `"${date}","${ticket.ticketNumber}","${ticket.customerName}","${ticket.customerPhone}","${ticket.from}","${ticket.to}",${ticket.passengerCount},${formatCurrency(ticket.farePerPerson, ticket)},${formatCurrency(ticket.amountPaid, ticket)},"${status}"`;
-        })
-        .join('\n');
-      
-      const csvContent = headers + csvData;
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `trip-tickets-${trip?.tripNumber}-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error exporting to CSV:', error);
-    } finally {
-      setExportLoading(false);
-    }
-  };
+const exportToCSV = () => {
+  setExportLoading(true);
+  try {
+    // Updated headers - added Trip # column
+    const headers = "Date,Trip #,Ticket #,Customer,Phone,From,To,Passengers,Currency,Fare,Total Amount,Status\n";
+    
+    const csvData = tickets
+      .map(ticket => {
+        const date = formatDate(ticket.timestamp);
+        const status = ticket.refundedStatus === "refunded" ? "REFUNDED" : "ACTIVE";
+        const currency = ticket.currencyCode || baseCurrency?.code || "USD";
+        
+        // Remove currency symbol from fare and total amount - just export the numeric value
+        const fare = Number(ticket.farePerPerson).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        
+        const totalAmount = Number(ticket.amountPaid).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        
+        return `"${date}","${ticket.tripNumber}","${ticket.ticketNumber}","${ticket.customerName}","${ticket.customerPhone}","${ticket.from}","${ticket.to}",${ticket.passengerCount},"${currency}",${fare},${totalAmount},"${status}"`;
+      })
+      .join('\n');
+    
+    const csvContent = headers + csvData;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Generate filename based on actual date range
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let fileName;
 
-  const exportToPDF = () => {
-    setExportLoading(true);
-    try {
-      const printWindow = window.open('', '_blank');
-      
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Trip Tickets Report - Trip #${trip?.tripNumber}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            h1 { color: #1a5b7b; text-align: center; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #1a5b7b; color: white; }
-            tr:nth-child(even) { background-color: #f2f2f2; }
-            .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
-            .total-row { font-weight: bold; background-color: #e9ecef; }
-            .refunded { background-color: #f8d7da; color: #721c24; }
-          </style>
-        </head>
-        <body>
-          <h1>Trip Tickets Report - ${user?.company_name || 'Company'}</h1>
-          <div class="summary">
-            <p><strong>Trip:</strong> #${trip?.tripNumber} - ${trip?.busName}</p>
-            <p><strong>Conductor:</strong> ${trip?.conductorName}</p>
-            <p><strong>Period:</strong> ${formatDateDisplay()}</p>
-            <p><strong>Total Revenue:</strong> ${formatCurrency(apiTotals.totalTicketsRevenue)}</p>
-            <p><strong>Total Tickets:</strong> ${apiTotals.totalTicketsCount}</p>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Ticket #</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>From → To</th>
-                <th>Passengers</th>
-                <th>Fare</th>
-                <th>Total Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tickets.map(ticket => `
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      // For single day ranges: tickets-YYYY-MM-DD.csv
+      fileName = `tickets-${format(startDate, 'yyyy-MM-dd')}.csv`;
+    } else if (selectedDateRange === "Custom") {
+      // For custom ranges: tickets-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `tickets-${startFormatted}-to-${endFormatted}.csv`;
+    } else {
+      // For other ranges: tickets-YYYY-MM-DD-to-YYYY-MM-DD.csv
+      const startFormatted = format(startDate, 'yyyy-MM-dd');
+      const endFormatted = format(endDate, 'yyyy-MM-dd');
+      fileName = `tickets-${startFormatted}-to-${endFormatted}.csv`;
+    }
+
+    link.download = fileName;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error exporting to CSV:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
+
+ const exportToPDF = () => {
+  setExportLoading(true);
+  try {
+    const printWindow = window.open('', '_blank');
+    
+    // Generate date range for filename
+    const startDate = dateRangeState[0].startDate;
+    const endDate = dateRangeState[0].endDate;
+    let dateRangeTitle;
+    
+    if (selectedDateRange === "Today" || selectedDateRange === "Yesterday") {
+      dateRangeTitle = format(startDate, 'yyyy-MM-dd');
+    } else {
+      dateRangeTitle = `${format(startDate, 'yyyy-MM-dd')}-to-${format(endDate, 'yyyy-MM-dd')}`;
+    }
+    
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Tickets Report - ${dateRangeTitle}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          h1 { color: #1a5b7b; text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #1a5b7b; color: white; }
+          tr:nth-child(even) { background-color: #f2f2f2; }
+          .summary { margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+          .total-row { font-weight: bold; background-color: #e9ecef; }
+          .refunded { background-color: #f8d7da; color: #721c24; }
+        </style>
+      </head>
+      <body>
+        <h1>Tickets Report - ${user?.company_name || 'Company'}</h1>
+        <div class="summary">
+          <p><strong>Trip:</strong> #${trip?.tripNumber} - ${trip?.busName}</p>
+          <p><strong>Conductor:</strong> ${trip?.conductorName}</p>
+          <p><strong>Period:</strong> ${formatDateDisplay()}</p>
+          <p><strong>Total Revenue:</strong> ${formatCurrency(apiTotals.totalTicketsRevenue)}</p>
+          <p><strong>Total Tickets:</strong> ${apiTotals.totalTicketsCount}</p>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Trip #</th>
+              <th>Ticket #</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>From → To</th>
+              <th>Passengers</th>
+              <th>Currency</th>
+              <th>Fare</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tickets.map(ticket => {
+              const currency = ticket.currencyCode || baseCurrency?.code || "USD";
+              const fare = Number(ticket.farePerPerson).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              });
+              const totalAmount = Number(ticket.amountPaid).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              });
+              
+              return `
                 <tr class="${ticket.refundedStatus === 'refunded' ? 'refunded' : ''}">
                   <td>${formatDate(ticket.timestamp)}</td>
+                  <td>${ticket.tripNumber}</td>
                   <td>${ticket.ticketNumber}</td>
                   <td>${ticket.customerName}</td>
                   <td>${ticket.customerPhone}</td>
                   <td>${ticket.from} → ${ticket.to}</td>
                   <td>${ticket.passengerCount}</td>
-                  <td>${formatCurrency(ticket.farePerPerson, ticket)}</td>
-                  <td>${formatCurrency(ticket.amountPaid, ticket)}</td>
+                  <td>${currency}</td>
+                  <td>${fare}</td>
+                  <td>${totalAmount}</td>
                   <td>${ticket.refundedStatus === 'refunded' ? 'REFUNDED' : 'ACTIVE'}</td>
                 </tr>
-              `).join('')}
-              ${tickets.length > 0 ? `
-                <tr class="total-row">
-                  <td colspan="6"><strong>TOTAL</strong></td>
-                  <td></td>
-                  <td><strong>${formatCurrency(apiTotals.totalTicketsRevenue)}</strong></td>
-                  <td><strong>${apiTotals.totalTicketsCount} tickets</strong></td>
-                </tr>
-              ` : ''}
-            </tbody>
-          </table>
-          <p style="margin-top: 20px; text-align: center; color: #666;">
-            Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
+              `;
+            }).join('')}
+            ${tickets.length > 0 ? `
+              <tr class="total-row">
+                <td colspan="8"><strong>TOTAL</strong></td>
+                <td><strong>${Number(apiTotals.totalTicketsRevenue).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}</strong></td>
+                <td></td>
+                <td><strong>${apiTotals.totalTicketsCount} tickets</strong></td>
+              </tr>
+            ` : ''}
+          </tbody>
+        </table>
+        <p style="margin-top: 20px; text-align: center; color: #666;">
+          Generated on ${format(new Date(), 'yyyy-MM-dd HH:mm')}
+        </p>
+        ${tickets.length === 0 ? `
+          <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
+            No ticket data available for the selected period
           </p>
-          ${tickets.length === 0 ? `
-            <p style="text-align: center; color: #999; font-style: italic; margin-top: 40px;">
-              No ticket data available for the selected period
-            </p>
-          ` : ''}
-        </body>
-        </html>
-      `;
-      
-      printWindow.document.write(printContent);
-      printWindow.document.close();
-      printWindow.print();
-    } catch (error) {
-      console.error('Error exporting to PDF:', error);
-    } finally {
-      setExportLoading(false);
-    }
-  };
+        ` : ''}
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+  } catch (error) {
+    console.error('Error exporting to PDF:', error);
+  } finally {
+    setExportLoading(false);
+  }
+};
 
   // Show ticket details
   const showTicketDetails = (ticket) => {
@@ -1003,7 +1069,6 @@ const TripTicketsScreen = () => {
                 </button>
                 
                 <div className="trip-tickets-trip-info">
-                  <div className="trip-tickets-trip-title">Trip #{trip?.tripNumber}</div>
                   <div className="trip-tickets-trip-subtitle">
                     {trip?.busName} • {trip?.conductorName}
                   </div>
@@ -1190,11 +1255,13 @@ const TripTicketsScreen = () => {
                   <thead>
                     <tr>
                       <th>Date</th>
+                      <th>Trip #</th>
                       <th>Ticket #</th>
                       <th>Customer</th>
                       <th>Phone</th>
                       <th>From → To</th>
                       <th>Passengers</th>
+                      <th>Currency</th>
                       <th>Fare</th>
                       <th>Total Amount</th>
                       <th>Status</th>
@@ -1202,35 +1269,49 @@ const TripTicketsScreen = () => {
                   </thead>
                   <tbody>
                     {filteredTickets.length > 0 ? (
-                      filteredTickets.map((ticket) => (
-                        <tr key={ticket.id} className={ticket.refundedStatus === 'refunded' ? 'trip-tickets-refunded-row' : ''}>
-                          <td>{formatDate(ticket.timestamp)}</td>
-                          <td>{ticket.ticketNumber}</td>
-                          <td>{ticket.customerName}</td>
-                          <td>{ticket.customerPhone}</td>
-                          <td>{ticket.from} → {ticket.to}</td>
-                          <td>{ticket.passengerCount}</td>
-                          <td>{formatCurrency(ticket.farePerPerson, ticket)}</td>
-                          <td>{formatCurrency(ticket.amountPaid, ticket)}</td>
-                          <td>
-                            <span className={`trip-tickets-status-badge ${ticket.refundedStatus === 'refunded' ? 'trip-tickets-status-refunded' : 'trip-tickets-status-active'}`}>
-                              {ticket.refundedStatus === 'refunded' ? 'REFUNDED' : 'ACTIVE'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
+                      filteredTickets.map((ticket) => {
+                        const currency = ticket.currencyCode || baseCurrency?.code || "USD";
+                        return (
+                          <tr key={ticket.id} className={ticket.refundedStatus === 'refunded' ? 'trip-tickets-refunded-row' : ''}>
+                            <td>{formatDate(ticket.timestamp)}</td>
+                            <td>{ticket.tripNumber}</td>
+                            <td>{ticket.ticketNumber}</td>
+                            <td>{ticket.customerName}</td>
+                            <td>{ticket.customerPhone}</td>
+                            <td>{ticket.from} → {ticket.to}</td>
+                            <td>{ticket.passengerCount}</td>
+                            <td>{currency}</td>
+                            <td>{Number(ticket.farePerPerson).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}</td>
+                            <td>{Number(ticket.amountPaid).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}</td>
+                            <td>
+                              <span className={`trip-tickets-status-badge ${ticket.refundedStatus === 'refunded' ? 'trip-tickets-status-refunded' : 'trip-tickets-status-active'}`}>
+                                {ticket.refundedStatus === 'refunded' ? 'REFUNDED' : 'ACTIVE'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
                     ) : (
                       <tr>
-                        <td colSpan="9" className="trip-tickets-no-data">
+                        <td colSpan="11" className="trip-tickets-no-data">
                           No ticket data available for the selected period
                         </td>
                       </tr>
                     )}
                     {filteredTickets.length > 0 && (
                       <tr className="trip-tickets-total-row">
-                        <td colSpan="6"><strong>TOTAL</strong></td>
+                        <td colSpan="8"><strong>TOTAL</strong></td>
+                        <td><strong>{Number(apiTotals.totalTicketsRevenue).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}</strong></td>
                         <td></td>
-                        <td><strong>{formatCurrency(apiTotals.totalTicketsRevenue)}</strong></td>
                         <td><strong>{apiTotals.totalTicketsCount} tickets</strong></td>
                       </tr>
                     )}

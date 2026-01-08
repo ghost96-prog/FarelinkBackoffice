@@ -232,6 +232,7 @@ const BusDashboardScreen = () => {
           totalRevenue: data.totalBusRevenue || 0,
           totalTickets: data.totalBusTickets || 0,
         });
+console.log("data.trips:", data.trips);
 
         // Transform API data
         const transformedTrips = (data.trips || []).map((trip) => ({
@@ -243,8 +244,8 @@ const BusDashboardScreen = () => {
           busName: trip.busName || "Unknown Bus",
           conductorId: trip.conductorId?.toString(),
           conductorName: trip.conductorName || "Unknown Conductor",
-          totalSales: trip.totalIncome || trip.totalSales || 0,
-          ticketCount: trip.totalTickets || trip.ticketCount || 0,
+          totalSales: trip.totalIncome || 0,
+          ticketCount: trip.totalTickets || 0,
           status: "completed",
           majorRoute: trip.majorRoute || "Unknown Route",
           timeElapsed: trip.timeElapsed || "0h 0m",
@@ -252,7 +253,7 @@ const BusDashboardScreen = () => {
           currencyCode: trip.currencyCode || data.baseCurrency?.code || "USD",
           currencyName: trip.currencyName || data.baseCurrency?.name || "United States Dollar",
         }));
-
+console.log("Transformed trips:", transformedTrips, "trips");
         const transformedData = {
           totalSales: data.totalBusRevenue || 0,
           totalPassengers: data.totalBusTickets || 0,

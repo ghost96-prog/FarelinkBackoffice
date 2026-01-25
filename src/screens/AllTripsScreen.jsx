@@ -713,11 +713,19 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
   };
 
   // Format date for display
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return format(date, "MMM dd, yyyy HH:mm:ss");
-  };
+// Format date for display - 24-hour format with AM/PM
+const formatDate = (dateString) => {
+  // Parse as UTC
+  const date = new Date(dateString + 'Z');
+  return format(date, "MMM dd, yyyy HH:mm:ss a"); // HH for 24-hour, a for AM/PM
+};
 
+// Format list item date - 24-hour format with AM/PM
+const formatListItemDate = (dateString) => {
+  // Parse the date string as UTC
+  const date = new Date(dateString + 'Z');
+  return format(date, "EEE, MMM dd, yyyy HH:mm a"); // HH for 24-hour, a for AM/PM
+};
   // Get trip duration
   const getTripDuration = (startTime, endTime) => {
     try {

@@ -580,18 +580,20 @@ const fetchTicketsData = async (startDate, endDate) => {
     })}`;
   };
 
-  // Format date for display
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return format(date, "MMM dd, yyyy HH:mm:ss");
-  };
+// Format date for display - Fixed
+// Format date for display - 24-hour format with AM/PM
+const formatDate = (dateString) => {
+  // Parse as UTC
+  const date = new Date(dateString + 'Z');
+  return format(date, "MMM dd, yyyy HH:mm:ss a"); // HH for 24-hour, a for AM/PM
+};
 
-  // Format list item date
-  const formatListItemDate = (dateString) => {
-    const date = new Date(dateString);
-    return format(date, "EEE, MMM dd, yyyy HH:mm");
-  };
-
+// Format list item date - 24-hour format with AM/PM
+const formatListItemDate = (dateString) => {
+  // Parse the date string as UTC
+  const date = new Date(dateString + 'Z');
+  return format(date, "EEE, MMM dd, yyyy HH:mm a"); // HH for 24-hour, a for AM/PM
+};
   // Export functions
 const exportToCSV = () => {
   setExportLoading(true);

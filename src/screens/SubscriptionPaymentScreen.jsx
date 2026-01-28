@@ -22,6 +22,7 @@ function SubscriptionPaymentScreen() {
   // State for subscription data
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [subscriptionPlans, setSubscriptionPlans] = useState([]); // Move plans to state
   const [totalCost, setTotalCost] = useState(0);
   const [paymentType, setPaymentType] = useState("");
   const [paymentMessage, setPaymentMessage] = useState("");
@@ -53,8 +54,8 @@ function SubscriptionPaymentScreen() {
   const [fadeAnim, setFadeAnim] = useState(0);
   const [slideAnim, setSlideAnim] = useState(50);
 
-  // Subscription plans data
-  const subscriptionPlans = [
+  // Default hardcoded plans (fallback)
+  const defaultSubscriptionPlans = [
     {
       id: "basic",
       title: "Basic",
@@ -83,6 +84,11 @@ function SubscriptionPaymentScreen() {
       apiPeriod: 12,
     },
   ];
+
+  // Initialize plans with default values
+  useEffect(() => {
+    setSubscriptionPlans(defaultSubscriptionPlans);
+  }, []);
 
   useEffect(() => {
     if (bus?.id) {
@@ -116,6 +122,43 @@ function SubscriptionPaymentScreen() {
     setShowSuccessModal(true);
   };
 
+  // Update subscription plans based on server data
+  const updateSubscriptionPlansFromServer = (userData) => {
+    if (!userData) return;
+    
+    const serverPlans = [
+      {
+        id: "basic",
+        title: "Basic",
+        price: parseFloat(userData.basic) || 9.99,
+        period: "1 Month Access",
+        value: parseFloat(userData.basic) || 9.99,
+        apiPlan: "Basic",
+        apiPeriod: 1,
+      },
+      {
+        id: "standard",
+        title: "Standard",
+        price: parseFloat(userData.standard) || 49.99,
+        period: "6 Months Access",
+        value: parseFloat(userData.standard) || 49.99,
+        apiPlan: "Standard",
+        apiPeriod: 6,
+      },
+      {
+        id: "premium",
+        title: "Premium",
+        price: parseFloat(userData.premium) || 99.99,
+        period: "12 Months Access",
+        value: parseFloat(userData.premium) || 99.99,
+        apiPlan: "Premium",
+        apiPeriod: 12,
+      },
+    ];
+    
+    setSubscriptionPlans(serverPlans);
+  };
+
   // Fetch subscription data from server
   const fetchSubscriptionData = async () => {
     try {
@@ -136,6 +179,11 @@ function SubscriptionPaymentScreen() {
       );
 
       const subscriptionData = await subscriptionResponse.json();
+      
+      // Update subscription plans from server data
+      if (subscriptionData.user) {
+        updateSubscriptionPlansFromServer(subscriptionData.user);
+      }
 
       let subscription = null;
       if (subscriptionResponse.ok && subscriptionData.success) {
@@ -182,7 +230,15 @@ function SubscriptionPaymentScreen() {
         if (subscription.status === "Expired") {
           setSelectedOption(null);
         } else {
-          setSelectedOption(subscription.amount);
+          // Find the matching plan value for the current subscription
+          const currentPlan = subscriptionPlans.find(
+            plan => plan.apiPlan === subscription.plan
+          );
+          if (currentPlan) {
+            setSelectedOption(currentPlan.value);
+          } else {
+            setSelectedOption(subscription.amount);
+          }
         }
       } else {
         setPaymentsZero(true);
@@ -286,7 +342,7 @@ function SubscriptionPaymentScreen() {
         return;
       }
 
-      // Find the selected plan details
+      // Find the selected plan details from current subscription plans
       const selectedPlan = subscriptionPlans.find(
         (plan) => plan.value === selectedOption
       );
@@ -499,7 +555,7 @@ function SubscriptionPaymentScreen() {
           </div>
         </div>
         <div className="subscription-option-period">{plan.period}</div>
-        <div className="subscription-option-price">${plan.price}</div>
+        <div className="subscription-option-price">${plan.price.toFixed(2)}</div>
       </div>
     </div>
   );
@@ -692,7 +748,7 @@ function SubscriptionPaymentScreen() {
 
                 <div className="subscription-total-container">
                   <div className="subscription-total-label">Total:</div>
-                  <div className="subscription-total-amount">${totalCost}</div>
+                  <div className="subscription-total-amount">${totalCost.toFixed(2)}</div>
                 </div>
               </div>
 
@@ -789,7 +845,7 @@ function SubscriptionPaymentScreen() {
                       Dial *707# on your phone.<br />
                       Select "Send Money".<br />
                       Choose recipient: 0783556354<br />
-                      Enter amount: ${totalCost}<br />
+                      Enter amount: ${totalCost.toFixed(2)}<br />
                       Use reference: {bus?.numberplate || "BUSSUB"}<br />
                       Confirm with your PIN.<br />
                       Copy the transaction confirmation text and send to our

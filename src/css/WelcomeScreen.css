@@ -546,3 +546,95 @@ body {
     display: none;
   }
 }
+/* Add these styles to your WelcomeScreen.css */
+
+.downloadSection {
+  margin-top: 25px;
+  width: 100%;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0 15px 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+.dividerText {
+  padding: 0 15px;
+  font-weight: 500;
+}
+
+.conductorText {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.playstoreLink {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+
+.playstoreLink:hover {
+  transform: scale(1.05);
+}
+
+.playstoreBadge {
+  height: 60px;
+  margin-top: 10px ;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.downloadSubtext {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 15px;
+  font-weight: 400;
+  max-width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .playstoreBadge {
+    height: 50px;
+  }
+  
+  .conductorText {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .playstoreBadge {
+    height: 45px;
+  }
+  
+  .downloadSubtext {
+    font-size: 0.75rem;
+    max-width: 220px;
+  }
+}

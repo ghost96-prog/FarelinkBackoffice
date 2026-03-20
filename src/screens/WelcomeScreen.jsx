@@ -6,6 +6,7 @@ import bridgebus from "../assets/bridgebus.jpg";
 import busBookingApp from "../assets/bus-booking-app.jpg";
 import bg2 from "../assets/bg2.jpg";
 import flogo from "../assets/flogo.png";
+import playstoreBadge from "../assets/image.png"; // Make sure to add this image to your assets folder
 import { useNavigate } from "react-router-dom";
 
 const WelcomeScreen = () => {
@@ -31,7 +32,7 @@ const WelcomeScreen = () => {
     {
       id: "card_1",
       title: "Smart Bus Ticketing",
-      description: "Automate ticketing and reduce manual work for your team",
+      description: "Automate ticketing and reduce manual work for your team. Create Routes, Set Fares, and Manage Sales from anywhere.",
       image: bridgebus,
       color: ["#0d7ca8ff", "#054260ff"],
       icon: "🚌",
@@ -40,7 +41,7 @@ const WelcomeScreen = () => {
       id: "card_2",
       title: "Real-time Sales Tracking",
       description:
-        "Increase sales with digital ticketing and real-time analytics",
+        "Increase sales with digital ticketing and real-time analytics, allowing you to make informed decisions on the go.",
       lottie: true,
       color: ["#0e0560ff", "#15b4d4ff"],
       icon: "📊",
@@ -48,7 +49,7 @@ const WelcomeScreen = () => {
     {
       id: "card_3",
       title: "Grow Your Business",
-      description: "Expand your customer base with modern ticketing solutions",
+      description: "Expand your customer base with modern ticketing solutions. Set access levels for your staff and manage everything from one app.",
       image: busBookingApp,
       color: ["#5543bdff", "#0e0560ff"],
       icon: "💼",
@@ -163,6 +164,31 @@ const WelcomeScreen = () => {
                 <span className="regBtnText">CREATE ACCOUNT</span>
                 <span className="chevron">→</span>
               </button>
+            </div>
+
+            {/* Download App Section */}
+            <div className="downloadSection">
+              <div className="divider">
+                <span className="dividerText">OR</span>
+              </div>
+              
+              
+              <p className="downloadSubtext">
+                Download the FareLink Conductor App to manage tickets.
+              </p>
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.iamghost1996.Farelink" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="playstoreLink"
+              >
+                <img 
+                  src={playstoreBadge} 
+                  alt="Get it on Google Play" 
+                  className="playstoreBadge"
+                />
+              </a>
+              
             </div>
           </div>
         </div>

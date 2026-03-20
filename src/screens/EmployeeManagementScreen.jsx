@@ -56,14 +56,44 @@ const EmployeeManagementScreen = () => {
   const [fadeAnim, setFadeAnim] = useState(0);
   const [slideAnim, setSlideAnim] = useState(50);
 
-  // Available roles with icons
+  // Available roles with relevant icons and distinct colors
   const roles = [
-    { id: "driver", name: "Driver", icon: "🚗", color: "#007bff" },
-    { id: "conductor", name: "Conductor", icon: "👤", color: "#28a745" },
-    { id: "admin", name: "Admin", icon: "⚙️", color: "#6f42c1" },
-    { id: "owner", name: "Owner", icon: "🏢", color: "#fd7e14" },
-    { id: "supervisor", name: "Supervisor", icon: "👁️", color: "#20c997" },
-    { id: "inspector", name: "Inspector", icon: "🔍", color: "#e83e8c" },
+    { 
+      id: "driver", 
+      name: "Driver", 
+      icon: "fas fa-truck", // Truck icon for driver
+      color: "#2563eb" // Blue
+    },
+    { 
+      id: "conductor", 
+      name: "Conductor", 
+      icon: "fas fa-ticket-alt", // Ticket icon for conductor
+      color: "#16a34a" // Green
+    },
+    { 
+      id: "admin", 
+      name: "Admin", 
+      icon: "fas fa-user-shield", // Shield icon for admin
+      color: "#7c3aed" // Purple
+    },
+    { 
+      id: "owner", 
+      name: "Owner", 
+      icon: "fas fa-crown", // Crown icon for owner
+      color: "#b45309" // Orange/Brown
+    },
+    { 
+      id: "supervisor", 
+      name: "Supervisor", 
+      icon: "fas fa-clipboard-list", // Clipboard icon for supervisor
+      color: "#0d9488" // Teal
+    },
+    { 
+      id: "inspector", 
+      name: "Inspector", 
+      icon: "fas fa-clipboard-check", // Checked clipboard for inspector
+      color: "#b91c1c" // Red
+    },
   ];
 
   // Load data on component mount
@@ -543,23 +573,32 @@ const EmployeeListItem = ({ employee }) => {
             className="employee-list-item-icon"
             style={{ backgroundColor: role?.color + "20" }}
           >
-            <span className="employee-icon">{role?.icon || "👤"}</span>
+            <i className={role?.icon || "fas fa-user"} style={{ fontSize: '16px' }}></i>
           </div>
           <div className="employee-list-item-info">
             <div className="employee-list-item-name">{employee.staffname}</div>
-            <div className="employee-list-item-role">{role?.name || "No role"}</div>
+            <div className="employee-list-item-role">
+              <i className={role?.icon} style={{ fontSize: '12px', marginRight: '4px', color: role?.color }}></i>
+              {role?.name || "No role"}
+            </div>
           </div>
           <div className="employee-list-item-meta">
-            <div className="employee-list-item-bus">{employee.busname}</div>
+            <div className="employee-list-item-bus">
+              <i className="fas fa-bus" style={{ fontSize: '12px', marginRight: '4px', color: '#4b5563' }}></i>
+              {employee.busname}
+            </div>
             <div className="employee-status-container">
-              <div className="employee-status-label">
+              <div className="employee-status-label" style={{ 
+                color: employee.status === "active" ? "#16a34a" : "#6b7280"
+              }}>
+                <i className={`fas fa-${employee.status === "active" ? "check-circle" : "minus-circle"}`} style={{ fontSize: '12px', marginRight: '4px' }}></i>
                 {employee.status === "active" ? "Active" : "Inactive"}
               </div>
               
               {/* Show loading spinner instead of switch when switching */}
               {isSwitching ? (
                 <div className="employee-switch-loading-indicator">
-                  <div className="employee-switch-spinner"></div>
+                  <i className="fas fa-spinner fa-pulse" style={{ fontSize: '16px', color: '#6b7280' }}></i>
                 </div>
               ) : (
                 <label className="employee-switch" onClick={(e) => e.stopPropagation()}>
@@ -579,11 +618,11 @@ const EmployeeListItem = ({ employee }) => {
         <div className="employee-list-item-footer">
           <div className="employee-list-item-details">
             <div className="employee-detail-row">
-              <span className="employee-detail-icon">📞</span>
+              <i className="fas fa-phone" style={{ fontSize: '12px', width: '20px', color: '#6b7280' }}></i>
               <div className="employee-detail-text">{employee.phonenumber}</div>
             </div>
             <div className="employee-detail-row">
-              <span className="employee-detail-icon">🔑</span>
+              <i className="fas fa-key" style={{ fontSize: '12px', width: '20px', color: '#6b7280' }}></i>
               <div className="employee-detail-text">PIN: {employee.pin}</div>
             </div>
           </div>
@@ -593,14 +632,14 @@ const EmployeeListItem = ({ employee }) => {
               onClick={handleEditClick}
               disabled={isSwitching}
             >
-              ✏️
+              <i className="fas fa-edit" style={{ fontSize: '14px' }}></i>
             </button>
             <button 
               className="employee-delete-button"
               onClick={handleDeleteClick}
               disabled={isSwitching}
             >
-              🗑️
+              <i className="fas fa-trash-alt" style={{ fontSize: '14px' }}></i>
             </button>
           </div>
         </div>
@@ -617,20 +656,24 @@ const EmployeeListItem = ({ employee }) => {
       >
         <div className="employee-bus-list-content">
           <div className="employee-bus-list-icon">
-            <span className="bus-icon">🚌</span>
+            <i className="fas fa-bus" style={{ fontSize: '16px', color: '#2563eb' }}></i>
           </div>
           <div className="employee-bus-list-info">
             <div className="employee-bus-list-name">{bus.busname}</div>
-            <div className="employee-bus-list-plate">{bus.numberplate}</div>
+            <div className="employee-bus-list-plate">
+              <i className="fas fa-hashtag" style={{ fontSize: '11px', marginRight: '2px' }}></i>
+              {bus.numberplate}
+            </div>
           </div>
           <div className="employee-bus-list-meta">
             <div className="employee-bus-list-conductor">
+              <i className="fas fa-user-check" style={{ fontSize: '11px', marginRight: '4px' }}></i>
               {bus.conductorname || "No conductor"}
             </div>
             {selectedBus && selectedBus.id === bus.id && (
-              <span className="employee-checkmark">✓</span>
+              <i className="fas fa-check-circle" style={{ fontSize: '14px', color: '#16a34a' }}></i>
             )}
-            <span className="employee-chevron">›</span>
+            <i className="fas fa-chevron-right" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
           </div>
         </div>
       </div>
@@ -644,20 +687,24 @@ const EmployeeListItem = ({ employee }) => {
     >
       <div className="employee-bus-list-content">
         <div className="employee-bus-list-icon">
-          <span className="bus-icon">🚌</span>
+          <i className="fas fa-bus" style={{ fontSize: '16px', color: '#2563eb' }}></i>
         </div>
         <div className="employee-bus-list-info">
           <div className="employee-bus-list-name">{bus.busname}</div>
-          <div className="employee-bus-list-plate">{bus.numberplate}</div>
+          <div className="employee-bus-list-plate">
+            <i className="fas fa-hashtag" style={{ fontSize: '11px', marginRight: '2px' }}></i>
+            {bus.numberplate}
+          </div>
         </div>
         <div className="employee-bus-list-meta">
           <div className="employee-bus-list-conductor">
+            <i className="fas fa-user-check" style={{ fontSize: '11px', marginRight: '4px' }}></i>
             {bus.conductorname || "No conductor"}
           </div>
           {selectedFilterBus && selectedFilterBus.id === bus.id && (
-            <span className="employee-checkmark">✓</span>
+            <i className="fas fa-check-circle" style={{ fontSize: '14px', color: '#16a34a' }}></i>
           )}
-          <span className="employee-chevron">›</span>
+          <i className="fas fa-chevron-right" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
         </div>
       </div>
     </div>
@@ -670,12 +717,12 @@ const EmployeeListItem = ({ employee }) => {
           className="employee-role-icon-container"
           style={{ backgroundColor: role.color + "20" }}
         >
-          <span className="employee-role-icon">{role.icon}</span>
+          <i className={role.icon} style={{ fontSize: '16px', color: role.color }}></i>
         </div>
         <div className="employee-role-list-info">
           <div className="employee-role-list-name">{role.name}</div>
         </div>
-        <span className="employee-chevron">›</span>
+        <i className="fas fa-chevron-right" style={{ fontSize: '14px', color: '#9ca3af' }}></i>
       </div>
     </div>
   );
@@ -722,8 +769,8 @@ const EmployeeListItem = ({ employee }) => {
             <div className="employee-list-header">
               <div className="employee-list-header-content">
                 <button className="employee-list-back-button" onClick={() => navigate(-1)}>
-                  <span className="employee-list-back-icon">←</span>
-                  Back
+                  <i className="fas fa-arrow-left" style={{ fontSize: '14px' }}></i>
+                  <span>Back</span>
                 </button>
                 
                 <div className="employee-list-header-title-container">
@@ -738,12 +785,13 @@ const EmployeeListItem = ({ employee }) => {
                   className="employee-filter-button"
                   onClick={() => setFilterBusModalVisible(true)}
                 >
-                  <span 
-                    className="employee-filter-icon"
-                    style={{ color: isFilteredByBus ? "#ffd700" : "white" }}
-                  >
-                    🔍
-                  </span>
+                  <i 
+                    className="fas fa-filter"
+                    style={{ 
+                      fontSize: '16px',
+                      color: isFilteredByBus ? "#ffd700" : "white"
+                    }}
+                  ></i>
                   {isFilteredByBus && <div className="employee-filter-active-dot" />}
                 </button>
               </div>
@@ -753,7 +801,7 @@ const EmployeeListItem = ({ employee }) => {
                 className="employee-list-create-button"
                 onClick={() => setModalVisible(true)}
               >
-                <span className="employee-list-create-icon">+</span>
+                <i className="fas fa-plus" style={{ fontSize: '14px' }}></i>
                 Add Employee
               </button>
             </div>
@@ -762,7 +810,7 @@ const EmployeeListItem = ({ employee }) => {
             <div className="employee-list-stats-section">
               <div className="employee-list-search-container">
                 <div className="employee-list-search-wrapper">
-                  <span className="employee-list-search-icon">🔍</span>
+                  <i className="fas fa-search employee-list-search-icon" style={{ fontSize: '14px' }}></i>
                   <input
                     type="text"
                     placeholder={
@@ -776,7 +824,7 @@ const EmployeeListItem = ({ employee }) => {
                   />
                   {searchQuery.length > 0 && (
                     <button className="employee-list-clear-button" onClick={() => setSearchQuery('')}>
-                      ✕
+                      <i className="fas fa-times" style={{ fontSize: '12px' }}></i>
                     </button>
                   )}
                 </div>
@@ -785,7 +833,7 @@ const EmployeeListItem = ({ employee }) => {
                 {isFilteredByBus && selectedFilterBus && (
                   <div className="employee-active-filter-container">
                     <div className="employee-active-filter-badge">
-                      <span className="employee-active-filter-icon">🚌</span>
+                      <i className="fas fa-bus" style={{ fontSize: '12px', marginRight: '4px' }}></i>
                       <div className="employee-active-filter-text">
                         Showing: {selectedFilterBus.busname}
                       </div>
@@ -793,7 +841,7 @@ const EmployeeListItem = ({ employee }) => {
                         className="employee-clear-active-filter"
                         onClick={clearBusFilter}
                       >
-                        ✕
+                        <i className="fas fa-times" style={{ fontSize: '10px' }}></i>
                       </button>
                     </div>
                   </div>
@@ -803,13 +851,19 @@ const EmployeeListItem = ({ employee }) => {
               <div className="employee-list-stats">
                 <div className="employee-list-stat">
                   <div className="employee-list-stat-value">{employees.length}</div>
-                  <div className="employee-list-stat-label">Total Employees</div>
+                  <div className="employee-list-stat-label">
+                    <i className="fas fa-users" style={{ fontSize: '12px', marginRight: '4px' }}></i>
+                    Total Employees
+                  </div>
                 </div>
                 <div className="employee-list-stat">
                   <div className="employee-list-stat-value">
                     {employees.filter(emp => emp.status === 'active').length}
                   </div>
-                  <div className="employee-list-stat-label">Active</div>
+                  <div className="employee-list-stat-label">
+                    <i className="fas fa-check-circle" style={{ fontSize: '12px', marginRight: '4px', color: '#16a34a' }}></i>
+                    Active
+                  </div>
                 </div>
               </div>
             </div>
@@ -818,7 +872,7 @@ const EmployeeListItem = ({ employee }) => {
             <div className="employee-list-main">
               {fetching && (
                 <div className="employee-list-loading">
-                  <div className="employee-list-loading-spinner"></div>
+                  <i className="fas fa-spinner fa-pulse" style={{ fontSize: '24px', color: '#2563eb', marginBottom: '12px' }}></i>
                   <div>Loading employees...</div>
                 </div>
               )}
@@ -830,7 +884,9 @@ const EmployeeListItem = ({ employee }) => {
                 
                 {currentEmployees.length === 0 && !fetching && (
                   <div className="employee-list-empty-state">
-                    <div className="employee-list-empty-icon">👥</div>
+                    <div className="employee-list-empty-icon">
+                      <i className="fas fa-users" style={{ fontSize: '32px', color: '#9ca3af' }}></i>
+                    </div>
                     <div className="employee-list-empty-text">No employees found</div>
                     <div className="employee-list-empty-subtext">
                       {searchQuery ? "Try adjusting your search" : "Add your first employee to get started"}
@@ -847,7 +903,7 @@ const EmployeeListItem = ({ employee }) => {
                     onClick={goToPreviousPage}
                     disabled={currentPage === 1}
                   >
-                    ←
+                    <i className="fas fa-chevron-left" style={{ fontSize: '14px' }}></i>
                   </button>
 
                   <div className="employee-list-page-numbers">
@@ -867,7 +923,7 @@ const EmployeeListItem = ({ employee }) => {
                     onClick={goToNextPage}
                     disabled={currentPage === totalPages}
                   >
-                    →
+                    <i className="fas fa-chevron-right" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               )}
@@ -889,7 +945,7 @@ const EmployeeListItem = ({ employee }) => {
                 <div className="employee-list-modal-header-content">
                   <div className="employee-list-modal-title-row">
                     <div className="employee-list-modal-icon">
-                      👤
+                      <i className="fas fa-user-plus" style={{ fontSize: '20px', color: '#2563eb' }}></i>
                     </div>
                     <div className="employee-list-modal-title-container">
                       <div className="employee-list-modal-title">Add New Employee</div>
@@ -905,7 +961,7 @@ const EmployeeListItem = ({ employee }) => {
                       resetForm();
                     }}
                   >
-                    ✕
+                    <i className="fas fa-times" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               </div>
@@ -916,7 +972,7 @@ const EmployeeListItem = ({ employee }) => {
                   <div className="employee-list-input-group">
                     <div className="employee-list-input-label">Employee Name *</div>
                     <div className={`employee-list-input-wrapper ${focusedInput === 'staffname' ? 'employee-list-input-wrapper-focused' : ''}`}>
-                      <span className="employee-list-input-icon">👤</span>
+                      <i className="fas fa-user employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                       <input
                         type="text"
                         placeholder="Enter employee name"
@@ -933,7 +989,7 @@ const EmployeeListItem = ({ employee }) => {
                   <div className="employee-list-input-group">
                     <div className="employee-list-input-label">Phone Number</div>
                     <div className={`employee-list-input-wrapper ${focusedInput === 'phonenumber' ? 'employee-list-input-wrapper-focused' : ''}`}>
-                      <span className="employee-list-input-icon">📞</span>
+                      <i className="fas fa-phone employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                       <input
                         type="text"
                         placeholder="Enter phone number"
@@ -953,11 +1009,11 @@ const EmployeeListItem = ({ employee }) => {
                       className="employee-list-select-button"
                       onClick={() => setBusModalVisible(true)}
                     >
-                      <span className="employee-list-input-icon">🚌</span>
+                      <i className="fas fa-bus employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                       <div className={`employee-list-select-button-text ${selectedBus ? 'employee-list-select-button-text-selected' : ''}`}>
                         {selectedBus ? selectedBus.busname : "Select a bus"}
                       </div>
-                      <span className="employee-list-chevron-down">▼</span>
+                      <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
                     </button>
                   </div>
 
@@ -968,11 +1024,11 @@ const EmployeeListItem = ({ employee }) => {
                       className="employee-list-select-button"
                       onClick={() => setRoleModalVisible(true)}
                     >
-                      <span className="employee-list-input-icon">💼</span>
+                      <i className="fas fa-briefcase employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                       <div className={`employee-list-select-button-text ${selectedRole ? 'employee-list-select-button-text-selected' : ''}`}>
                         {selectedRole ? selectedRole.name : "Select a role"}
                       </div>
-                      <span className="employee-list-chevron-down">▼</span>
+                      <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
                     </button>
                   </div>
 
@@ -981,7 +1037,7 @@ const EmployeeListItem = ({ employee }) => {
                     <div className="employee-list-input-group">
                       <div className="employee-list-input-label">4-Digit PIN *</div>
                       <div className="employee-list-pin-container">
-                        <span className="employee-list-input-icon">🔑</span>
+                        <i className="fas fa-key employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <input
                           type="text"
                           value={newEmployee.pin}
@@ -991,7 +1047,10 @@ const EmployeeListItem = ({ employee }) => {
                           onFocus={() => setFocusedInput('pin')}
                           onBlur={() => setFocusedInput(null)}
                         />
-                        <div className="employee-list-pin-hint">Auto-generated</div>
+                        <div className="employee-list-pin-hint">
+                          <i className="fas fa-magic" style={{ fontSize: '11px', marginRight: '4px' }}></i>
+                          Auto-generated
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1013,7 +1072,17 @@ const EmployeeListItem = ({ employee }) => {
                   onClick={handleCreateEmployee}
                   disabled={!newEmployee.pin.trim() || newEmployee.pin.length !== 4 || !newEmployee.staffname.trim() || !selectedBus || !selectedRole || creating}
                 >
-                  {creating ? 'Creating...' : '✓ Add Employee'}
+                  {creating ? (
+                    <>
+                      <i className="fas fa-spinner fa-pulse" style={{ fontSize: '14px', marginRight: '8px' }}></i>
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-check" style={{ fontSize: '14px', marginRight: '8px' }}></i>
+                      Add Employee
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -1034,7 +1103,7 @@ const EmployeeListItem = ({ employee }) => {
                 <div className="employee-list-modal-header-content">
                   <div className="employee-list-modal-title-row">
                     <div className="employee-list-modal-icon">
-                      ✏️
+                      <i className="fas fa-user-edit" style={{ fontSize: '20px', color: '#7c3aed' }}></i>
                     </div>
                     <div className="employee-list-modal-title-container">
                       <div className="employee-list-modal-title">Edit Employee</div>
@@ -1052,7 +1121,7 @@ const EmployeeListItem = ({ employee }) => {
                       setSelectedRole(null);
                     }}
                   >
-                    ✕
+                    <i className="fas fa-times" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               </div>
@@ -1064,7 +1133,7 @@ const EmployeeListItem = ({ employee }) => {
                     <div className="employee-list-input-group">
                       <div className="employee-list-input-label">Employee Name *</div>
                       <div className={`employee-list-input-wrapper ${focusedInput === 'edit_staffname' ? 'employee-list-input-wrapper-focused' : ''}`}>
-                        <span className="employee-list-input-icon">👤</span>
+                        <i className="fas fa-user employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <input
                           type="text"
                           placeholder="Enter employee name"
@@ -1081,7 +1150,7 @@ const EmployeeListItem = ({ employee }) => {
                     <div className="employee-list-input-group">
                       <div className="employee-list-input-label">Phone Number</div>
                       <div className={`employee-list-input-wrapper ${focusedInput === 'edit_phonenumber' ? 'employee-list-input-wrapper-focused' : ''}`}>
-                        <span className="employee-list-input-icon">📞</span>
+                        <i className="fas fa-phone employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <input
                           type="text"
                           placeholder="Enter phone number"
@@ -1101,11 +1170,11 @@ const EmployeeListItem = ({ employee }) => {
                         className="employee-list-select-button"
                         onClick={() => setBusModalVisible(true)}
                       >
-                        <span className="employee-list-input-icon">🚌</span>
+                        <i className="fas fa-bus employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <div className={`employee-list-select-button-text ${selectedBus ? 'employee-list-select-button-text-selected' : ''}`}>
                           {selectedBus ? selectedBus.busname : "Select a bus"}
                         </div>
-                        <span className="employee-list-chevron-down">▼</span>
+                        <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
                       </button>
                     </div>
 
@@ -1116,11 +1185,11 @@ const EmployeeListItem = ({ employee }) => {
                         className="employee-list-select-button"
                         onClick={() => setRoleModalVisible(true)}
                       >
-                        <span className="employee-list-input-icon">💼</span>
+                        <i className="fas fa-briefcase employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <div className={`employee-list-select-button-text ${selectedRole ? 'employee-list-select-button-text-selected' : ''}`}>
                           {selectedRole ? selectedRole.name : "Select a role"}
                         </div>
-                        <span className="employee-list-chevron-down">▼</span>
+                        <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: '#9ca3af' }}></i>
                       </button>
                     </div>
 
@@ -1128,7 +1197,7 @@ const EmployeeListItem = ({ employee }) => {
                     <div className="employee-list-input-group">
                       <div className="employee-list-input-label">4-Digit PIN *</div>
                       <div className="employee-list-pin-container">
-                        <span className="employee-list-input-icon">🔑</span>
+                        <i className="fas fa-key employee-list-input-icon" style={{ fontSize: '14px' }}></i>
                         <input
                           type="text"
                           value={editingEmployee.pin}
@@ -1138,7 +1207,10 @@ const EmployeeListItem = ({ employee }) => {
                           onFocus={() => setFocusedInput('edit_pin')}
                           onBlur={() => setFocusedInput(null)}
                         />
-                        <div className="employee-list-pin-hint">Required</div>
+                        <div className="employee-list-pin-hint">
+                          <i className="fas fa-exclamation-circle" style={{ fontSize: '11px', marginRight: '4px' }}></i>
+                          Required
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1162,7 +1234,17 @@ const EmployeeListItem = ({ employee }) => {
                   onClick={handleUpdateEmployee}
                   disabled={!editingEmployee?.pin.trim() || editingEmployee?.pin.length !== 4 || !editingEmployee?.staffname.trim() || !selectedBus || !selectedRole || updating}
                 >
-                  {updating ? 'Updating...' : '✓ Update Employee'}
+                  {updating ? (
+                    <>
+                      <i className="fas fa-spinner fa-pulse" style={{ fontSize: '14px', marginRight: '8px' }}></i>
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-check" style={{ fontSize: '14px', marginRight: '8px' }}></i>
+                      Update Employee
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -1183,7 +1265,7 @@ const EmployeeListItem = ({ employee }) => {
                 <div className="employee-list-modal-header-content">
                   <div className="employee-list-modal-title-row">
                     <div className="employee-list-modal-icon">
-                      🚌
+                      <i className="fas fa-bus" style={{ fontSize: '20px', color: '#2563eb' }}></i>
                     </div>
                     <div className="employee-list-modal-title-container">
                       <div className="employee-list-modal-title">Select Bus</div>
@@ -1196,7 +1278,7 @@ const EmployeeListItem = ({ employee }) => {
                     className="employee-list-close-button"
                     onClick={() => setBusModalVisible(false)}
                   >
-                    ✕
+                    <i className="fas fa-times" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               </div>
@@ -1209,7 +1291,9 @@ const EmployeeListItem = ({ employee }) => {
                   
                   {buses.length === 0 && (
                     <div className="employee-list-empty-state">
-                      <div className="employee-list-empty-icon">🚌</div>
+                      <div className="employee-list-empty-icon">
+                        <i className="fas fa-bus" style={{ fontSize: '32px', color: '#9ca3af' }}></i>
+                      </div>
                       <div className="employee-list-empty-text">No buses found</div>
                       <div className="employee-list-empty-subtext">
                         Add buses first to assign employees
@@ -1236,7 +1320,7 @@ const EmployeeListItem = ({ employee }) => {
                 <div className="employee-list-modal-header-content">
                   <div className="employee-list-modal-title-row">
                     <div className="employee-list-modal-icon">
-                      💼
+                      <i className="fas fa-briefcase" style={{ fontSize: '20px', color: '#7c3aed' }}></i>
                     </div>
                     <div className="employee-list-modal-title-container">
                       <div className="employee-list-modal-title">Select Role</div>
@@ -1249,7 +1333,7 @@ const EmployeeListItem = ({ employee }) => {
                     className="employee-list-close-button"
                     onClick={() => setRoleModalVisible(false)}
                   >
-                    ✕
+                    <i className="fas fa-times" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               </div>
@@ -1279,7 +1363,7 @@ const EmployeeListItem = ({ employee }) => {
                 <div className="employee-list-modal-header-content">
                   <div className="employee-list-modal-title-row">
                     <div className="employee-list-modal-icon">
-                      🔍
+                      <i className="fas fa-filter" style={{ fontSize: '20px', color: '#ffd700' }}></i>
                     </div>
                     <div className="employee-list-modal-title-container">
                       <div className="employee-list-modal-title">Filter by Bus</div>
@@ -1292,7 +1376,7 @@ const EmployeeListItem = ({ employee }) => {
                     className="employee-list-close-button"
                     onClick={() => setFilterBusModalVisible(false)}
                   >
-                    ✕
+                    <i className="fas fa-times" style={{ fontSize: '14px' }}></i>
                   </button>
                 </div>
               </div>
@@ -1304,7 +1388,7 @@ const EmployeeListItem = ({ employee }) => {
                     className="employee-clear-filter-button"
                     onClick={clearBusFilter}
                   >
-                    <span className="employee-clear-filter-icon">✕</span>
+                    <i className="fas fa-times-circle" style={{ fontSize: '14px', marginRight: '8px' }}></i>
                     <div className="employee-clear-filter-text">Clear Filter</div>
                   </button>
                 )}
@@ -1316,7 +1400,9 @@ const EmployeeListItem = ({ employee }) => {
                   
                   {buses.length === 0 && (
                     <div className="employee-list-empty-state">
-                      <div className="employee-list-empty-icon">🚌</div>
+                      <div className="employee-list-empty-icon">
+                        <i className="fas fa-bus" style={{ fontSize: '32px', color: '#9ca3af' }}></i>
+                      </div>
                       <div className="employee-list-empty-text">No buses found</div>
                       <div className="employee-list-empty-subtext">
                         Add buses first to filter employees

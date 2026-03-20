@@ -1,4 +1,4 @@
-/* SideNav.css - Fixed Popup Version */
+/* SideNav.css - Cleaned version without submenu/popup styles */
 .side-nav {
   width: 250px;
   background: #ffffff;
@@ -146,6 +146,7 @@
   flex-direction: column;
   gap: 4px;
   position: relative;
+  overflow-y: auto;
 }
 
 .nav-footer {
@@ -186,14 +187,6 @@
   border-right: 2px solid #1a5b7b;
 }
 
-.nav-item.has-submenu {
-  justify-content: space-between;
-}
-
-.nav-item.submenu-open {
-  background: rgba(26, 91, 123, 0.1);
-}
-
 .nav-icon {
   font-size: 16px;
   width: 20px;
@@ -205,16 +198,6 @@
   font-weight: 500;
   flex: 1;
   text-align: left;
-}
-
-.submenu-arrow {
-  font-size: 11px;
-  transition: transform 0.3s ease;
-  margin-left: auto;
-}
-
-.submenu-arrow.rotated {
-  transform: rotate(180deg);
 }
 
 .sidebar-toggle {
@@ -246,136 +229,6 @@
   font-weight: bold;
 }
 
-/* Sub-menu styles */
-.nav-item-wrapper {
-  position: relative;
-}
-
-.sub-menu {
-  background: rgba(0, 0, 0, 0.02);
-  border-radius: 0 0 6px 6px;
-  margin: -4px 8px 4px 8px;
-  overflow: hidden;
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Reduced font size for sub-menu items */
-.sub-item-label {
-  font-size: 12px !important;
-}
-
-.settings-popup-label {
-  font-size: 12px !important;
-}
-
-/* Ensure sub-menu items have proper spacing with smaller font */
-.sub-item {
-  padding: 4px 4px  !important;
-}
-
-.settings-popup-item {
-  padding: 10px 12px !important;
-}
-
-/* Make sure icons are properly sized */
-.nav-icon i,
-.settings-popup-icon i {
-  font-size: 15px;
-}
-
-.sub-item .nav-icon i {
-  font-size: 13px;
-}
-
-.sub-item {
-  margin-top: 10px !important;
-  border-radius: 0 !important;
-  border-left: 2px solid transparent;
-  padding-left: 34px !important;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.sub-item:hover {
-  border-left: 2px solid #1a5b7b;
-  background: rgba(26, 91, 123, 0.08);
-}
-
-/* Settings Popup for collapsed state */
-.settings-popup {
-  position: absolute;
-  left: 72px;
-  bottom: 100px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  padding: 6px 0;
-  z-index: 1002;
-  min-width: 200px;
-  animation: fadeInScale 0.2s ease;
-  border: 1px solid #e9ecef;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: translateX(-8px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-.settings-popup-header {
-  padding: 10px 12px 6px 12px;
-  font-weight: 600;
-  color: #1a5b7b;
-  border-bottom: 1px solid #e9ecef;
-  margin-bottom: 3px;
-  font-size: 13px;
-}
-
-.settings-popup-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: left;
-  font-size: 13px;
-  width: 100%;
-}
-
-.settings-popup-item:hover {
-  background: rgba(26, 91, 123, 0.1);
-  color: #1a5b7b;
-}
-
-.settings-popup-icon {
-  font-size: 13px;
-  width: 18px;
-  text-align: center;
-}
-
-.settings-popup-label {
-  font-weight: 500;
-}
-
 /* Mobile overlay for sidebar */
 @media (max-width: 768px) {
   .side-nav-overlay {
@@ -392,26 +245,7 @@
   .side-nav:not(.collapsed) ~ .side-nav-overlay {
     display: block;
   }
-
-  .settings-popup {
-    left: 72px;
-    right: auto;
-    bottom: 100px;
-    min-width: 180px;
-  }
 }
-
-/* Mobile adjustments for popup */
-@media (max-width: 480px) {
-  .settings-popup {
-    left: 8px;
-    right: 8px;
-    bottom: 70px;
-    min-width: auto;
-  }
-}
-
-
 
 @media (max-width: 768px) {
   .mobile-menu-toggle {
@@ -462,13 +296,11 @@
 }
 
 /* Ensure proper icon sizing */
-.nav-icon i,
-.settings-popup-icon i {
+.nav-icon i {
   font-size: inherit;
 }
 
 /* Logout Modal Styles */
-/* Logout Modal Styles - FIXED */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -479,7 +311,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000; /* Much higher z-index */
+  z-index: 10000;
   padding: 15px;
 }
 
@@ -491,7 +323,7 @@
   width: 100%;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease;
-  z-index: 10001; /* Higher than overlay */
+  z-index: 10001;
   position: relative;
 }
 
@@ -633,219 +465,33 @@
   }
 }
 
-/* CRITICAL FIX: Ensure modal appears above everything including sidebar */
+/* Z-index hierarchy */
 .modal-overlay {
-  z-index: 10000 !important; /* Force higher than sidebar */
+  z-index: 10000 !important;
 }
 
 .logout-modal {
-  z-index: 10001 !important; /* Force higher than overlay */
+  z-index: 10001 !important;
 }
 
-/* Fix for sidebar z-index */
 .side-nav {
-  z-index: 1000; /* Lower than modal */
+  z-index: 1000;
 }
 
 .sidebar-toggle {
-  z-index: 1001; /* Slightly higher than sidebar but lower than modal */
+  z-index: 1001;
 }
 
-/* Mobile overlay should be below modal */
 .side-nav-overlay {
-  z-index: 999; /* Lower than modal */
+  z-index: 1999;
 }
 
-/* Ensure settings popup is below modal */
-.settings-popup {
-  z-index: 1002; /* Higher than sidebar but lower than modal */
-}
-
-/* Mobile specific fixes */
+/* Mobile specific z-index fixes */
 @media (max-width: 768px) {
   .modal-overlay {
     z-index: 10000 !important;
   }
   
-  .side-nav {
-    z-index: 2000; /* Sidebar stays high but modal is higher */
-  }
-  
-  .side-nav-overlay {
-    z-index: 1999; /* Overlay below sidebar */
-  }
-}
-
-.logout-modal {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 350px;
-  width: 100%;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-  animation: modalSlideIn 0.3s ease;
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.logout-modal-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.logout-modal-icon {
-  font-size: 40px;
-  margin-bottom: 8px;
-}
-
-.logout-modal-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a5b7b;
-  margin: 0;
-}
-
-.logout-modal-content {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.logout-modal-message {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-.logout-modal-user {
-  background: #f8f9fa;
-  border-radius: 6px;
-  padding: 12px;
-  border-left: 3px solid #1a5b7b;
-}
-
-.user-email {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a5b7b;
-  margin-bottom: 4px;
-}
-
-.company-name {
-  display: block;
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-}
-
-.logout-modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.logout-modal-cancel,
-.logout-modal-confirm {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-}
-
-.logout-modal-cancel {
-  background: #f8f9fa;
-  color: #666;
-  border: 1px solid #dee2e6;
-}
-
-.logout-modal-cancel:hover {
-  background: #e9ecef;
-  transform: translateY(-1px);
-}
-
-.logout-modal-confirm {
-  background: linear-gradient(135deg, #dc3545, #c82333);
-  color: white;
-  box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3);
-}
-
-.logout-modal-confirm:hover {
-  background: linear-gradient(135deg, #c82333, #bd2130);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-}
-
-/* Responsive Design for Modal */
-@media (max-width: 480px) {
-  .modal-overlay {
-    padding: 12px;
-  }
-  
-  .logout-modal {
-    padding: 16px 12px;
-  }
-  
-  .logout-modal-actions {
-    flex-direction: column;
-  }
-  
-  .logout-modal-cancel,
-  .logout-modal-confirm {
-    flex: none;
-  }
-  
-  .logout-modal-title {
-    font-size: 16px;
-  }
-  
-  .logout-modal-icon {
-    font-size: 36px;
-  }
-  
-  .logout-modal-message {
-    font-size: 13px;
-  }
-}
-
-/* Ensure modal appears above everything */
-.modal-overlay {
-  z-index: 3000;
-}
-
-.logout-modal {
-  z-index: 3001;
-}
-
-/* Fix for mobile modal overlay */
-@media (max-width: 768px) {
-  .modal-overlay {
-    z-index: 3000;
-    position: fixed;
-  }
-  
-  .logout-modal {
-    z-index: 3001;
-    position: relative;
-  }
-  
-  /* Ensure sidebar doesn't interfere with modal */
   .side-nav {
     z-index: 2000;
   }

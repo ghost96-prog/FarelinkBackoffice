@@ -292,9 +292,9 @@ const BusListScreen = () => {
         throw new Error(`httpError ${response.status} `);
       }
       setBuses(data.allbuses);
-      alert('Success: Bus created successfully!');
+      showSuccess('Bus created successfully!');
     } catch (error) {
-      alert('Error: Failed to save buses');
+      showAlert('Failed to save buses');
     } finally {
       hideProcessing();
     }
@@ -377,11 +377,13 @@ const BusListScreen = () => {
         <div className="bus-list-item-content">
           <div className="bus-list-item-header">
             <div className="bus-list-item-icon">
-              <span className="bus-icon">🚌</span>
+              <i className="fas fa-bus bus-icon"></i>
             </div>
             <div className="bus-list-item-info">
               <div className="bus-list-item-name">{bus.busname}</div>
-              <div className="bus-list-item-plate">PLATE: {bus.numberplate}</div>
+              <div className="bus-list-item-plate">
+                <i className="fas fa-hashtag"></i> PLATE: {bus.numberplate}
+              </div>
             </div>
           </div>
 
@@ -390,7 +392,7 @@ const BusListScreen = () => {
               {busRoutes.length > 0 && (
                 <div className="bus-routes-section">
                   <div className="bus-routes-header">
-                    <span className="route-icon">📍</span>
+                    <i className="fas fa-map-marker-alt route-icon"></i>
                     <div className="bus-routes-label">
                       Assigned Routes: {busRoutes.length}
                     </div>
@@ -399,9 +401,9 @@ const BusListScreen = () => {
                   <div className="bus-routes-list">
                     {routesToShow.map((route, index) => (
                       <div key={route.route_id || index} className="bus-route-chip">
-                        <span className="bus-route-icon">📍</span>
+                        <i className="fas fa-route bus-route-icon"></i>
                         <div className="bus-route-chip-text">
-                          {route.from} → {route.to}
+                          {route.from} <i className="fas fa-arrow-right"></i> {route.to}
                         </div>
                       </div>
                     ))}
@@ -409,7 +411,7 @@ const BusListScreen = () => {
                     {!showAllRoutes && hiddenRoutesCount > 0 && (
                       <div className="bus-more-routes-chip" onClick={handleToggleRoutes}>
                         <div className="bus-more-routes-text">
-                          +{hiddenRoutesCount} more
+                          <i className="fas fa-plus-circle"></i> +{hiddenRoutesCount} more
                         </div>
                       </div>
                     )}
@@ -417,7 +419,7 @@ const BusListScreen = () => {
                     {showAllRoutes && busRoutes.length > initialRoutesToShow && (
                       <div className="bus-less-routes-chip" onClick={handleToggleRoutes}>
                         <div className="bus-less-routes-text">
-                          Show less
+                          <i className="fas fa-minus-circle"></i> Show less
                         </div>
                       </div>
                     )}
@@ -427,6 +429,7 @@ const BusListScreen = () => {
 
               {busRoutes.length === 0 && (
                 <div className="bus-no-routes-section">
+                  <i className="fas fa-route-slash"></i>
                   <div className="bus-no-route-text">No routes assigned</div>
                 </div>
               )}
@@ -434,10 +437,10 @@ const BusListScreen = () => {
 
             <div className="bus-action-buttons">
               <button className="bus-edit-button" onClick={(e) => { e.stopPropagation(); handleEditBus(bus); }}>
-                ✏️
+                <i className="fas fa-edit"></i>
               </button>
               <button className="bus-delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteBus(bus.id); }}>
-                🗑️
+                <i className="fas fa-trash-alt"></i>
               </button>
             </div>
           </div>
@@ -488,8 +491,8 @@ const BusListScreen = () => {
             <div className="bus-list-header">
               <div className="bus-list-header-content">
                 <button className="bus-list-back-button" onClick={() => navigate(-1)}>
-                  <span className="bus-list-back-icon">←</span>
-                  Back
+                  <i className="fas fa-arrow-left"></i>
+                  <span>Back</span>
                 </button>
                 
                 <div className="bus-list-header-title-container">
@@ -505,7 +508,7 @@ const BusListScreen = () => {
                 className="bus-list-create-button"
                 onClick={() => setModalVisible(true)}
               >
-                <span className="bus-list-create-icon">+</span>
+                <i className="fas fa-plus"></i>
                 Create Bus
               </button>
             </div>
@@ -514,7 +517,7 @@ const BusListScreen = () => {
             <div className="bus-list-stats-section">
               <div className="bus-list-search-container">
                 <div className="bus-list-search-wrapper">
-                  <span className="bus-list-search-icon">🔍</span>
+                  <i className="fas fa-search bus-list-search-icon"></i>
                   <input
                     type="text"
                     placeholder="Search buses by name or plate..."
@@ -524,7 +527,7 @@ const BusListScreen = () => {
                   />
                   {searchQuery.length > 0 && (
                     <button className="bus-list-clear-button" onClick={() => setSearchQuery('')}>
-                      ✕
+                      <i className="fas fa-times"></i>
                     </button>
                   )}
                 </div>
@@ -533,13 +536,17 @@ const BusListScreen = () => {
               <div className="bus-list-stats">
                 <div className="bus-list-stat">
                   <div className="bus-list-stat-value">{buses.length}</div>
-                  <div className="bus-list-stat-label">Total Buses</div>
+                  <div className="bus-list-stat-label">
+                    <i className="fas fa-bus"></i> Total Buses
+                  </div>
                 </div>
                 <div className="bus-list-stat">
                   <div className="bus-list-stat-value">
                     {buses.filter(bus => getBusRoutes(bus.id).length > 0).length}
                   </div>
-                  <div className="bus-list-stat-label">Active Routes</div>
+                  <div className="bus-list-stat-label">
+                    <i className="fas fa-route"></i> Active Routes
+                  </div>
                 </div>
               </div>
             </div>
@@ -548,7 +555,9 @@ const BusListScreen = () => {
             <div className="bus-list-main">
               {fetching && (
                 <div className="bus-list-loading">
-                  <div className="bus-list-loading-spinner"></div>
+                  <div className="bus-list-loading-spinner">
+                    <i className="fas fa-spinner fa-pulse"></i>
+                  </div>
                   <div>Loading buses...</div>
                 </div>
               )}
@@ -560,7 +569,9 @@ const BusListScreen = () => {
                 
                 {currentBuses.length === 0 && !fetching && (
                   <div className="bus-list-empty-state">
-                    <div className="bus-list-empty-icon">🚌</div>
+                    <div className="bus-list-empty-icon">
+                      <i className="fas fa-bus"></i>
+                    </div>
                     <div className="bus-list-empty-text">No buses found</div>
                     <div className="bus-list-empty-subtext">
                       {searchQuery ? "Try adjusting your search" : "Create your first bus to get started"}
@@ -577,7 +588,7 @@ const BusListScreen = () => {
                     onClick={goToPreviousPage}
                     disabled={currentPage === 1}
                   >
-                    ←
+                    <i className="fas fa-chevron-left"></i>
                   </button>
 
                   <div className="bus-list-page-numbers">
@@ -597,7 +608,7 @@ const BusListScreen = () => {
                     onClick={goToNextPage}
                     disabled={currentPage === totalPages}
                   >
-                    →
+                    <i className="fas fa-chevron-right"></i>
                   </button>
                 </div>
               )}
@@ -619,7 +630,7 @@ const BusListScreen = () => {
                 <div className="bus-list-modal-header-content">
                   <div className="bus-list-modal-title-row">
                     <div className="bus-list-modal-icon">
-                      🚌
+                      <i className="fas fa-bus"></i>
                     </div>
                     <div className="bus-list-modal-title-container">
                       <div className="bus-list-modal-title">Create New Bus</div>
@@ -635,7 +646,7 @@ const BusListScreen = () => {
                       resetForm();
                     }}
                   >
-                    ✕
+                    <i className="fas fa-times"></i>
                   </button>
                 </div>
               </div>
@@ -645,7 +656,7 @@ const BusListScreen = () => {
                   <div className="bus-list-input-group">
                     <div className="bus-list-input-label">Bus Name</div>
                     <div className={`bus-list-input-wrapper ${focusedInput === 'busname' ? 'bus-list-input-wrapper-focused' : ''}`}>
-                      <span className="bus-list-input-icon">🚌</span>
+                      <i className="fas fa-bus bus-list-input-icon"></i>
                       <input
                         type="text"
                         placeholder="Enter bus name"
@@ -661,7 +672,7 @@ const BusListScreen = () => {
                   <div className="bus-list-input-group">
                     <div className="bus-list-input-label">Number Plate</div>
                     <div className={`bus-list-input-wrapper ${focusedInput === 'numberplate' ? 'bus-list-input-wrapper-focused' : ''}`}>
-                      <span className="bus-list-input-icon">🔢</span>
+                      <i className="fas fa-hashtag bus-list-input-icon"></i>
                       <input
                         type="text"
                         placeholder="Enter number plate"
@@ -691,7 +702,7 @@ const BusListScreen = () => {
                   onClick={handleCreateBus}
                   disabled={!newBus.busname.trim() || !newBus.numberplate.trim()}
                 >
-                  ✓ Create Bus
+                  <i className="fas fa-check"></i> Create Bus
                 </button>
               </div>
             </div>
@@ -712,7 +723,7 @@ const BusListScreen = () => {
                 <div className="bus-list-modal-header-content">
                   <div className="bus-list-modal-title-row">
                     <div className="bus-list-modal-icon">
-                      ✏️
+                      <i className="fas fa-edit"></i>
                     </div>
                     <div className="bus-list-modal-title-container">
                       <div className="bus-list-modal-title">Edit Bus</div>
@@ -728,7 +739,7 @@ const BusListScreen = () => {
                       setEditingBus(null);
                     }}
                   >
-                    ✕
+                    <i className="fas fa-times"></i>
                   </button>
                 </div>
               </div>
@@ -739,7 +750,7 @@ const BusListScreen = () => {
                     <div className="bus-list-input-group">
                       <div className="bus-list-input-label">Bus Name</div>
                       <div className={`bus-list-input-wrapper ${focusedInput === 'edit_busname' ? 'bus-list-input-wrapper-focused' : ''}`}>
-                        <span className="bus-list-input-icon">🚌</span>
+                        <i className="fas fa-bus bus-list-input-icon"></i>
                         <input
                           type="text"
                           placeholder="Enter bus name"
@@ -755,7 +766,7 @@ const BusListScreen = () => {
                     <div className="bus-list-input-group">
                       <div className="bus-list-input-label">Number Plate</div>
                       <div className={`bus-list-input-wrapper ${focusedInput === 'edit_numberplate' ? 'bus-list-input-wrapper-focused' : ''}`}>
-                        <span className="bus-list-input-icon">🔢</span>
+                        <i className="fas fa-hashtag bus-list-input-icon"></i>
                         <input
                           type="text"
                           placeholder="Enter number plate"
@@ -786,7 +797,15 @@ const BusListScreen = () => {
                   onClick={updateBus}
                   disabled={!editingBus?.busname.trim() || !editingBus?.numberplate.trim()}
                 >
-                  {updating ? 'Updating...' : '✓ Update Bus'}
+                  {updating ? (
+                    <>
+                      <i className="fas fa-spinner fa-pulse"></i> Updating...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-check"></i> Update Bus
+                    </>
+                  )}
                 </button>
               </div>
             </div>

@@ -4,15 +4,12 @@ import { useAuth } from "../context/AuthContext";
 import "../css/SideNav.css";
 
 const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
-  const [showSettingsSubmenu, setShowSettingsSubmenu] = useState(false);
-  const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const settingsRef = useRef(null);
-  const popupRef = useRef(null);
   const logoutModalRef = useRef(null);
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
 
+  // All menu items including settings subitems as main items
   const menuItems = [
     {
       id: "dashboard",
@@ -21,63 +18,55 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
       color: "#1a5b7b",
       path: "/dashboard"
     },
+    // Settings subitems as individual menu items
     {
-      id: "settings",
-      label: "Account Settings",
-      icon: "fas fa-cogs",
-      color: "#6c757d",
-      hasSubmenu: true,
-      subItems: [
-        {
-          id: "buses",
-          label: "Bus Management",
-          icon: "fas fa-bus",
-          color: "#e74c3c",
-          path: "/buses"
-        },
-        {
-          id: "employees",
-          label: "Employee Management",
-          icon: "fas fa-users",
-          color: "#3498db",
-          path: "/employees"
-        },
-        {
-          id: "routes",
-          label: "Route Management",
-          icon: "fas fa-route",
-          color: "#2ecc71",
-          path: "/routes"
-        },
-        {
-          id: "subRoutes",
-          label: "Sub Routes Management",
-          icon: "fas fa-road",
-          color: "#f39c12",
-          path: "/subroutes"
-        },
-        {
-          id: "subscription_list",
-          label: "Bus Subscription Management",
-          icon: "fas fa-credit-card",
-          color: "#9b59b6",
-          path: "/subscription_list"
-        },
-        {
-          id: "currency",
-          label: "Currency Settings",
-          icon: "fas fa-dollar-sign",
-          color: "#27ae60",
-          path: "/currency"
-        },
-        {
-          id: "settings",
-          label: "System Settings",
-          icon: "fas fa-sliders-h",
-          color: "#34495e",
-          path: "/settings"
-        },
-      ]
+      id: "buses",
+      label: "Bus Management",
+      icon: "fas fa-bus",
+      color: "#e74c3c",
+      path: "/buses"
+    },
+    {
+      id: "employees",
+      label: "Employee Management",
+      icon: "fas fa-users",
+      color: "#3498db",
+      path: "/employees"
+    },
+    {
+      id: "routes",
+      label: "Route Management",
+      icon: "fas fa-route",
+      color: "#2ecc71",
+      path: "/routes"
+    },
+    {
+      id: "subRoutes",
+      label: "Sub Routes Management",
+      icon: "fas fa-road",
+      color: "#f39c12",
+      path: "/subroutes"
+    },
+    {
+      id: "subscription_list",
+      label: "Bus Subscription Management",
+      icon: "fas fa-credit-card",
+      color: "#9b59b6",
+      path: "/subscription_list"
+    },
+    {
+      id: "currency",
+      label: "Currency Settings",
+      icon: "fas fa-dollar-sign",
+      color: "#27ae60",
+      path: "/currency"
+    },
+    {
+      id: "systemSettings",
+      label: "System Settings",
+      icon: "fas fa-sliders-h",
+      color: "#34495e",
+      path: "/settings"
     },
   ];
 
@@ -90,23 +79,9 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
     },
   ];
 
-  // Close popups when clicking outside
+  // Close logout modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // For settings popup (collapsed state)
-      if (showSettingsPopup && popupRef.current && !popupRef.current.contains(event.target)) {
-        // Check if click is not on the settings button
-        if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-          setShowSettingsPopup(false);
-        }
-      }
-      
-      // For settings submenu (expanded state)
-      if (!isCollapsed && showSettingsSubmenu && settingsRef.current && !settingsRef.current.contains(event.target)) {
-        setShowSettingsSubmenu(false);
-      }
-
-      // For logout modal
       if (showLogoutModal && logoutModalRef.current && !logoutModalRef.current.contains(event.target)) {
         setShowLogoutModal(false);
       }
@@ -116,7 +91,7 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSettingsPopup, showSettingsSubmenu, showLogoutModal, isCollapsed]);
+  }, [showLogoutModal]);
 
   // Function to ensure token is included in navigation
   const ensureAuthenticatedNavigation = (path) => {
@@ -139,43 +114,27 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
     
     if (item.id === "dashboard") {
       ensureAuthenticatedNavigation("/dashboard");
-      closeAllMenus();
-    } else if (item.id === "settings") {
-      if (isCollapsed) {
-        setShowSettingsPopup(!showSettingsPopup);
-      } else {
-        setShowSettingsSubmenu(!showSettingsSubmenu);
-      }
-      return;
+    } else if (item.id === "buses") {
+      ensureAuthenticatedNavigation("/buses");
+    } else if (item.id === "employees") {
+      ensureAuthenticatedNavigation("/employees");
+    } else if (item.id === "routes") {
+      ensureAuthenticatedNavigation("/routes");
+    } else if (item.id === "subRoutes") {
+      ensureAuthenticatedNavigation("/subroutes");
+    } else if (item.id === "subscription_list") {
+      ensureAuthenticatedNavigation("/subscription_list");
+    } else if (item.id === "currency") {
+      ensureAuthenticatedNavigation("/currency");
+    } else if (item.id === "systemSettings") {
+      ensureAuthenticatedNavigation("/settings");
     } else if (item.id === "logout") {
-      // Show logout confirmation modal instead of immediate logout
+      // Show logout confirmation modal
       setShowLogoutModal(true);
-      closeAllMenus();
       return;
     }
     
-    if (window.innerWidth <= 768) {
-      onToggle();
-    }
-  };
-
-  const handleSubItemClick = (subItem, event) => {
-    event.stopPropagation();
-    
-    ensureAuthenticatedNavigation(subItem.path);
-    closeAllMenus();
-    
-    if (window.innerWidth <= 768) {
-      onToggle();
-    }
-  };
-
-  const handlePopupItemClick = (subItem, event) => {
-    event.stopPropagation();
-    
-    ensureAuthenticatedNavigation(subItem.path);
-    setShowSettingsPopup(false);
-    
+    // Close sidebar on mobile after selection
     if (window.innerWidth <= 768) {
       onToggle();
     }
@@ -193,11 +152,6 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
     setShowLogoutModal(false);
   };
 
-  const closeAllMenus = () => {
-    setShowSettingsSubmenu(false);
-    setShowSettingsPopup(false);
-  };
-
   return (
     <>
       {/* Mobile Overlay */}
@@ -206,7 +160,6 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
           className="side-nav-overlay"
           onClick={() => {
             onToggle();
-            closeAllMenus();
           }}
         />
       )}
@@ -267,15 +220,9 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
 
         <nav className="nav-menu">
           {menuItems.map((item) => (
-            <div 
-              key={item.id} 
-              className="nav-item-wrapper"
-              ref={item.id === "settings" ? settingsRef : null}
-            >
+            <div key={item.id} className="nav-item-wrapper">
               <button
-                className={`nav-item ${activeScreen === item.id ? "active" : ""} ${
-                  item.hasSubmenu ? 'has-submenu' : ''
-                } ${(item.id === "settings" && showSettingsSubmenu) ? 'submenu-open' : ''}`}
+                className={`nav-item ${activeScreen === item.id ? "active" : ""}`}
                 onClick={(e) => handleItemClick(item, e)}
                 title={isCollapsed ? item.label : ""}
               >
@@ -283,59 +230,10 @@ const SideNav = ({ activeScreen, onScreenChange, isCollapsed, onToggle }) => {
                   <i className={item.icon}></i>
                 </span>
                 {!isCollapsed && <span className="nav-label">{item.label}</span>}
-                {!isCollapsed && item.hasSubmenu && (
-                  <i 
-                    className={`fas fa-chevron-down submenu-arrow ${
-                      showSettingsSubmenu ? 'rotated' : ''
-                    }`} 
-                  />
-                )}
               </button>
-              
-              {/* Settings Sub-menu - visible when expanded and submenu is open */}
-              {!isCollapsed && item.hasSubmenu && showSettingsSubmenu && item.id === "settings" && (
-                <div className="sub-menu">
-                  {item.subItems.map((subItem) => (
-                    <button
-                      key={subItem.id}
-                      className="nav-item sub-item"
-                      onClick={(e) => handleSubItemClick(subItem, e)}
-                    >
-                      <span className="nav-icon" style={{ color: subItem.color }}>
-                        <i className={subItem.icon}></i>
-                      </span>
-                      <span className="nav-label sub-item-label">{subItem.label}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
         </nav>
-
-        {/* Settings Popup for collapsed state */}
-        {isCollapsed && showSettingsPopup && (
-          <div 
-            className="settings-popup"
-            ref={popupRef}
-          >
-            <div className="settings-popup-header">
-              <span>Account Settings</span>
-            </div>
-            {menuItems.find(item => item.id === "settings")?.subItems.map((subItem) => (
-              <button
-                key={subItem.id}
-                className="settings-popup-item"
-                onClick={(e) => handlePopupItemClick(subItem, e)}
-              >
-                <span className="settings-popup-icon" style={{ color: subItem.color }}>
-                  <i className={subItem.icon}></i>
-                </span>
-                <span className="settings-popup-label">{subItem.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
 
         <div className="nav-footer">
           {footerItems.map((item) => (

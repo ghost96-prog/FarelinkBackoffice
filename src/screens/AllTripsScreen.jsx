@@ -425,62 +425,88 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
     return { startDate, endDate };
   };
 
-  // Handle date range selection from modal
-  const handleDateRangeSelect = (range) => {
-    setSelectedDateRange(range);
-    setShowDateModal(false);
-
-    if (range !== "Custom") {
-      let startDate, endDate;
-      let newSelectedDate = new Date();
-
-      switch (range) {
-        case "Today":
-          startDate = startOfToday();
-          endDate = endOfToday();
-          newSelectedDate = new Date();
-          break;
-        case "Yesterday":
-          startDate = startOfYesterday();
-          endDate = endOfYesterday();
-          newSelectedDate = subDays(new Date(), 1);
-          break;
-        case "This Week":
-          startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
-          endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
-          break;
-        case "Last Week":
-          const lastWeekDate = subWeeks(new Date(), 1);
-          startDate = startOfWeek(lastWeekDate, { weekStartsOn: 1 });
-          endDate = endOfWeek(lastWeekDate, { weekStartsOn: 1 });
-          newSelectedDate = lastWeekDate;
-          break;
-        case "This Month":
-          startDate = startOfMonth(new Date());
-          endDate = endOfMonth(new Date());
-          break;
-        case "Last Month":
-          const lastMonthDate = subMonths(new Date(), 1);
-          startDate = startOfMonth(lastMonthDate);
-          endDate = endOfMonth(lastMonthDate);
-          newSelectedDate = lastMonthDate;
-          break;
-        case "This Year":
-          startDate = startOfYear(new Date());
-          endDate = endOfYear(new Date());
-          break;
-        default:
-          startDate = startOfToday();
-          endDate = endOfToday();
-      }
-
-      setDateRangeState([{ startDate, endDate, key: "selection" }]);
-      setSelectedDate(newSelectedDate);
-      fetchAllTripsData(startDate, endDate, selectedBus);
-    } else {
-      setShowCustomRangeModal(true);
-    }
-  };
+ const handleDateRangeSelect = (range, customStartDate, customEndDate) => {
+   console.log("Date range selected:", range, customStartDate, customEndDate);
+   
+   if (range === "Custom" && customStartDate && customEndDate) {
+     // This is a custom range directly from the calendar
+     console.log("Custom range selected from calendar:", customStartDate, customEndDate);
+     
+     // Use the selected dates with the default times (00:00 to 23:59)
+     const startDateTime = combineDateAndTime(customStartDate, "00:00");
+     const endDateTime = combineDateAndTime(customEndDate, "23:59");
+     
+     setCustomStartDate(customStartDate);
+     setCustomEndDate(customEndDate);
+     setCustomStartTime("00:00");
+     setCustomEndTime("23:59");
+     setSelectedDateRange("Custom");
+     setSelectedDate(customStartDate);
+     setDateRangeState([{ startDate: startDateTime, endDate: endDateTime, key: "selection" }]);
+     setShowDateModal(false);
+     
+     // Fetch data directly without opening another modal
+     fetchDashboardData(startDateTime, endDateTime);
+   } else if (range !== "Custom") {
+     // Handle predefined ranges
+     setSelectedDateRange(range);
+     setShowDateModal(false);
+ 
+     let startDate, endDate;
+     let newSelectedDate = new Date();
+ 
+     switch (range) {
+       case "Today":
+         startDate = startOfToday();
+         endDate = endOfToday();
+         newSelectedDate = new Date();
+         break;
+       case "Yesterday":
+         startDate = startOfYesterday();
+         endDate = endOfYesterday();
+         newSelectedDate = subDays(new Date(), 1);
+         break;
+       case "This Week":
+         startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+         endDate = endOfWeek(new Date(), { weekStartsOn: 1 });
+         break;
+       case "Last Week":
+         const lastWeekDate = subWeeks(new Date(), 1);
+         startDate = startOfWeek(lastWeekDate, { weekStartsOn: 1 });
+         endDate = endOfWeek(lastWeekDate, { weekStartsOn: 1 });
+         newSelectedDate = lastWeekDate;
+         break;
+       case "This Month":
+         startDate = startOfMonth(new Date());
+         endDate = endOfMonth(new Date());
+         break;
+       case "Last Month":
+         const lastMonthDate = subMonths(new Date(), 1);
+         startDate = startOfMonth(lastMonthDate);
+         endDate = endOfMonth(lastMonthDate);
+         newSelectedDate = lastMonthDate;
+         break;
+       case "This Year":
+         startDate = startOfYear(new Date());
+         endDate = endOfYear(new Date());
+         break;
+       default:
+         startDate = startOfToday();
+         endDate = endOfToday();
+     }
+ 
+     console.log("Setting date range for", range, ":", { startDate, endDate });
+     setDateRangeState([{ startDate, endDate, key: "selection" }]);
+     setSelectedDate(newSelectedDate);
+     
+     // Fetch data for the selected range
+     fetchDashboardData(startDate, endDate);
+   } else {
+     // This is the "Custom Period" button click - open custom range modal
+     setShowDateModal(false);
+     setShowCustomRangeModal(true);
+   }
+ };
 
   // Date navigation functions
   const handleBackClick = () => {

@@ -183,7 +183,12 @@ const CreateCurrencyScreen = () => {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const { user } = useAuth();
-
+const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+const [currencyToDelete, setCurrencyToDelete] = useState(null);
+const [showAlertModal, setShowAlertModal] = useState(false);
+const [alertMessage, setAlertMessage] = useState("");
+const [showSuccessModal, setShowSuccessModal] = useState(false);
+const [successMessage, setSuccessMessage] = useState("");
   // Sidebar and layout states
   const [activeScreen, setActiveScreen] = useState("currencies");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -540,21 +545,45 @@ const CreateCurrencyScreen = () => {
       closeCreateModal();
     }
   };
-
-  const deleteCurrency = (currencyId) => {
-    if (window.confirm("Are you sure you want to delete this currency?")) {
-      setProcessing(true);
-      deleteCurrencyAPI(currencyId)
-        .then(async (success) => {
-          if (success) {
-            await fetchCurrencies();
-          }
-        })
-        .finally(() => {
-          setProcessing(false);
-        });
+const deleteCurrency = (currencyId) => {
+  setCurrencyToDelete(currencyId);
+  setShowDeleteConfirm(true);
+};
+const confirmDelete = async () => {
+  if (!currencyToDelete) return;
+  
+  setProcessing(true);
+  try {
+    const success = await deleteCurrencyAPI(currencyToDelete);
+    if (success) {
+      await fetchCurrencies();
+      showSuccess("Currency deleted successfully!");
+    } else {
+      showAlert("Failed to delete currency");
     }
-  };
+  } catch (error) {
+    showAlert("Failed to delete currency");
+  } finally {
+    setProcessing(false);
+    setShowDeleteConfirm(false);
+    setCurrencyToDelete(null);
+  }
+};
+
+const cancelDelete = () => {
+  setShowDeleteConfirm(false);
+  setCurrencyToDelete(null);
+};
+
+const showAlert = (message) => {
+  setAlertMessage(message);
+  setShowAlertModal(true);
+};
+
+const showSuccess = (message) => {
+  setSuccessMessage(message);
+  setShowSuccessModal(true);
+};
 
   const CurrencyItem = ({ currency }) => (
     <div className="currency-item">
@@ -962,7 +991,36 @@ const SymbolModal = () => {
             </div>
           </div>
         </div>
+{/* Delete Confirmation Modal */}
+<AlertModal
+  visible={showDeleteConfirm}
+  title="Delete Currency"
+  message="Are you sure you want to delete this currency? This action cannot be undone."
+  buttonText="Delete"
+  onPress={confirmDelete}
+  type="warning"
+  showCancel={true}
+  cancelButtonText="Cancel"
+  onCancel={cancelDelete}
+/>
 
+<AlertModal
+  visible={showAlertModal}
+  title="Error"
+  message={alertMessage}
+  buttonText="Got It"
+  onPress={() => setShowAlertModal(false)}
+  type="error"
+/>
+
+<AlertSuccess
+  visible={showSuccessModal}
+  title="Success"
+  message={successMessage}
+  buttonText="Got It"
+  onPress={() => setShowSuccessModal(false)}
+  type="success"
+/>
     
 
         {/* Modals */}

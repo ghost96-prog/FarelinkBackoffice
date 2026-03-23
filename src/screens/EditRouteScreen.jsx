@@ -33,7 +33,8 @@ const EditRouteScreen = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
+const [showDeleteStationConfirm, setShowDeleteStationConfirm] = useState(false);
+const [stationToDelete, setStationToDelete] = useState(null);
   // Sidebar and layout states
   const [activeScreen, setActiveScreen] = useState("routes");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -210,35 +211,39 @@ const EditRouteScreen = () => {
 
     setNewStation("");
   };
-
-  const handleRemoveStation = async (stationId) => {
+const handleRemoveStation = (stationId) => {
+  const stationToRemove = newRoute.stations.find(
+    (station) => station.id === stationId
+  );
+  if (stationToRemove) {
+    setStationToDelete(stationToRemove);
+    setShowDeleteStationConfirm(true);
+  }
+};
+ const confirmDeleteStation = () => {
+  if (stationToDelete) {
     try {
-      const stationToRemove = newRoute.stations.find(
-        (station) => station.id === stationId
+      const updatedStations = newRoute.stations.filter(
+        (station) => station.id !== stationToDelete.id
       );
-
-      if (!stationToRemove) return;
-
-      if (window.confirm(`Are you sure you want to delete station "${stationToRemove.name}"?`)) {
-        try {
-          const updatedStations = newRoute.stations.filter(
-            (station) => station.id !== stationId
-          );
-          setNewRoute({
-            ...newRoute,
-            stations: updatedStations,
-          });
-        } catch (error) {
-          console.error("Error deleting station:", error);
-          showAlert("Failed to delete station");
-        }
-      }
+      setNewRoute({
+        ...newRoute,
+        stations: updatedStations,
+      });
+      showSuccess(`Station "${stationToDelete.station}" deleted successfully!`);
     } catch (error) {
-      console.error("Error in handleRemoveStation:", error);
-      showAlert("Failed to process station deletion");
+      console.error("Error deleting station:", error);
+      showAlert("Failed to delete station");
     }
-  };
+  }
+  setShowDeleteStationConfirm(false);
+  setStationToDelete(null);
+};
 
+const cancelDeleteStation = () => {
+  setShowDeleteStationConfirm(false);
+  setStationToDelete(null);
+};
   const handleSelectBus = (bus) => {
     const isSelected = selectedBuses.some(
       (selectedBus) => selectedBus.id === bus.id
@@ -674,6 +679,18 @@ const EditRouteScreen = () => {
             </div>
           </div>
         )}
+{/* Delete Station Confirmation Modal */}
+<AlertModal
+  visible={showDeleteStationConfirm}
+  title="Delete Station"
+  message={`Are you sure you want to delete station "${stationToDelete?.station}"?`}
+  buttonText="Delete"
+  onPress={confirmDeleteStation}
+  type="warning"
+  showCancel={true}
+  cancelButtonText="Cancel"
+  onCancel={cancelDeleteStation}
+/>
 
         <AlertModal
           visible={showAlertModal}

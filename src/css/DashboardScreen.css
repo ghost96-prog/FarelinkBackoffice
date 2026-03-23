@@ -1,13 +1,17 @@
 /* DashboardScreen.css - Fixed Custom Period Button and Modal Styling */
+
+/* Import General Sans and modern fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'General Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #fff;
@@ -100,6 +104,7 @@ body {
   color: #1a5b7b;
   font-size: 16px;
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .circular-metrics-container {
@@ -118,6 +123,7 @@ body {
   color: #1a5b7b;
   margin-bottom: 8px;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .circular-metric-card {
@@ -162,6 +168,7 @@ body {
 .circular-metric-subtitle {
   font-size: 9px;
   color: #666;
+  font-weight: 500;
 }
 
 .performance-section {
@@ -186,6 +193,7 @@ body {
   align-items: center;
   gap: 3px;
   font-size: 13px;
+  font-weight: 500;
   transition: background-color 0.2s;
 }
 
@@ -274,6 +282,7 @@ body {
 .bus-plate {
   font-size: 11px;
   color: #888;
+  font-weight: 500;
 }
 
 .bus-amount {
@@ -294,6 +303,7 @@ body {
 .bus-stat {
   font-size: 12px;
   color: #666;
+  font-weight: 500;
 }
 
 /* Modal Responsive */
@@ -343,6 +353,7 @@ body {
 .modal-title {
   margin: 0;
   font-size: 16px;
+  font-weight: 600;
 }
 
 .close-button {
@@ -430,6 +441,7 @@ body {
   margin-right: 6px;
   font-size: 13px;
   color: #333;
+  font-weight: 500;
 }
 
 .dropdown-arrow {
@@ -458,6 +470,7 @@ body {
   font-size: 13px;
   transition: background-color 0.2s;
   color: #333;
+  font-weight: 500;
 }
 
 .bus-dropdown-item:hover {
@@ -484,6 +497,7 @@ body {
   border-radius: 16px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
   transition: all 0.2s;
 }
 
@@ -503,6 +517,7 @@ body {
   color: #333;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   transition: all 0.2s;
   min-width: 130px;
 }
@@ -524,6 +539,7 @@ body {
   border-radius: 16px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   transition: background-color 0.2s;
 }
 
@@ -599,6 +615,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 13px;
+  font-weight: 500;
   transition: border-color 0.2s;
 }
 
@@ -617,6 +634,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 13px;
+  font-weight: 500;
   background: white;
   cursor: pointer;
   transition: border-color 0.2s;
@@ -640,12 +658,14 @@ body {
   margin-bottom: 6px;
   color: #333;
   font-size: 13px;
+  font-weight: 600;
 }
 
 .custom-range-modal .range-summary p {
   margin: 0;
   color: #666;
   font-size: 13px;
+  font-weight: 500;
   line-height: 1.4;
 }
 
@@ -972,6 +992,7 @@ body {
 .rdrStaticRangeLabel {
   color: #333;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .rdrStaticRangeSelected {
@@ -1004,6 +1025,7 @@ body {
   border-radius: 5px;
   transition: all 0.2s ease;
   font-size: 13px;
+  font-weight: 500;
   margin-bottom: 3px;
   border: 1px solid transparent;
   display: flex;
@@ -1050,6 +1072,7 @@ body {
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   min-width: 130px;
 }
 
@@ -1062,6 +1085,7 @@ body {
   margin-bottom: 3px;
   font-size: 11px;
   color: #666;
+  font-weight: 500;
 }
 
 /* Date Range Modal Styles */
@@ -1141,12 +1165,14 @@ body {
   color: #1a5b7b;
   margin-bottom: 6px;
   font-size: 16px;
+  font-weight: 600;
 }
 
 .loading-text p {
   color: #666;
   margin-bottom: 3px;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .retry-attempt {
@@ -1227,6 +1253,7 @@ body {
   color: #dc3545;
   margin-bottom: 10px;
   font-size: 16px;
+  font-weight: 600;
 }
 
 .error-text p {
@@ -1234,6 +1261,7 @@ body {
   margin-bottom: 16px;
   line-height: 1.4;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .error-actions {
@@ -1354,6 +1382,7 @@ body {
   padding: 10px 12px;
   border-bottom: 1px solid #e9ecef;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .daily-sales-table tr:hover {
@@ -1370,6 +1399,7 @@ body {
   font-style: italic;
   padding: 30px !important;
   font-size: 13px;
+  font-weight: 500;
 }
 
 /* No Buses State Styles */
@@ -1396,11 +1426,13 @@ body {
   font-size: 14px;
   color: #6b7280;
   margin: 0 0 6px 0;
+  font-weight: 600;
 }
 
 .no-buses-message {
   color: #9ca3af;
   font-size: 12px;
+  font-weight: 500;
   line-height: 1.4;
   max-width: 250px;
   margin: 0;

@@ -109,8 +109,8 @@ const DateRangeModal = ({
       );
     });
 
-    let rangeLabel = "Custom";
     if (isPredefinedRange) {
+      // Handle predefined range
       const matchedRange = customStaticRanges.find((range) => {
         const rangeDates = range.range();
         return (
@@ -118,16 +118,25 @@ const DateRangeModal = ({
           rangeDates.endDate.getTime() === endDate.getTime()
         );
       });
-      rangeLabel = matchedRange?.label || "Custom";
-    }
-
-    // Use the callback functions passed from parent
-    if (onDateRangeStateChange) {
-      onDateRangeStateChange(tempDateRange);
-    }
-
-    if (onDateRangeSelect) {
-      onDateRangeSelect(rangeLabel);
+      const rangeLabel = matchedRange?.label || "Custom";
+      
+      if (onDateRangeStateChange) {
+        onDateRangeStateChange(tempDateRange);
+      }
+      
+      if (onDateRangeSelect) {
+        onDateRangeSelect(rangeLabel);
+      }
+    } else {
+      // Handle custom range from calendar - pass the actual dates
+      if (onDateRangeStateChange) {
+        onDateRangeStateChange(tempDateRange);
+      }
+      
+      // Pass "Custom" along with the actual dates
+      if (onDateRangeSelect) {
+        onDateRangeSelect("Custom", startDate, endDate);
+      }
     }
 
     if (onClose) {

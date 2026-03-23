@@ -7,6 +7,9 @@ const AlertModal = ({
   message,
   buttonText,
   onPress,
+    showCancel = false,  // add this
+  cancelButtonText = "Cancel", // add this
+  onCancel, // add this
   type = "info",
 }) => {
   if (!visible) return null;
@@ -61,7 +64,13 @@ const AlertModal = ({
               message
             )}
           </div>
-
+        {showCancel && onCancel && (
+              <button onClick={onCancel} className="alert-button-cancel">
+                <div className="alert-button-gradient cancel">
+                  <div className="alert-button-text">{cancelButtonText}</div>
+                </div>
+              </button>
+            )}
           <button onClick={onPress} className="alert-button">
             <div 
               className="alert-button-gradient"

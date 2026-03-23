@@ -60,7 +60,32 @@
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
+.alert-buttons-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
 
+.alert-button-cancel {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.alert-button-cancel .alert-button-gradient {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px 24px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.alert-button-cancel .alert-button-gradient:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 .alert-pulse-animation {
   animation: pulse 2s infinite;
 }

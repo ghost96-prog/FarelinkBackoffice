@@ -36,7 +36,8 @@ const SubRoutesScreen = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const editedRouteRef = useRef(null);
-
+const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+const [routeToDelete, setRouteToDelete] = useState(null);
   // Sidebar and layout states
   const [activeScreen, setActiveScreen] = useState("subroutes");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -251,38 +252,47 @@ const SubRoutesScreen = () => {
     setSuccessMessage(message);
     setShowSuccessModal(true);
   };
+const handleDelete = (routeId, subrouteId) => {
+  setRouteToDelete({ routeId, subrouteId });
+  setShowDeleteConfirm(true);
+};
+const confirmDelete = async () => {
+  if (!routeToDelete) return;
+  
+  const { routeId, subrouteId } = routeToDelete;
+  
+  try {
+    const token = user.token;
+    const apiLink = Apilink.getLink();
+    
+    let response = await fetch(`${apiLink}/subroutes/${routeId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  const handleDelete = (routeId, subrouteId) => {
-    if (window.confirm("Are you sure you want to delete this subroute?")) {
-      confirmDelete(routeId, subrouteId);
+    const data = await response.json();
+
+    if (response.ok) {
+      setSubRoutes(data.routes);
+      showSuccess("Subroute deleted successfully");
+    } else {
+      showAlert(data.message || "Failed to delete subroute");
     }
-  };
+  } catch (error) {
+    showAlert("Failed to delete subroute");
+  } finally {
+    setShowDeleteConfirm(false);
+    setRouteToDelete(null);
+  }
+};
 
-  const confirmDelete = async (routeId, subrouteId) => {
-    try {
-      const token = user.token;
-      const apiLink = Apilink.getLink();
-      
-      let response = await fetch(`${apiLink}/subroutes/${routeId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSubRoutes(data.routes);
-        showSuccess("Subroute deleted successfully");
-      } else {
-        showAlert(data.message || "Failed to delete subroute");
-      }
-    } catch (error) {
-      showAlert("Failed to delete subroute");
-    }
-  };
+const cancelDelete = () => {
+  setShowDeleteConfirm(false);
+  setRouteToDelete(null);
+};
 
   const handleBusSelect = (bus) => {
     setSelectedBus(bus);
@@ -753,7 +763,18 @@ const SubRoutesScreen = () => {
         {/* Modals */}
         {editModalVisible && <EditModal />}
         {busFilterModalVisible && <BusFilterModal />}
-
+{/* Delete Subroute Confirmation Modal */}
+<AlertModal
+  visible={showDeleteConfirm}
+  title="Delete Subroute"
+  message="Are you sure you want to delete this subroute? This action cannot be undone."
+  buttonText="Delete"
+  onPress={confirmDelete}
+  type="warning"
+  showCancel={true}
+  cancelButtonText="Cancel"
+  onCancel={cancelDelete}
+/>
         <AlertModal
           visible={showAlertModal}
           title="Error"

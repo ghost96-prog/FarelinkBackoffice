@@ -60,11 +60,17 @@ const DashboardScreen = () => {
   ];
 
   // Load data on mount using persisted date range from context
-  useEffect(() => {
-    fetchAllBuses();
-    const { startDate, endDate } = dateRangeState[0];
-    fetchDashboardData(startDate, endDate);
-  }, []);
+useEffect(() => {
+  const fetchData = async () => {
+    if (dateRangeState && dateRangeState[0] && dateRangeState[0].startDate && dateRangeState[0].endDate) {
+      const { startDate, endDate } = dateRangeState[0];
+      console.log("Fetching dashboard data with:", { startDate, endDate, selectedDateRange });
+      await fetchDashboardData(startDate, endDate);
+    }
+  };
+  
+  fetchData();
+}, [dateRangeState]); // This will run when dateRangeState changes (including initial load from localStorage)
 
   const fetchAllBuses = async () => {
     try {

@@ -5,6 +5,7 @@ import { startOfToday, endOfToday, parseISO } from "date-fns";
 const DateRangeContext = createContext();
 
 // Helper to load from localStorage
+// Helper to load from localStorage
 const loadFromStorage = () => {
   try {
     const savedRange = localStorage.getItem('dashboard_date_range');
@@ -14,12 +15,24 @@ const loadFromStorage = () => {
     const savedEndTime = localStorage.getItem('dashboard_custom_end_time');
     const savedRangeState = localStorage.getItem('dashboard_range_state');
     
+    // Parse the date range state - convert ISO strings back to Date objects
+    let parsedRangeState = [{ startDate: startOfToday(), endDate: endOfToday(), key: "selection" }];
+    if (savedRangeState) {
+      const parsed = JSON.parse(savedRangeState);
+      parsedRangeState = parsed.map(item => ({
+        ...item,
+        startDate: item.startDate ? new Date(item.startDate) : startOfToday(),
+        endDate: item.endDate ? new Date(item.endDate) : endOfToday(),
+        key: item.key || "selection"
+      }));
+    }
+    
     return {
       selectedDateRange: savedRange || "Today",
-      selectedDate: savedStartDate ? parseISO(savedStartDate) : new Date(),
-      dateRangeState: savedRangeState ? JSON.parse(savedRangeState) : [{ startDate: startOfToday(), endDate: endOfToday(), key: "selection" }],
-      customStartDate: savedStartDate ? parseISO(savedStartDate) : new Date(),
-      customEndDate: savedEndDate ? parseISO(savedEndDate) : new Date(),
+      selectedDate: savedStartDate ? new Date(savedStartDate) : new Date(),
+      dateRangeState: parsedRangeState,
+      customStartDate: savedStartDate ? new Date(savedStartDate) : new Date(),
+      customEndDate: savedEndDate ? new Date(savedEndDate) : new Date(),
       customStartTime: savedStartTime || "00:00",
       customEndTime: savedEndTime || "23:59",
     };
@@ -38,12 +51,20 @@ const loadFromStorage = () => {
 };
 
 // Helper to save to localStorage
+// Helper to save to localStorage
 const saveToStorage = (range, rangeState, startDate, endDate, startTime, endTime) => {
   try {
+    // Convert rangeState Date objects to ISO strings for storage
+    const rangeStateToStore = rangeState.map(item => ({
+      ...item,
+      startDate: item.startDate?.toISOString ? item.startDate.toISOString() : item.startDate,
+      endDate: item.endDate?.toISOString ? item.endDate.toISOString() : item.endDate,
+    }));
+    
     localStorage.setItem('dashboard_date_range', range);
-    localStorage.setItem('dashboard_range_state', JSON.stringify(rangeState));
-    localStorage.setItem('dashboard_start_date', startDate.toISOString());
-    localStorage.setItem('dashboard_end_date', endDate.toISOString());
+    localStorage.setItem('dashboard_range_state', JSON.stringify(rangeStateToStore));
+    localStorage.setItem('dashboard_start_date', startDate?.toISOString ? startDate.toISOString() : startDate);
+    localStorage.setItem('dashboard_end_date', endDate?.toISOString ? endDate.toISOString() : endDate);
     localStorage.setItem('dashboard_custom_start_time', startTime);
     localStorage.setItem('dashboard_custom_end_time', endTime);
   } catch (error) {

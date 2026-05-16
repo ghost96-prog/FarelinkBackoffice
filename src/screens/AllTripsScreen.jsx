@@ -246,8 +246,8 @@ console.log("Raw trip from API:", data.trips?.[0]);
       });
 
       // Transform API data
-   const transformedTrips = (data.trips || []).map((trip) => ({
-  tripId: trip.id,          // ← Use numeric id (634), not the string "TRIP_..."
+  const transformedTrips = (data.trips || []).map((trip) => ({
+  tripId: trip.tripId,  // ← Use the string "TRIP_176164241410", NOT trip.id
   tripNumber: trip.tripNumber || 1,
   startTime: trip.startTime,
   endTime: trip.endTime,

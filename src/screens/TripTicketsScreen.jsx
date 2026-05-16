@@ -1226,12 +1226,12 @@ const CurrencyBreakdownCard = () => {
 
               {/* Date Navigation */}
               <div className="trip-tickets-date-navigation">
-                <button
+                {/* <button
                   className="trip-tickets-date-nav-button"
                   onClick={handleBackClick}
                 >
                   ‹
-                </button>
+                </button> */}
                 <button
                   className="trip-tickets-date-display"
                   // onClick={() => setShowDateModal(true)}
@@ -1241,13 +1241,13 @@ const CurrencyBreakdownCard = () => {
                     <span className="professional-icon icon-calendar"></span>
                   </span>
                 </button>
-                <button
+                {/* <button
                   className="trip-tickets-date-nav-button"
                   onClick={handleForwardClick}
                   disabled={!canNavigateForward()}
                 >
                   ›
-                </button>
+                </button> */}
               </div>
             </div>
 

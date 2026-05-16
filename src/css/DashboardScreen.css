@@ -239,6 +239,7 @@ body {
   overflow: auto;
   border: 1px solid #e9ecef;
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .bus-item:hover {

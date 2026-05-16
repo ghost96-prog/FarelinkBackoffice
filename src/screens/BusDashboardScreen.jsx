@@ -34,7 +34,7 @@ import "react-date-range/dist/theme/default.css";
 import { useAuth } from "../context/AuthContext";
 import Apilink from "../baseUrl/baseUrl";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import { useDateRange } from "../context/DateRangeContext";
 const BusDashboardScreen = () => {
   const authContext = useAuth();
   const { user } = authContext;
@@ -57,16 +57,11 @@ const BusDashboardScreen = () => {
     salesByEmployee: [],
     completedTrips: [],
   });
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDateModal, setShowDateModal] = useState(false);
-  const [selectedDateRange, setSelectedDateRange] = useState("Today");
   const [loading, setLoading] = useState(true);
   const [baseCurrency, setBaseCurrency] = useState(null);
   const [showCustomRangeModal, setShowCustomRangeModal] = useState(false);
-  const [customStartDate, setCustomStartDate] = useState(new Date());
-  const [customEndDate, setCustomEndDate] = useState(new Date());
-  const [customStartTime, setCustomStartTime] = useState("00:00");
-  const [customEndTime, setCustomEndTime] = useState("23:59");
+
   const [activeScreen, setActiveScreen] = useState("bus-dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [exportLoading, setExportLoading] = useState(false);
@@ -75,7 +70,25 @@ const BusDashboardScreen = () => {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [tripDetailModal, setTripDetailModal] = useState(false);
   const [employees, setEmployees] = useState([]);
-  
+const dateRangeContext = useDateRange();
+
+// Then destructure the values you need:
+const {
+  selectedDateRange,
+  setSelectedDateRange,
+  dateRangeState,
+  setDateRangeState,
+  customStartDate,
+  setCustomStartDate,
+  customEndDate,
+  setCustomEndDate,
+  customStartTime,
+  setCustomStartTime,
+  customEndTime,
+  setCustomEndTime,
+  selectedDate,
+  setSelectedDate,
+} = dateRangeContext;
   // New state variables for missing functions
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -89,13 +102,7 @@ const BusDashboardScreen = () => {
   const [currencyBreakdownLoading, setCurrencyBreakdownLoading] = useState(false);
 
   // Date range picker state
-  const [dateRangeState, setDateRangeState] = useState([
-    {
-      startDate: startOfToday(),
-      endDate: endOfToday(),
-      key: "selection",
-    },
-  ]);
+
 
   // Constants
   const ITEMS_PER_PAGE = 5;
@@ -106,14 +113,12 @@ const BusDashboardScreen = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentTrips = filteredTrips.slice(startIndex, endIndex);
 
-  // Load data on component mount and when date range changes
-  useEffect(() => {
-    const { startDate, endDate } = calculateDateRange(selectedDateRange, selectedDate);
-    setDateRangeState([{ startDate, endDate, key: "selection" }]);
-    fetchBusDashboardData(startDate, endDate);
-    loadEmployees();
-    loadBuses();
-  }, []);
+useEffect(() => {
+  const { startDate, endDate } = dateRangeState[0];
+  fetchBusDashboardData(startDate, endDate);
+  loadEmployees();
+  loadBuses();
+}, []);
 
   // Custom static ranges including "This Year"
   const customStaticRanges = [
@@ -590,7 +595,7 @@ console.log("Transformed trips:", transformedTrips, "trips");
      setShowDateModal(false);
      
      // Fetch data directly without opening another modal
-     fetchDashboardData(startDateTime, endDateTime);
+     fetchBusDashboardData(startDateTime, endDateTime);
    } else if (range !== "Custom") {
      // Handle predefined ranges
      setSelectedDateRange(range);
@@ -644,7 +649,7 @@ console.log("Transformed trips:", transformedTrips, "trips");
      setSelectedDate(newSelectedDate);
      
      // Fetch data for the selected range
-     fetchDashboardData(startDate, endDate);
+     fetchBusDashboardData(startDate, endDate);
    } else {
      // This is the "Custom Period" button click - open custom range modal
      setShowDateModal(false);
@@ -1611,16 +1616,17 @@ const exportToPDF = () => {
                         delay={100}
                       />
                     </div>
-                    <div className="bus-dashboard-metric-column">
-                      <div className="bus-dashboard-metric-title">Trips</div>
-                      <CircularMetricCard
-                        value={dashboardData.totalTrips.toString()}
-                        subtitle="Completed"
-                        iconClass="icon-route"
-                        colors={["#0798ff", "#1427fd"]}
-                        delay={300}
-                      />
-                    </div>
+                   <div className="bus-dashboard-metric-column">
+  <div className="bus-dashboard-metric-title">Trips</div>
+  <CircularMetricCard
+    value={dashboardData.totalTrips.toString()}
+    subtitle="Completed"
+    iconClass="icon-route"
+    colors={["#0798ff", "#1427fd"]}
+    delay={300}
+    onPress={() => navigate('/all-trips', { state: { bus: selectedBus } })}  // Add this line
+  />
+</div>
                   </div>
                 </div>
 

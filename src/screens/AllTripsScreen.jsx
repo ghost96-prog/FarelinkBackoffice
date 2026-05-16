@@ -34,6 +34,7 @@ import "react-date-range/dist/theme/default.css";
 import { useAuth } from "../context/AuthContext";
 import Apilink from "../baseUrl/baseUrl";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDateRange } from "../context/DateRangeContext";
 
 const AllTripsScreen = () => {
   const authContext = useAuth();
@@ -55,16 +56,12 @@ const AllTripsScreen = () => {
     salesByEmployee: [],
     completedTrips: [],
   });
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDateModal, setShowDateModal] = useState(false);
-  const [selectedDateRange, setSelectedDateRange] = useState("Today");
+
   const [loading, setLoading] = useState(true);
   const [baseCurrency, setBaseCurrency] = useState(null);
   const [showCustomRangeModal, setShowCustomRangeModal] = useState(false);
-  const [customStartDate, setCustomStartDate] = useState(new Date());
-  const [customEndDate, setCustomEndDate] = useState(new Date());
-  const [customStartTime, setCustomStartTime] = useState("00:00");
-  const [customEndTime, setCustomEndTime] = useState("23:59");
+
   const [activeScreen, setActiveScreen] = useState("all-trips");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [exportLoading, setExportLoading] = useState(false);
@@ -73,7 +70,25 @@ const AllTripsScreen = () => {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [tripDetailModal, setTripDetailModal] = useState(false);
   const [employees, setEmployees] = useState([]);
-  
+const dateRangeContext = useDateRange();
+
+// Then destructure the values you need:
+const {
+  selectedDateRange,
+  setSelectedDateRange,
+  dateRangeState,
+  setDateRangeState,
+  customStartDate,
+  setCustomStartDate,
+  customEndDate,
+  setCustomEndDate,
+  customStartTime,
+  setCustomStartTime,
+  customEndTime,
+  setCustomEndTime,
+  selectedDate,
+  setSelectedDate,
+} = dateRangeContext;
   // New state variables for missing functions
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -82,14 +97,6 @@ const AllTripsScreen = () => {
     totalTickets: 0,
   });
 
-  // Date range picker state
-  const [dateRangeState, setDateRangeState] = useState([
-    {
-      startDate: startOfToday(),
-      endDate: endOfToday(),
-      key: "selection",
-    },
-  ]);
 
   // Constants
   const ITEMS_PER_PAGE = 5;
@@ -113,18 +120,13 @@ useEffect(() => {
   }
 }, [location.state]);
 
-// Update the main useEffect to handle initial data fetch
 useEffect(() => {
-  const { startDate, endDate } = calculateDateRange(selectedDateRange, selectedDate);
-  setDateRangeState([{ startDate, endDate, key: "selection" }]);
-  
-  // Only fetch data if we have buses loaded and know which bus to show
+  const { startDate, endDate } = dateRangeState[0];
   if (allBuses.length > 0) {
     fetchAllTripsData(startDate, endDate, selectedBus);
   }
-  
   loadEmployees();
-}, [allBuses.length]); // Add allBuses.length as dependency
+}, [allBuses.length, dateRangeState, selectedBus]); 
   // Custom static ranges including "This Year"
   const customStaticRanges = [
     ...defaultStaticRanges,
@@ -217,7 +219,7 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
     });
 
     const data = await response.json();
-
+console.log("Raw trip from API:", data.trips?.[0]);
     if (!response.ok) {
       console.error("Failed to fetch all trips data:", data);
       setDashboardData({
@@ -244,24 +246,24 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
       });
 
       // Transform API data
-      const transformedTrips = (data.trips || []).map((trip) => ({
-        tripId: trip.tripId || `TRIP_${trip.id}`,
-        tripNumber: trip.tripNumber || 1,
-        startTime: trip.startTime,
-        endTime: trip.endTime,
-        busId: trip.busId?.toString(),
-        busName: trip.busName || "Unknown Bus",
-        conductorId: trip.conductorId?.toString(),
-        conductorName: trip.conductorName || "Unknown Conductor",
-        totalSales: trip.totalIncome || trip.totalSales || 0,
-        ticketCount: trip.totalTickets || trip.ticketCount || 0,
-        status: "completed",
-        majorRoute: trip.majorRoute || "Unknown Route",
-        timeElapsed: trip.timeElapsed || "0h 0m",
-        currencySymbol: trip.currencySymbol || data.baseCurrency?.symbol || "$",
-        currencyCode: trip.currencyCode || data.baseCurrency?.code || "USD",
-        currencyName: trip.currencyName || data.baseCurrency?.name || "United States Dollar",
-      }));
+   const transformedTrips = (data.trips || []).map((trip) => ({
+  tripId: trip.id,          // ← Use numeric id (634), not the string "TRIP_..."
+  tripNumber: trip.tripNumber || 1,
+  startTime: trip.startTime,
+  endTime: trip.endTime,
+  busId: trip.busId?.toString(),
+  busName: trip.busName || "Unknown Bus",
+  conductorId: trip.conductorId?.toString(),
+  conductorName: trip.conductorName || "Unknown Conductor",
+  totalSales: trip.totalIncome || trip.totalSales || 0,
+  ticketCount: trip.totalTickets || trip.ticketCount || 0,
+  status: "completed",
+  majorRoute: trip.majorRoute || "Unknown Route",
+  timeElapsed: trip.timeElapsed || "0h 0m",
+  currencySymbol: trip.currencySymbol || data.baseCurrency?.symbol || "$",
+  currencyCode: trip.currencyCode || data.baseCurrency?.code || "USD",
+  currencyName: trip.currencyName || data.baseCurrency?.name || "United States Dollar",
+}));
 
       const transformedData = {
         totalSales: data.totalBusRevenue || 0,
@@ -446,7 +448,7 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
      setShowDateModal(false);
      
      // Fetch data directly without opening another modal
-     fetchDashboardData(startDateTime, endDateTime);
+     fetchAllTripsData(startDateTime, endDateTime);
    } else if (range !== "Custom") {
      // Handle predefined ranges
      setSelectedDateRange(range);
@@ -500,7 +502,7 @@ const fetchAllTripsData = async (startDate, endDate, busToFetch = selectedBus) =
      setSelectedDate(newSelectedDate);
      
      // Fetch data for the selected range
-     fetchDashboardData(startDate, endDate);
+     fetchAllTripsData(startDate, endDate);
    } else {
      // This is the "Custom Period" button click - open custom range modal
      setShowDateModal(false);
@@ -1152,6 +1154,8 @@ const exportToPDF = () => {
     className="all-trips-view-tickets-button"
     onClick={() => {
       setTripDetailModal(false);
+      console.log('selectedTrip',selectedTrip);
+      
       navigate('/trip-tickets', { state: { trip: selectedTrip } });
     }}
   >

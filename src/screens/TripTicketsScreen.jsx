@@ -34,6 +34,7 @@ import "react-date-range/dist/theme/default.css";
 import { useAuth } from "../context/AuthContext";
 import Apilink from "../baseUrl/baseUrl";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDateRange } from "../context/DateRangeContext";
 
 const TripTicketsScreen = () => {
   const authContext = useAuth();
@@ -47,16 +48,11 @@ const [salesByCurrency, setSalesByCurrency] = useState([]);
   
   // State variables - similar to AllTripsScreen
   const [tickets, setTickets] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDateModal, setShowDateModal] = useState(false);
-  const [selectedDateRange, setSelectedDateRange] = useState("Today");
   const [loading, setLoading] = useState(true);
   const [baseCurrency, setBaseCurrency] = useState(null);
   const [showCustomRangeModal, setShowCustomRangeModal] = useState(false);
-  const [customStartDate, setCustomStartDate] = useState(new Date());
-  const [customEndDate, setCustomEndDate] = useState(new Date());
-  const [customStartTime, setCustomStartTime] = useState("00:00");
-  const [customEndTime, setCustomEndTime] = useState("23:59");
+
   const [activeScreen, setActiveScreen] = useState("trip-tickets");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [exportLoading, setExportLoading] = useState(false);
@@ -64,7 +60,25 @@ const [salesByCurrency, setSalesByCurrency] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketDetailModal, setTicketDetailModal] = useState(false);
-  
+const dateRangeContext = useDateRange();
+
+// Then destructure the values you need:
+const {
+  selectedDateRange,
+  setSelectedDateRange,
+  dateRangeState,
+  setDateRangeState,
+  customStartDate,
+  setCustomStartDate,
+  customEndDate,
+  setCustomEndDate,
+  customStartTime,
+  setCustomStartTime,
+  customEndTime,
+  setCustomEndTime,
+  selectedDate,
+  setSelectedDate,
+} = dateRangeContext;
   // New state variables for missing functions
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -73,14 +87,6 @@ const [salesByCurrency, setSalesByCurrency] = useState([]);
     totalTicketsCount: 0,
   });
 
-  // Date range picker state
-  const [dateRangeState, setDateRangeState] = useState([
-    {
-      startDate: startOfToday(),
-      endDate: endOfToday(),
-      key: "selection",
-    },
-  ]);
 
   // Constants
   const ITEMS_PER_PAGE = 5;
@@ -90,14 +96,15 @@ const [salesByCurrency, setSalesByCurrency] = useState([]);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentTickets = filteredTickets.slice(startIndex, endIndex);
-
+useEffect(() => {
+  console.log("Trip received in TripTicketsScreen:", trip);
+  console.log("tripId being sent to API:", trip?.tripId);
+}, []);
   // Load data on component mount
-  useEffect(() => {
-    const { startDate, endDate } = calculateDateRange(selectedDateRange, selectedDate);
-    setDateRangeState([{ startDate, endDate, key: "selection" }]);
-    fetchTicketsData(startDate, endDate);
-  }, []);
-
+useEffect(() => {
+  const { startDate, endDate } = dateRangeState[0]; // use persisted dates
+  fetchTicketsData(startDate, endDate);
+}, []);
   // Custom static ranges including "This Year"
   const customStaticRanges = [
     ...defaultStaticRanges,
@@ -1227,7 +1234,7 @@ const CurrencyBreakdownCard = () => {
                 </button>
                 <button
                   className="trip-tickets-date-display"
-                  onClick={() => setShowDateModal(true)}
+                  // onClick={() => setShowDateModal(true)}
                 >
                   {formatDateDisplay()}
                   <span className="trip-tickets-calendar-icon">

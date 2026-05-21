@@ -16,6 +16,7 @@ import BusSubscriptionListScreen from '../screens/BusSubscriptionScreen';
 import SubscriptionPaymentScreen from '../screens/SubscriptionPaymentScreen';
 import CreateCurrencyScreen from '../screens/CreateCurrencyScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ReceiptsScreen    from "../screens/ReceiptsScreen";   // ← NEW
 
 const AuthenticatedApp = () => {
 
@@ -28,7 +29,8 @@ const AuthenticatedApp = () => {
           <Route path="/bus-dashboard" element={<BusDashboardScreen />} />
           <Route path="/all-trips" element={<AllTripsScreen />} />
           <Route path="/trip-tickets" element={<TripTicketsScreen />} />
-          
+              <Route path="/receipts"     element={<ReceiptsScreen />} /> 
+
           {/* Settings routes */}
         <Route path="/buses" element={<BusListScreen />} />
         <Route path="/employees" element={<EmployeeManagementScreen />} />

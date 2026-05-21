@@ -498,6 +498,18 @@ useEffect(() => {
                     <div className="metric-title">Trips</div>
                     <CircularMetricCard value={(dashboardData?.totalTrips || 0).toString()} subtitle="Completed" iconClass="icon-route" colors={["#0798ff", "#1427fd"]} />
                   </div>
+                   {/* ── NEW: Receipts card ── */}
+  <div className="metric-column">
+    <div className="metric-title">Receipts</div>
+    <CircularMetricCard
+      value={(dashboardData?.totalPassengers || 0).toLocaleString()}
+      subtitle="View all receipts"
+      iconClass="receipt"
+      colors={["#fd7e14", "#e83e8c"]}
+      onPress={() => navigate("/receipts")}
+    />
+  </div>
+
                 </div>
               </div>
 

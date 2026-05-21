@@ -273,9 +273,99 @@ const updateFilteredTotals = useCallback((filteredData) => {
     }
   }, [user]);
 
-  const fetchTickets = useCallback(async (startDate, endDate) => {
+const fetchTickets = useCallback(async (startDate, endDate) => {
+  try {
+    setLoading(true);
+    const apiLink = Apilink.getLink();
+    
+    // Send only the date part, no time
+    const startDateStr = format(startDate, "yyyy-MM-dd");
+    const endDateStr = format(endDate, "yyyy-MM-dd");
+    
+    const res = await fetch(`${apiLink}/ticketsdata`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${user?.token}` },
+      body: JSON.stringify({
+        start_date: startDateStr,
+        end_date: endDateStr,
+      }),
+    });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setReceipts([]);
+        setFilteredReceipts([]);
+        setFilteredTotals({ totalRevenue: 0, totalCount: 0, totalRevenueBaseCurrency: 0 });
+        setSalesByCurrency([]);
+        setLoading(false);
+        return;
+      }
+
+      const transformed = (data.tickets || []).map((r) => ({
+        id: r.id,
+        ticketNumber: r.ticketNumber || r.ticket_number || "",
+        tripNumber: r.tripNumber || r.trip_number || "",
+        tripId: r.tripId || r.trip_id,
+        busId: r.busId || r.bus_id || "",
+        busName: r.busName || r.bus_name || "Unknown Bus",
+        routeName: r.routeName || r.route_name || "",
+        routeId: r.routeId || r.route_id,
+        majorRouteId: r.majorRouteId,
+        conductorName: r.conductorName || r.conductor_name || "",
+        customerName: r.customerName || r.customer_name || "Unknown",
+        customerPhone: r.customerPhone || r.customer_phone || "",
+        from: r.from || "",
+        to: r.to || "",
+        passengerCount: r.passengerCount || r.passenger_count || 1,
+        passengerType: r.passengerType || r.passenger_type || "passenger",
+        farePerPerson: r.farePerPerson || r.fare_per_person || 0,
+        amountPaid: r.amountPaid || r.amount_paid || 0,
+        // FIX: use server-provided base-currency amount directly
+        amountPaidBaseCurrency: r.amountPaidBaseCurrency || r.amount_paid_base_currency || 0,
+        discount: r.discount || 0,
+        currencyCode: r.currencyCode || r.currency_code || "USD",
+        currencyName: r.currencyName || r.currency_name || "",
+        currencySymbol: r.currencySymbol || r.currency_symbol || "$",
+        // FIX: server returns 0/1 integers, normalise to string for consistent checks
+        refundedStatus: isRefunded(r.refundedStatus ?? r.refunded_status) ? "refunded" : "active",
+        timestamp: r.timestamp || r.created_at || "",
+        exchangeRate: r.exchangeRate || r.exchange_rate || 1,
+      }));
+
+      setReceipts(transformed);
+
+      let filtered = [...transformed];
+      if (selectedBusFilter !== "all") filtered = filtered.filter((r) => String(r.busId) === String(selectedBusFilter));
+      if (selectedRouteId && selectedRouteId !== "all") filtered = filtered.filter((r) => String(r.majorRouteId) === String(selectedRouteId));
+      if (selectedTripFilter !== "all") filtered = filtered.filter((r) => String(r.tripNumber) === String(selectedTripFilter));
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter((r) =>
+          (r.customerName || "").toLowerCase().includes(q) ||
+          (r.customerPhone || "").includes(q) ||
+          (r.ticketNumber || "").toString().includes(q) ||
+          (r.from || "").toLowerCase().includes(q) ||
+          (r.to || "").toLowerCase().includes(q) ||
+          (r.busName || "").toLowerCase().includes(q)
+        );
+      }
+      filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      setFilteredReceipts(filtered);
+      updateFilteredTotals(filtered);
+      setCurrentPage(1);
+    } catch (e) {
+      console.error("fetchTickets:", e);
+      setReceipts([]);
+      setFilteredReceipts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, selectedBusFilter, selectedRouteId, selectedTripFilter, searchQuery, updateFilteredTotals]);
+  const fetchTicketsold = useCallback(async (startDate, endDate) => {
     try {
       setLoading(true);
+      console.log(startDate,endDate);
+      
       const apiLink = Apilink.getLink();
       const res = await fetch(`${apiLink}/ticketsdata`, {
         method: "POST",
@@ -467,79 +557,155 @@ const updateFilteredTotals = useCallback((filteredData) => {
     }
   };
 
-  const handleBackClick = () => {
-    let newStartDate, newEndDate;
-    const currentRange = dateRangeState[0];
-    switch (selectedDateRange) {
-      case "Today": case "Yesterday": {
-        const prevDay = subDays(currentRange.startDate, 1);
-        newStartDate = startOfDay(prevDay); newEndDate = endOfDay(prevDay); setSelectedDate(prevDay); break;
-      }
-      case "This Week": case "Last Week": {
-        const prevWeek = subWeeks(currentRange.startDate, 1);
-        newStartDate = startOfWeek(prevWeek, { weekStartsOn: 1 }); newEndDate = endOfWeek(prevWeek, { weekStartsOn: 1 }); setSelectedDate(prevWeek); break;
-      }
-      case "This Month": case "Last Month": {
-        const prevMonth = subMonths(currentRange.startDate, 1);
-        newStartDate = startOfMonth(prevMonth); newEndDate = endOfMonth(prevMonth); setSelectedDate(prevMonth); break;
-      }
-      case "This Year": {
-        const prevYear = subYears(currentRange.startDate, 1);
-        newStartDate = startOfYear(prevYear); newEndDate = endOfYear(prevYear); setSelectedDate(prevYear); break;
-      }
-      case "Custom": {
-        const diff = Math.round((currentRange.endDate - currentRange.startDate) / (1000 * 60 * 60 * 24));
-        newStartDate = subDays(currentRange.startDate, diff + 1); newEndDate = subDays(currentRange.endDate, diff + 1);
-        setSelectedDate(newStartDate); setCustomStartDate(newStartDate); setCustomEndDate(newEndDate); break;
-      }
-      default: {
-        const pd = subDays(currentRange.startDate, 1);
-        newStartDate = startOfDay(pd); newEndDate = endOfDay(pd); setSelectedDate(pd);
-      }
+const handleBackClick = () => {
+  let newStartDate, newEndDate;
+  const currentRange = dateRangeState[0];
+  
+  // Calculate duration - for same day, duration should be 0
+  let durationDays = Math.round((currentRange.endDate - currentRange.startDate) / (1000 * 60 * 60 * 24));
+  // Fix: if start and end are the same date (ignoring time), duration is 0
+  if (currentRange.startDate.toDateString() === currentRange.endDate.toDateString()) {
+    durationDays = 0;
+  }
+  
+  switch (selectedDateRange) {
+    case "Today":
+    case "Yesterday": {
+      const prevDay = subDays(currentRange.startDate, 1);
+      newStartDate = startOfDay(prevDay);
+      newEndDate = endOfDay(prevDay);
+      setSelectedDate(prevDay);
+      break;
     }
-    setDateRangeState([{ startDate: newStartDate, endDate: newEndDate, key: "selection" }]);
-    fetchTickets(newStartDate, newEndDate);
-  };
+    case "This Week":
+    case "Last Week": {
+      const prevWeek = subWeeks(currentRange.startDate, 1);
+      newStartDate = startOfWeek(prevWeek, { weekStartsOn: 1 });
+      newEndDate = endOfWeek(prevWeek, { weekStartsOn: 1 });
+      setSelectedDate(prevWeek);
+      break;
+    }
+    case "This Month":
+    case "Last Month": {
+      const prevMonth = subMonths(currentRange.startDate, 1);
+      newStartDate = startOfMonth(prevMonth);
+      newEndDate = endOfMonth(prevMonth);
+      setSelectedDate(prevMonth);
+      break;
+    }
+    case "This Year": {
+      const prevYear = subYears(currentRange.startDate, 1);
+      newStartDate = startOfYear(prevYear);
+      newEndDate = endOfYear(prevYear);
+      setSelectedDate(prevYear);
+      break;
+    }
+    case "Custom": {
+      // For back: new range ends one day before old range starts
+      const newEnd = startOfDay(subDays(currentRange.startDate, 1));
+      const newStart = startOfDay(subDays(newEnd, durationDays));
+      
+      newStartDate = newStart;
+      newEndDate = endOfDay(newEnd);
+      
+      setSelectedDate(newStartDate);
+      setCustomStartDate(newStartDate);
+      setCustomEndDate(newEndDate);
+      break;
+    }
+    default: {
+      const pd = subDays(currentRange.startDate, 1);
+      newStartDate = startOfDay(pd);
+      newEndDate = endOfDay(pd);
+      setSelectedDate(pd);
+      break;
+    }
+  }
+  
+  setDateRangeState([{ startDate: newStartDate, endDate: newEndDate, key: "selection" }]);
+  fetchTickets(newStartDate, newEndDate);
+};
 
-  const handleForwardClick = () => {
-    if (isNextDisabled()) return;
-    let newStartDate, newEndDate;
-    const currentRange = dateRangeState[0];
-    const today = new Date();
-    switch (selectedDateRange) {
-      case "Today": case "Yesterday": {
-        const nextDay = addDays(currentRange.startDate, 1);
-        newStartDate = startOfDay(nextDay); newEndDate = endOfDay(nextDay); setSelectedDate(nextDay); break;
-      }
-      case "This Week": case "Last Week": {
-        const nextWeek = addWeeks(currentRange.startDate, 1);
-        newStartDate = startOfWeek(nextWeek, { weekStartsOn: 1 }); newEndDate = endOfWeek(nextWeek, { weekStartsOn: 1 });
-        if (newEndDate > today) newEndDate = today; setSelectedDate(nextWeek); break;
-      }
-      case "This Month": case "Last Month": {
-        const nextMonth = addMonths(currentRange.startDate, 1);
-        newStartDate = startOfMonth(nextMonth); newEndDate = endOfMonth(nextMonth);
-        if (newEndDate > today) newEndDate = today; setSelectedDate(nextMonth); break;
-      }
-      case "This Year": {
-        const nextYear = addYears(currentRange.startDate, 1);
-        newStartDate = startOfYear(nextYear); newEndDate = endOfYear(nextYear);
-        if (newEndDate > today) newEndDate = today; setSelectedDate(nextYear); break;
-      }
-      case "Custom": {
-        const diff = Math.round((currentRange.endDate - currentRange.startDate) / (1000 * 60 * 60 * 24));
-        newStartDate = addDays(currentRange.startDate, diff + 1); newEndDate = addDays(currentRange.endDate, diff + 1);
-        if (newEndDate > today) { newEndDate = today; newStartDate = subDays(today, diff); }
-        setSelectedDate(newStartDate); setCustomStartDate(newStartDate); setCustomEndDate(newEndDate); break;
-      }
-      default: {
-        const nd = addDays(currentRange.startDate, 1);
-        newStartDate = startOfDay(nd); newEndDate = endOfDay(nd); setSelectedDate(nd);
-      }
+const handleForwardClick = () => {
+  if (isNextDisabled()) return;
+  
+  let newStartDate, newEndDate;
+  const currentRange = dateRangeState[0];
+  const today = new Date();
+  
+  // Calculate duration - for same day, duration should be 0
+  let durationDays = Math.round((currentRange.endDate - currentRange.startDate) / (1000 * 60 * 60 * 24));
+  // Fix: if start and end are the same date (ignoring time), duration is 0
+  if (currentRange.startDate.toDateString() === currentRange.endDate.toDateString()) {
+    durationDays = 0;
+  }
+  
+  switch (selectedDateRange) {
+    case "Today":
+    case "Yesterday": {
+      const nextDay = addDays(currentRange.startDate, 1);
+      newStartDate = startOfDay(nextDay);
+      newEndDate = endOfDay(nextDay);
+      setSelectedDate(nextDay);
+      break;
     }
-    setDateRangeState([{ startDate: newStartDate, endDate: newEndDate, key: "selection" }]);
-    fetchTickets(newStartDate, newEndDate);
-  };
+    case "This Week":
+    case "Last Week": {
+      const nextWeek = addWeeks(currentRange.startDate, 1);
+      newStartDate = startOfWeek(nextWeek, { weekStartsOn: 1 });
+      newEndDate = endOfWeek(nextWeek, { weekStartsOn: 1 });
+      if (newEndDate > today) newEndDate = today;
+      setSelectedDate(nextWeek);
+      break;
+    }
+    case "This Month":
+    case "Last Month": {
+      const nextMonth = addMonths(currentRange.startDate, 1);
+      newStartDate = startOfMonth(nextMonth);
+      newEndDate = endOfMonth(nextMonth);
+      if (newEndDate > today) newEndDate = today;
+      setSelectedDate(nextMonth);
+      break;
+    }
+    case "This Year": {
+      const nextYear = addYears(currentRange.startDate, 1);
+      newStartDate = startOfYear(nextYear);
+      newEndDate = endOfYear(nextYear);
+      if (newEndDate > today) newEndDate = today;
+      setSelectedDate(nextYear);
+      break;
+    }
+    case "Custom": {
+      // For forward: new range starts one day after old range ends
+      const newStart = startOfDay(addDays(currentRange.endDate, 1));
+      const newEnd = endOfDay(addDays(newStart, durationDays));
+      
+      newStartDate = newStart;
+      newEndDate = newEnd;
+      
+      // Don't go past today
+      if (newEndDate > today) {
+        newEndDate = endOfDay(today);
+        newStartDate = startOfDay(subDays(today, durationDays));
+      }
+      
+      setSelectedDate(newStartDate);
+      setCustomStartDate(newStartDate);
+      setCustomEndDate(newEndDate);
+      break;
+    }
+    default: {
+      const nd = addDays(currentRange.startDate, 1);
+      newStartDate = startOfDay(nd);
+      newEndDate = endOfDay(nd);
+      setSelectedDate(nd);
+      break;
+    }
+  }
+  
+  setDateRangeState([{ startDate: newStartDate, endDate: newEndDate, key: "selection" }]);
+  fetchTickets(newStartDate, newEndDate);
+};
 
   const handleBusFilterChange = (busId) => { setSelectedBusFilter(busId); setShowBusDropdown(false); };
   const handleRouteFilterChange = (routeName, routeId, majorRouteId) => {
